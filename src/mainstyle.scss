@@ -1,0 +1,35 @@
+html, body, div, span, applet, object, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    margin: 0;
+    padding: 0;
+    font-family: 'Hiragino Kaku Gothic Pro','ヒラギノ角ゴ Pro W3','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;
+    color:#494949;
+}
+html, body{
+    min-width:1200px;
+}
+
+.flex-jus-between{
+    display:flex;
+    justify-content:space-between;
+    align-items: center;
+}
+.flex-jus-center{
+    display:flex;
+    justify-content:center;
+    align-items: center;
+}
+input.removeCss{
+    border:none;
+    word-wrap:break-word;
+    outline:none;
+    -webkit-tap-highlight-color:transparent;
+}
+input.searchInput{
+    background-color:white;
+    border-radius:5000px;
+    padding:3px 15px;
+}
