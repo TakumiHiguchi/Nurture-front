@@ -1,5 +1,48 @@
 .fa-sideContainer{
-    width:262px;
+    width:287px;
     height:100%;
-    border-right:1px solid #f0f0f0;
+}
+
+//サイドバー曜日
+.timetable{
+    align-items:flex-start;
+    width:100%;
+    height:calc(100% - 40px);
+    padding:20px 0;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display:none;
+    }
+}
+.weekdays-lap{
+    margin-bottom:10px;
+    .weekdays{
+        width:calc(100% - 20px);
+        margin:0 0 5px 20px;
+        font-size:1.2em;
+        
+    }
+}
+.fa-schedule-side{
+    width:calc(100% - 35px);
+    margin:0 0 0 25px;
+    cursor: pointer;
+    border-radius:15px 0 0 15px;
+    padding:5px 5px 5px 10px;
+    
+    &:hover{
+        background:#fff8ff;
+    }
+    .ss-headline{
+        font-size:0.8em;
+        color:#aaa;
+    }
+    .ss-title{
+    }
+    .cszt{
+        font-size:0.8em;
+        color:#aaa;
+    }
 }
