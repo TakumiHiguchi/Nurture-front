@@ -2,6 +2,14 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
+import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイコン
+import { faLine } from "@fortawesome/free-brands-svg-icons"; //lineアイコン
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";//plusアイコン
+import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";//minusアイコン
+
+//cssのインポート
 import './header.scss';
 import './mainstyle.scss';
 import './sidebar.scss';
@@ -10,6 +18,24 @@ import './toppage.scss';
 import Register from './Register' //後で消す
 import * as serviceWorker from './serviceWorker';
 
+//css
+const pmIcons = {
+    fontSize:"1.2em",
+    margin:"0 7",
+    color:"#00aced",
+    cursor: "pointer"
+}
+const twitterIcon = {
+    fontSize:"1.5em",
+    margin:"0 15 0 0",
+    color:"#00aced",
+    cursor: "pointer"
+}
+const lineIcon = {
+    fontSize:"1.5em",
+    color:"#00B900",
+    cursor: "pointer"
+}
 const WeekLine = (props) => {
        return(
            <div className="fa-sceduleLine">
@@ -72,6 +98,25 @@ const PopupClassEdit = (props) => {
                         <div><span className="t-index">学年</span> {props.element.grade}学年</div>
                         <div><span className="t-index">必修等</span> {props.element.status}</div>
                         <div><span className="t-index">教室</span> <input type="text" placeholder="クリックして教室を登録" className="removeCss pcePopup-input"/></div>
+                    </div>
+                    <h3 className="fa-Attendance-h3">出欠管理</h3>
+                    <div className="pcePopup-item flex-jus-center">
+                        <div className="counter">
+                            <div className="flex-jus-center">出席回数</div>
+                            <div className="fa-counter-lap flex-jus-between"><FontAwesomeIcon style={pmIcons} icon={faPlusCircle} /><div>0</div><FontAwesomeIcon style={pmIcons} icon={faMinusCircle} /></div>
+                        </div>
+                        <div className="counter">
+                            <div className="flex-jus-center">遅刻回数</div>
+                            <div className="fa-counter-lap flex-jus-between"><FontAwesomeIcon style={pmIcons} icon={faPlusCircle} /><div>0</div><FontAwesomeIcon style={pmIcons} icon={faMinusCircle} /></div>
+                        </div>
+                        <div className="counter">
+                            <div className="flex-jus-center">欠席回数</div>
+                            <div className="fa-counter-lap flex-jus-between"><FontAwesomeIcon style={pmIcons} icon={faPlusCircle} /><div>0</div><FontAwesomeIcon style={pmIcons} icon={faMinusCircle} /></div>
+                        </div>
+                    </div>
+                    <div className="sns-shere flex">
+                        <a href=""><FontAwesomeIcon style={twitterIcon} icon={faTwitter} /></a>
+                        <a href=""><FontAwesomeIcon style={lineIcon} icon={faLine} /></a>
                     </div>
                 </div>
            </div>
