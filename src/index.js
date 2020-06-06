@@ -13,8 +13,8 @@ import * as serviceWorker from './serviceWorker';
 const WeekLine = (props) => {
        return(
            <div className="fa-sceduleLine">
-              {props.daySchedule.map((data) =>
-                                            <div>
+              {props.daySchedule.map((data,index) =>
+                                     <div key={"ds" + data +index }>
                                                 <div className="fa-BT-scedule"></div>
                                                 <div className="flex-jus-center fa-class-sceduleContainer">
                                                     {data == 0 ?
@@ -22,7 +22,7 @@ const WeekLine = (props) => {
                                                             <div className="status"></div>
                                                         </div>
                                                                 :
-                                                        <div className="fa-class-scedule">
+                                                        <div className="fa-class-scedule" onClick={() => props.action.popupEdit(data.position)} >
                                                             <div>
                                                                 <div>{data.title}</div>
                                                                 <div className="classroom">107</div>
@@ -41,36 +41,13 @@ const WeekLine = (props) => {
 const DateBox = () => {
     return(
            <div className="flex-jus-between fa-dateContainer">
-               <div className="fa-timeline">
-                   
-               </div>
-                   <div className="fa-sceduleLine">
-           
-                   </div>
-                   <div className="fa-sceduleLine">
-                       
-                   </div>
-                   <div className="fa-sceduleLine">
-                       
-                   </div>
-                   <div className="fa-sceduleLine">
-                       
-                   </div>
-                   <div className="fa-sceduleLine">
-                       
-                   </div>
-                   <div className="fa-sceduleLine">
-                       
-                   </div>
-                   <div className="fa-sceduleLine">
-                       
-                   </div>
+
            </div>
     )
 }
 const TimeBox = () => {
     return(
-           <div className="fa-timeline"><div className="fa-BT-time"><div className="fab-time">9:00</div></div><div className="fa-class-time"><div className="fab-time">10:30</div></div><div className="fa-BT-time"><div className="fab-time">10:40</div></div><div className="fa-class-time"><div className="fab-time">12:10</div></div><div className="fa-BT-time"><div className="fab-time">13:00</div></div><div className="fa-class-time"><div className="fab-time">14:30</div></div><div className="fa-BT-time"><div className="fab-time">14:40</div></div><div className="fa-class-time"><div className="fab-time">16:10</div></div><div className="fa-BT-time"><div className="fab-time">16:20</div></div><div className="fa-class-time"><div className="fab-time">17:50</div></div><div className="fa-BT-time"><div className="fab-time">18:00</div></div><div className="fa-class-time"><div className="fab-time">19:30</div></div></div>
+           <div className="fa-timeline"><div className="fa-BT-time"><div className="fab-time">9:00</div></div><div className="fa-class-time"><div className="fab-time">10:30</div></div><div className="fa-BT-time"><div className="fab-time">10:40</div></div><div className="fa-class-time"><div className="fab-time">12:10</div></div><div className="fa-BT-time"><div className="fab-time">13:00</div></div><div className="fa-class-time"><div className="fab-time">14:30</div></div><div className="fa-BT-time"><div className="fab-time">14:40</div></div><div className="fa-class-time"><div className="fab-time">16:10</div></div><div className="fa-BT-time"><div className="fab-time">16:20</div></div><div className="fa-class-time"><div className="fab-time">17:50</div></div><div className="fa-BT-time"><div className="fab-time">18:00</div></div><div className="fa-class-time"><div className="fab-time">19:30</div></div><div className="fa-BT-time"><div className="fab-time">19:40</div></div><div className="fa-class-time"><div className="fab-time">21:10</div></div></div>
     )
 }
 const Header = (props) => {
@@ -81,13 +58,31 @@ const Header = (props) => {
            </header>
     )
 }
-
-const PopupMenu = (props) => {
+const PopupClassEdit = (props) => {
+    const dayString=["月","火","水","木","金"]
+    return(
+           <div className={props.isPopup.editSchedule ? 'popup popup_effect' : 'popup popup_effect_de'} >
+               <div className="popup_wrap" onClick={() => props.action.popupshow(props.element.position) }></div>
+                <div className="pceWhir no-select">
+                    <h2 className="add_scedule">{props.element.title}</h2>
+                    <div className="pcePopup-item">
+                        <div><span className="t-index">授業コード</span> {props.element.CoNum}</div>
+                        <div><span className="t-index">担当教員</span> {props.element.teacher}</div>
+                        <div><span className="t-index">学期</span> {props.element.semester}・{dayString[Math.floor(props.element.position / 6)]}曜 {props.element.position % 6 + 1}講時</div>
+                        <div><span className="t-index">学年</span> {props.element.grade}学年</div>
+                        <div><span className="t-index">必修等</span> {props.element.status}</div>
+                        <div><span className="t-index">教室</span> <input type="text" placeholder="クリックして教室を登録" className="removeCss pcePopup-input"/></div>
+                    </div>
+                </div>
+           </div>
+           )
+}
+const PopupClassRegester = (props) => {
     const dayString=["月","火","水","木","金"]
     let k = 0
     const {APIresult, regesterIds, regesterElements} = props.sceduleDatas
         return(
-                <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
+                <div className={props.isPopup.regester ? 'popup popup_effect' : 'popup popup_effect_de'} >
                     <div className="popup_wrap" onClick={() => props.action.popupshow() }></div>
                     <div className="whir no-select">
                         <h2 className="add_scedule">授業の追加</h2>
@@ -136,6 +131,8 @@ const PopupMenu = (props) => {
                 </div>
         )
 }
+                                                                                      
+        
 
 class Nurture extends Component {
     constructor(props){
@@ -148,7 +145,8 @@ class Nurture extends Component {
         
         this.state = {
             page:"week",
-            popup:false,
+            popup:{regester:false, editSchedule:false},
+            selectPopup:0,
             regesterIds:[],
             regesterElements:[],
             caDatas: tbl,
@@ -168,8 +166,13 @@ class Nurture extends Component {
         }
     }
     PopupMenu() {
-        this.setState({popup: !this.state.popup});
+        this.setState({popup: {regester: !this.state.popup.regester}});
     }
+    PopupCCedit(ce) {
+        this.setState({popup: {editSchedule: !this.state.popup.editSchedule},selectPopup:ce}
+                      );
+    }
+                                                                                      
     RegesterId(num, regesarray) {
         //登録予定の教科の配列を作る関数
         const array = this.state.regesterIds
@@ -209,20 +212,28 @@ class Nurture extends Component {
     render(){
         return(
                <div>
-                    <Header actionShow={(cs) => this.PopupMenu(cs)}/>
+                    <Header actionShow={() => this.PopupMenu()}/>
                     <div className="flex-jus-between fa-rap no-select">
-                        <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu()}}/>
+                        <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce)}}/>
                         <Body pageData={this.state.page}
                         scheduleDatas={this.state.caDatas}
-                        action = {{popupshow: () => this.PopupMenu()}}
+                        action = {{popupshow: () => this.PopupMenu(),
+                                   popupEdit: (ce) => this.PopupCCedit(ce)
+                                }}
                         />
-                        <PopupMenu isPopup = {this.state.popup}
+                        <PopupClassRegester isPopup = {this.state.popup}
                                    action = {{
                                             popupshow: () => this.PopupMenu(),
                                             addregesterId: (cd, array) => this.RegesterId(cd, array),
                                             regester: () => this.Regester()
                                             }}
                                    sceduleDatas = {{APIresult: this.state.schedules, regesterIds: this.state.regesterIds, regesterElements: this.state.regesterElements}}
+                        />
+                        <PopupClassEdit isPopup = {this.state.popup}
+                                   action = {{
+                                            popupshow: (ce) => this.PopupCCedit(ce)
+                                            }}
+                                   element = {this.state.caDatas[Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6]}
                         />
                     </div>
                </div>
@@ -243,8 +254,8 @@ class Body extends Component {
                     <DateBox />
                     <div className="flex-jus-between fa-scedule">
                         <TimeBox />
-                        {this.props.scheduleDatas.map((data) =>
-                            <WeekLine daySchedule={data} action = {{popupshow: () => this.props.action.popupshow() }}/>
+                        {this.props.scheduleDatas.map((data,index) =>
+                            <WeekLine daySchedule={data} key={"weekLine"+index} action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}/>
                         )}
                     </div>
                 </main>
@@ -265,13 +276,13 @@ const Sidebar = (props) => {
            <div className="warap"></div>
            <div className="timetable">
                {props.scheduleDatas.map((d, i) =>
-                    <div className="weekdays-lap">
+                    <div className="weekdays-lap" key={"sidebar" + i}>
                         <div className="weekdays">{dayString[i]+"曜日"}</div>
                         {d.map((data, index) =>
-                            <div>
+                            <div key={"sidebar"+ index + i}>
                                 {data == 0 ?
-                                    <div className="fa-schedule-side" onClick={() => props.action.popupshow() } key={"sidebar"+ index + i}><div className="ss-headline">{index+1}講時</div><div className="ss-title">授業なし</div><div className="cszt">クリックして授業を追加</div></div>:
-                                    <div className="fa-schedule-side" key={"sidebar"+ index + i}><div className="ss-headline">{index+1}講時</div><div className="ss-title">{data.title}</div><div className="cszt">{data.teacher}</div></div>
+                                    <div className="fa-schedule-side" onClick={() => props.action.popupshow() } ><div className="ss-headline">{index+1}講時</div><div className="ss-title">授業なし</div><div className="cszt">クリックして授業を追加</div></div>:
+                                    <div className="fa-schedule-side" onClick={() => props.action.popupEdit(data.position)} ><div className="ss-headline">{index+1}講時</div><div className="ss-title">{data.title}</div><div className="cszt">{data.teacher}</div></div>
                                 }
                             </div>
                         )}
