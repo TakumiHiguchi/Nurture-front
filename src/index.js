@@ -21,7 +21,7 @@ import * as serviceWorker from './serviceWorker';
 //css
 const pmIcons = {
     fontSize:"1.2em",
-    margin:"0 7",
+    margin:"0 10",
     color:"#00aced",
     cursor: "pointer"
 }
@@ -40,26 +40,25 @@ const WeekLine = (props) => {
        return(
            <div className="fa-sceduleLine">
               {props.daySchedule.map((data,index) =>
-                                     <div key={"ds" + data +index }>
-                                                <div className="fa-BT-scedule"></div>
-                                                <div className="flex-jus-center fa-class-sceduleContainer">
-                                                    {data == 0 ?
-                                                        <div className="fa-class-scedule flex-jus-center" onClick={() => props.action.popupshow() }>
-                                                            <div className="status"></div>
-                                                        </div>
-                                                                :
-                                                        <div className="fa-class-scedule" onClick={() => props.action.popupEdit(data.position)} >
-                                                            <div>
-                                                                <div>{data.title}</div>
-                                                                <div className="classroom">107</div>
-                                                                <div className="status">{data.status}</div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                    }
-                                                </div>
-                                            </div>
-                                          )}
+                <div key={"ds" + data +index }>
+                    <div className="fa-BT-scedule"></div>
+                    <div className="flex-jus-center fa-class-sceduleContainer">
+                        {data == 0 ?
+                            <div className="fa-class-scedule flex-jus-center" onClick={() => props.action.popupshow() }>
+                            <div className="status"></div>
+                            </div>
+                        :
+                            <div className="fa-class-scedule" onClick={() => props.action.popupEdit(data.position)} >
+                                <div>
+                                    <div>{data.title}</div>
+                                    <div className="classroom">107</div>
+                                    <div className="status">{data.status}</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            )}
            </div>
             
        )
@@ -86,32 +85,45 @@ const Header = (props) => {
 }
 const PopupClassEdit = (props) => {
     const dayString=["月","火","水","木","金"]
+    const {caDatas, caCount} = props.element
     return(
            <div className={props.isPopup.editSchedule ? 'popup popup_effect' : 'popup popup_effect_de'} >
-               <div className="popup_wrap" onClick={() => props.action.popupshow(props.element.position) }></div>
+               <div className="popup_wrap" onClick={() => props.action.popupshow(caDatas.position) }></div>
                 <div className="pceWhir no-select">
                     <h2 className="add_scedule">{props.element.title}</h2>
                     <div className="pcePopup-item">
-                        <div><span className="t-index">授業コード</span> {props.element.CoNum}</div>
-                        <div><span className="t-index">担当教員</span> {props.element.teacher}</div>
-                        <div><span className="t-index">学期</span> {props.element.semester}・{dayString[Math.floor(props.element.position / 6)]}曜 {props.element.position % 6 + 1}講時</div>
-                        <div><span className="t-index">学年</span> {props.element.grade}学年</div>
-                        <div><span className="t-index">必修等</span> {props.element.status}</div>
+                        <div><span className="t-index">授業コード</span> {caDatas.CoNum}</div>
+                        <div><span className="t-index">担当教員</span> {caDatas.teacher}</div>
+                        <div><span className="t-index">学期</span> {caDatas.semester}・{dayString[Math.floor(caDatas.position / 6)]}曜 {caDatas.position % 6 + 1}講時</div>
+                        <div><span className="t-index">学年</span> {caDatas.grade}学年</div>
+                        <div><span className="t-index">必修等</span> {caDatas.status}</div>
                         <div><span className="t-index">教室</span> <input type="text" placeholder="クリックして教室を登録" className="removeCss pcePopup-input"/></div>
                     </div>
                     <h3 className="fa-Attendance-h3">出欠管理</h3>
                     <div className="pcePopup-item flex-jus-center">
                         <div className="counter">
                             <div className="flex-jus-center">出席回数</div>
-                            <div className="fa-counter-lap flex-jus-between"><FontAwesomeIcon style={pmIcons} icon={faPlusCircle} /><div>0</div><FontAwesomeIcon style={pmIcons} icon={faMinusCircle} /></div>
+                            <div className="fa-counter-lap flex-jus-between">
+                                <FontAwesomeIcon style={pmIcons} icon={faPlusCircle} onClick={() => props.action.count(0, 1, caDatas.position)}/>
+                                <div>{caCount[0]}</div>
+                                <FontAwesomeIcon style={pmIcons} icon={faMinusCircle} onClick={() => props.action.count(0, -1, caDatas.position)}/>
+                            </div>
                         </div>
                         <div className="counter">
                             <div className="flex-jus-center">遅刻回数</div>
-                            <div className="fa-counter-lap flex-jus-between"><FontAwesomeIcon style={pmIcons} icon={faPlusCircle} /><div>0</div><FontAwesomeIcon style={pmIcons} icon={faMinusCircle} /></div>
+                            <div className="fa-counter-lap flex-jus-between">
+                                <FontAwesomeIcon style={pmIcons} icon={faPlusCircle} onClick={() => props.action.count(1, 1, caDatas.position)}/>
+                                <div>{caCount[1]}</div>
+                                <FontAwesomeIcon style={pmIcons} icon={faMinusCircle} onClick={() => props.action.count(1, -1, caDatas.position)}/>
+                            </div>
                         </div>
                         <div className="counter">
                             <div className="flex-jus-center">欠席回数</div>
-                            <div className="fa-counter-lap flex-jus-between"><FontAwesomeIcon style={pmIcons} icon={faPlusCircle} /><div>0</div><FontAwesomeIcon style={pmIcons} icon={faMinusCircle} /></div>
+                            <div className="fa-counter-lap flex-jus-between">
+                                <FontAwesomeIcon style={pmIcons} icon={faPlusCircle} onClick={() => props.action.count(2, 1, caDatas.position)}/>
+                                <div>{caCount[2]}</div>
+                                <FontAwesomeIcon style={pmIcons} icon={faMinusCircle} onClick={() => props.action.count(2, -1, caDatas.position)}/>
+                            </div>
                         </div>
                     </div>
                     <div className="sns-shere flex">
@@ -187,6 +199,8 @@ class Nurture extends Component {
         for(let y = 0; y < 5; y++) {
           tbl[y] = new Array(6).fill(0);
         }
+        var tblc = [...Array(5)].map(k=>[...Array(6)].map(k=>[...Array(3)].map(k=>0)))
+
         
         this.state = {
             page:"week",
@@ -195,6 +209,7 @@ class Nurture extends Component {
             regesterIds:[],
             regesterElements:[],
             caDatas: tbl,
+            caCount: tblc,
             schedules:[
                 {id:1, title:"人工知能1" ,CoNum:"G610628101" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:0 ,grade:3 ,status: "コース選択必修 コース選択"},
                 {id:2, title:"人工知能1" ,CoNum:"G610628102" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:11 ,grade:3 ,status: "コース選択必修 コース選択"},
@@ -214,8 +229,16 @@ class Nurture extends Component {
         this.setState({popup: {regester: !this.state.popup.regester}});
     }
     PopupCCedit(ce) {
-        this.setState({popup: {editSchedule: !this.state.popup.editSchedule},selectPopup:ce}
-                      );
+        this.setState({popup: {editSchedule: !this.state.popup.editSchedule},selectPopup:ce});
+    }
+    AttendanceCount(typeNo, count, position){
+        //出欠カウント
+        const target = this.state.caCount.slice();
+        target[Math.floor(position / 6)][position % 6][typeNo] += count
+        if (target[Math.floor(position / 6)][position % 6][typeNo] < 0){
+            target[Math.floor(position / 6)][position % 6][typeNo] = 0
+        }
+        this.setState({caCount: target})
     }
                                                                                       
     RegesterId(num, regesarray) {
@@ -261,10 +284,10 @@ class Nurture extends Component {
                     <div className="flex-jus-between fa-rap no-select">
                         <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce)}}/>
                         <Body pageData={this.state.page}
-                        scheduleDatas={this.state.caDatas}
-                        action = {{popupshow: () => this.PopupMenu(),
-                                   popupEdit: (ce) => this.PopupCCedit(ce)
-                                }}
+                            scheduleDatas={this.state.caDatas}
+                            action = {{popupshow: () => this.PopupMenu(),
+                                popupEdit: (ce) => this.PopupCCedit(ce)
+                            }}
                         />
                         <PopupClassRegester isPopup = {this.state.popup}
                                    action = {{
@@ -276,9 +299,12 @@ class Nurture extends Component {
                         />
                         <PopupClassEdit isPopup = {this.state.popup}
                                    action = {{
-                                            popupshow: (ce) => this.PopupCCedit(ce)
+                                            popupshow: (ce) => this.PopupCCedit(ce),
+                                            count: (typeNo, count, position) => this.AttendanceCount(typeNo, count, position)
                                             }}
-                                   element = {this.state.caDatas[Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6]}
+                                   element = {{caDatas: this.state.caDatas[Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6],
+                                              caCount: this.state.caCount[Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6]
+                                            }}
                         />
                     </div>
                </div>
