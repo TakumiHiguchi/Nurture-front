@@ -53,6 +53,7 @@ const WeekLine = (props) => {
                                     <div>{data.title}</div>
                                     <div className="classroom">107</div>
                                     <div className="status">{data.status}</div>
+                                    <div className="status">出席:{props.element.caCount[index][0]} 遅刻:{props.element.caCount[index][1]} 欠席:{props.element.caCount[index][2]}</div>
                                 </div>
                             </div>
                         }
@@ -82,6 +83,18 @@ const Header = (props) => {
                <div className="header-right" onClick={() => props.actionShow()}><i className="op_plus"></i></div>
            </header>
     )
+}
+const PopupClassManual = (props) => {
+    const page = 0;
+    if (page == 0){
+        return(
+               <div className={props.isPopup.manual ? 'popup popup_effect' : 'popup popup_effect_de'} >
+                   <div className="popup_wrap" onClick={() => props.action.popupshow() }></div>
+                   <div className="whir no-select">
+                   </div>
+               </div>
+               )
+    }
 }
 const PopupClassEdit = (props) => {
     const dayString=["月","火","水","木","金"]
@@ -180,7 +193,7 @@ const PopupClassRegester = (props) => {
                                 </div>
                             </div>
                             <div className="submitBox flex-jus-center">
-                                <div className="btn-submit-sub fa-scedule-submit">手動で授業を追加</div>
+                                <div className="btn-submit-sub fa-scedule-submit" onClick={() => props.action.popupshowMnual()}>手動で授業を追加</div>
                                 <div className="btn-submit fa-scedule-submit" onClick={() => props.action.regester()}>選択した授業を追加</div>
                             </div>
                         </div>
@@ -204,7 +217,7 @@ class Nurture extends Component {
         
         this.state = {
             page:"week",
-            popup:{regester:false, editSchedule:false},
+            popup:{regester:false, editSchedule:false,manual: false},
             selectPopup:0,
             regesterIds:[],
             regesterElements:[],
@@ -230,6 +243,9 @@ class Nurture extends Component {
     }
     PopupCCedit(ce) {
         this.setState({popup: {editSchedule: !this.state.popup.editSchedule},selectPopup:ce});
+    }
+    PopupManual() {
+        this.setState({popup: {manual: !this.state.popup.manual}});
     }
     AttendanceCount(typeNo, count, position){
         //出欠カウント
@@ -285,13 +301,14 @@ class Nurture extends Component {
                         <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce)}}/>
                         <Body pageData={this.state.page}
                             scheduleDatas={this.state.caDatas}
+                            element={{caCount: this.state.caCount}}
                             action = {{popupshow: () => this.PopupMenu(),
                                 popupEdit: (ce) => this.PopupCCedit(ce)
                             }}
                         />
                         <PopupClassRegester isPopup = {this.state.popup}
                                    action = {{
-                                            popupshow: () => this.PopupMenu(),
+                                            popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
                                             addregesterId: (cd, array) => this.RegesterId(cd, array),
                                             regester: () => this.Regester()
                                             }}
@@ -305,6 +322,13 @@ class Nurture extends Component {
                                    element = {{caDatas: this.state.caDatas[Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6],
                                               caCount: this.state.caCount[Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6]
                                             }}
+                        />
+                        <PopupClassManual isPopup = {this.state.popup}
+                                    action = {{
+                                            popupshow: () => this.PopupManual()
+                                            }}
+                                                                                     
+                                                                                     
                         />
                     </div>
                </div>
@@ -326,7 +350,10 @@ class Body extends Component {
                     <div className="flex-jus-between fa-scedule">
                         <TimeBox />
                         {this.props.scheduleDatas.map((data,index) =>
-                            <WeekLine daySchedule={data} key={"weekLine"+index} action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}/>
+                            <WeekLine daySchedule={data} key={"weekLine"+index} action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
+                                element={{caCount: this.props.element.caCount[index]}}
+                                                      
+                            />
                         )}
                     </div>
                 </main>
