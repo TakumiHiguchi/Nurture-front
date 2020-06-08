@@ -37,6 +37,11 @@ input.searchInput{
     border-radius:5000px;
     padding:3px 15px;
 }
+input.formInput{
+    background-color:white;
+    border-radius:10px;
+    padding:3px 15px;
+}
 .no-select{
     user-select: none; /* CSS3 */
     -moz-user-select: none; /* Firefox */

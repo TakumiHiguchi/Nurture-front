@@ -8,6 +8,7 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイ�
 import { faLine } from "@fortawesome/free-brands-svg-icons"; //lineアイコン
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";//plusアイコン
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";//minusアイコン
+import { faTimes } from "@fortawesome/free-solid-svg-icons";//minusアイコン
 
 //cssのインポート
 import './header.scss';
@@ -52,7 +53,6 @@ const WeekLine = (props) => {
                                 <div>
                                     <div>{data.title}</div>
                                     <div className="classroom">107</div>
-                                    <div className="status">{data.status}</div>
                                     <div className="status">出席:{props.element.caCount[index][0]} 遅刻:{props.element.caCount[index][1]} 欠席:{props.element.caCount[index][2]}</div>
                                 </div>
                             </div>
@@ -84,20 +84,62 @@ const Header = (props) => {
            </header>
     )
 }
-const PopupClassManual = (props) => {
-    const page = 0;
-    if (page == 0){
+class PopupClassManual extends Component{
+    constructor(props){
+        super(props)
+        const page = 0;
+    }
+    render (){
         return(
-               <div className={props.isPopup.manual ? 'popup popup_effect' : 'popup popup_effect_de'} >
-                   <div className="popup_wrap" onClick={() => props.action.popupshow() }></div>
+               <div className={this.props.isPopup.manual ? 'popup popup_effect' : 'popup popup_effect_de'} >
+                   <div className="popup_wrap" onClick={() => this.props.action.popupshow() }></div>
                    <div className="whir no-select">
+                        <h2 className="add_scedule">カスタム授業の追加</h2>
+                        <h3 className="manual-schedule-h3">基本情報の入力</h3>
+                        <input type="text" placeholder="授業名を入力（必須）" className="removeCss formInput adSheduleInput"/>
+                        <input type="text" placeholder="教師名を入力（必須）" className="removeCss formInput adSheduleInput"/>
+                        <input type="text" placeholder="学年を入力（必須）" className="removeCss formInput adSheduleInput"/>
+                        <h3 className="manual-schedule-h3">開講時間の入力</h3>
+                        <div className="manual-schedule-sleB">
+                            <select class="swal2-select">
+                                <option value="" disabled="">クリックして学期を選択</option>
+                                <option value="1">前学期</option>
+                                <option value="2">後学期</option>
+                            </select>
+                            の
+                            <select class="swal2-select">
+                                <option value="" disabled="">クリックして曜日を選択</option>
+                                <option value="Mon">月曜日</option>
+                                <option value="Tue">火曜日</option>
+                                <option value="Wed">水曜日</option>
+                                <option value="Thu">木曜日</option>
+                                <option value="Fri">金曜日</option>
+                            </select>
+                            の
+                            <select class="swal2-select">
+                                <option value="" disabled="">クリックして講時を選択</option>
+                                <option value="1">1講時</option>
+                                <option value="2">2講時</option>
+                                <option value="3">3講時</option>
+                                <option value="4">4講時</option>
+                                <option value="5">5講時</option>
+                                <option value="5">6講時</option>
+                            </select>
+                            に開講
+                        </div>
+                        <div className="infBox">
+                           <div className="submitBox flex-jus-center">
+                               <div className="btn-submit-sub fa-scedule-submit" >キャンセル</div>
+                               <div className="btn-submit fa-scedule-submit">授業を追加</div>
+                           </div>
+                       </div>
                    </div>
                </div>
                )
     }
 }
 const PopupClassEdit = (props) => {
-    const dayString=["月","火","水","木","金"]
+    const dayString=["月","火","水","木","金","土","日"]
     const {caDatas, caCount} = props.element
     return(
            <div className={props.isPopup.editSchedule ? 'popup popup_effect' : 'popup popup_effect_de'} >
@@ -148,7 +190,7 @@ const PopupClassEdit = (props) => {
            )
 }
 const PopupClassRegester = (props) => {
-    const dayString=["月","火","水","木","金"]
+    const dayString=["月","火","水","木","金","土","日"]
     let k = 0
     const {APIresult, regesterIds, regesterElements} = props.sceduleDatas
         return(
@@ -187,7 +229,7 @@ const PopupClassRegester = (props) => {
                                 <div className="flex fa-reges-elementInner">
                                    {regesterElements.map((element) =>
                                         <div className="reges-schedule" key={"regester" + element.CoNum + element.title + element.id} onClick={() => props.action.addregesterId(element.id, element)}>
-                                            {element.title}
+                                            {element.title} <FontAwesomeIcon icon={faTimes} />
                                         </div>
                                     )}
                                 </div>
@@ -208,11 +250,11 @@ class Nurture extends Component {
     constructor(props){
         super(props)
         
-        var tbl = new Array(5);
-        for(let y = 0; y < 5; y++) {
+        var tbl = new Array(7);
+        for(let y = 0; y < 7; y++) {
           tbl[y] = new Array(6).fill(0);
         }
-        var tblc = [...Array(5)].map(k=>[...Array(6)].map(k=>[...Array(3)].map(k=>0)))
+        var tblc = [...Array(7)].map(k=>[...Array(6)].map(k=>[...Array(3)].map(k=>0)))
 
         
         this.state = {
@@ -225,7 +267,7 @@ class Nurture extends Component {
             caCount: tblc,
             schedules:[
                 {id:1, title:"人工知能1" ,CoNum:"G610628101" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:0 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:2, title:"人工知能1" ,CoNum:"G610628102" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:11 ,grade:3 ,status: "コース選択必修 コース選択"},
+                {id:2, title:"人工知能1" ,CoNum:"G610628102" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:41 ,grade:3 ,status: "コース選択必修 コース選択"},
                 {id:5, title:"臨床心理家族" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:1 ,grade:3 ,status: "コース選択必修 コース選択"},
                 {id:6, title:"人工知能1" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:2 ,grade:3 ,status: "コース選択必修 コース選択"},
                 {id:7, title:"人工知能1" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:3 ,grade:3 ,status: "コース選択必修 コース選択"},
@@ -368,7 +410,7 @@ class Body extends Component {
     
 
 const Sidebar = (props) => {
-    const dayString=["月","火","水","木","金"]
+    const dayString=["月","火","水","木","金","土","日"]
     return(
         <aside className="fa-sideContainer">
            <div className="warap"></div>
