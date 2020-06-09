@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresom
 import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイコン
 import { faLine } from "@fortawesome/free-brands-svg-icons"; //lineアイコン
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";//plusアイコン
+import { faPlus } from "@fortawesome/free-solid-svg-icons";//plusアイコン
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";//minusアイコン
 import { faTimes } from "@fortawesome/free-solid-svg-icons";//minusアイコン
 
@@ -413,7 +414,11 @@ const Sidebar = (props) => {
     const dayString=["月","火","水","木","金","土","日"]
     return(
         <aside className="fa-sideContainer">
-           <div className="warap"></div>
+           <div className="buttonBox">
+                <div>
+                    <FontAwesomeIcon icon={faPlus}/> タスクを追加
+                </div>
+           </div>
            <div className="timetable">
                {props.scheduleDatas.map((d, i) =>
                     <div className="weekdays-lap" key={"sidebar" + i}>

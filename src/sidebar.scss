@@ -2,14 +2,27 @@
     width:287px;
     height:100%;
 }
-
+.buttonBox{
+    display:flex;
+    align-items: center;
+    padding:0 0 0 20px;
+    height:50px;
+    div{
+        display:inline-block;
+        width:auto;
+        background:#00aced;
+        color:white;
+        border-radius:500px;
+        padding:5px 20px;
+    }
+}
 //サイドバー曜日
 .timetable{
     align-items:flex-start;
     width:100%;
-    height:calc(100% - 40px);
-    padding:20px 0;
-    overflow: scroll;
+    height:calc(100% - 90px);
+    padding:5px 0 20px 0;
+    overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
     &::-webkit-scrollbar {
