@@ -14,6 +14,7 @@
         color:white;
         border-radius:500px;
         padding:5px 20px;
+        cursor: pointer;
     }
 }
 //サイドバー曜日
@@ -46,7 +47,7 @@
     padding:5px 5px 5px 10px;
     
     &:hover{
-        background:#fff8ff;
+        background:#e0f8ff;
     }
     .ss-headline{
         font-size:0.8em;

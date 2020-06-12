@@ -1,0 +1,230 @@
+//ポップアップ
+.popup{
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index:10;
+    
+    .popup_wrap{
+        height:100vh;
+        position: absolute;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+    }
+    .pceWhir{
+        position:absolute;
+        z-index:11;
+        top:0;
+        width:572px;
+        height:344px;
+        background:white;
+        margin:calc(50vh - 172px) auto;
+        left:0;
+        right:0;
+        border-radius:10px;
+    }
+    .whir{
+        position:absolute;
+        z-index:11;
+        top:0;
+        width:672px;
+        height:calc(100vh - 100px);
+        background:white;
+        margin:50px auto;
+        left:0;
+        right:0;
+        border-radius:10px;
+        
+    }
+    .pcePopup-item{
+        width:calc(100% - 60px);
+        padding:0px 30px;
+        .t-index{
+            display:inline-block;
+            width:100px;
+        }
+        .pcePopup-input{
+            width:calc(100% - 110px);
+            font-size:1em;
+            color:#494949;
+        }
+    }
+    .add_scedule{
+        padding:22px 30px 12px 30px;
+        font-size:1.2em;
+        color:#aaa;
+        border-radius:20px 20px 0 0;
+    }
+}
+.popup_effect{
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.1s;
+}
+.popup_effect_de{
+    opacity: 0;
+    transition: opacity 0.3s, transform 0s 0.3s;
+    transform: scale(0);
+
+}
+
+//ポップアップ内の要素
+input.adSheduleInput{
+    height:30px;
+    width:calc(100% - 90px);
+    font-size:1em;
+    margin:0 30px 20px;
+    border:1px solid #e8e8e8;
+}
+.scedulesBox{
+    width:100%;
+    height:calc(100vh - 371px);
+    border-top:1px solid #e8e8e8;
+    overflow:auto;
+    -ms-overflow-style: none;
+        scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display:none;
+    }
+}
+.infBox{
+    width:calc(100% - 60px);
+    height:129px;
+    border-top:1px solid #e8e8e8;
+    padding:10px 30px;
+    
+    //登録スケージュールの表示部
+    .fa-reges-elementBox{
+        .fa-reges-h{
+            font-size:0.9em;
+            line-height:33px;
+            width:100px;
+        }
+        .fa-reges-elementInner{
+            width:calc(100% - 100px);
+            overflow-x :scroll;
+            -ms-overflow-style: none;
+                scrollbar-width: none;
+            &::-webkit-scrollbar {
+                display:none;
+            }
+            .reges-schedule{
+                flex: 0 0 auto;
+                border:1px solid #e8e8e8;
+                padding:5px 10px;
+                border-radius:5px;
+                margin-right:5px;
+                font-size:0.9em;
+                cursor: pointer;
+            }
+        }
+    }
+    //submitボタンのcss
+    .submitBox{
+        width:100%;
+        height:96px;
+        .fa-scedule-submit{
+            cursor: pointer;
+            margin:0 10px;
+            padding:8px 16px;
+        }
+    }
+}
+
+.fa-schedule-enm{
+    width:calc(100% - 60px);
+    padding:10px 30px;
+    cursor: pointer;
+    //チェックボックス
+    .checkBoxlap{
+        margin-right:10px;
+        .checkBox{
+            width:15px;
+            height:15px;
+            padding:4px;
+            border:1px solid #e8e8e8;
+            border-radius:50%;
+            .checkBoxInner{
+                width:15px;
+                height:15px;
+                border-radius:50%;
+            }
+            .cBIactive{
+                background: #e8e8e8;
+            }
+        }
+    }
+    //データ表示部
+    .sceduleDataBox{
+        width:calc(100% - 25px);
+        .sceduleName{
+            font-weight:bold;
+            color:#4e5665;
+        }
+        .scheduleSubdata{
+            font-size:0.8em;
+            color:#aaa;
+        }
+    }
+}
+//マニュアル授業追加
+.manual-schedule-h3{
+    width:calc(100% - 60px);
+    padding:10px 30px;
+}
+.manual-schedule-sleB{
+    width:calc(100% - 60px);
+    padding:10px 30px;
+    margin:0 0 20px 0;
+    .swal2-select{
+        width:150px;
+        margin:0 10px;
+    }
+}
+//カウンター
+.fa-Attendance-h3{
+    margin:10px 0 0 30px ;
+    color:#aaa;
+}
+.counter{
+    padding:10px 0;
+    margin:0 20px;
+}
+.fa-counter-lap{
+    margin-top:5px;
+}
+.sns-shere{
+    position: absolute;
+    top:22px;
+    right:22px;
+    display:block;
+    margin-left:30px;
+    color:#00aced;
+    text-decoration:none;
+    &:hover{
+        text-decoration:underline;
+    }
+}
+
+//予定を追加のindex
+.pageIndexBox{
+    margin:0 0 0 25px;
+    div{
+        margin:0 2px;
+        padding:3px 10px;
+        cursor: pointer;
+        &:hover{
+            background:#e0f8ff;
+            border-radius:5px;
+        }
+    }
+    .aTindexactive{
+        background:#e0f8ff;
+        border-radius:5px;
+    }
+}
+.adTaskbody{
+    margin:10px 0 0 0;
+}

@@ -16,8 +16,9 @@ import './header.scss';
 import './mainstyle.scss';
 import './sidebar.scss';
 import './toppage.scss';
+import './Popup.scss';
 
-import Register from './Register' //後で消す
+import Popup from './Popup'
 import * as serviceWorker from './serviceWorker';
 
 //css
@@ -260,7 +261,7 @@ class Nurture extends Component {
         
         this.state = {
             page:"week",
-            popup:{regester:false, editSchedule:false,manual: false},
+        popup:{regester:false, editSchedule:false,manual: false,addTask:false},
             selectPopup:0,
             regesterIds:[],
             regesterElements:[],
@@ -289,6 +290,12 @@ class Nurture extends Component {
     }
     PopupManual() {
         this.setState({popup: {manual: !this.state.popup.manual}});
+    }
+    PopupToggle(type){
+        switch (type){
+            case "addTask": this.setState({popup: {addTask: !this.state.popup.addTask}});
+        }
+        
     }
     AttendanceCount(typeNo, count, position){
         //出欠カウント
@@ -341,7 +348,7 @@ class Nurture extends Component {
                <div>
                     <Header actionShow={() => this.PopupMenu()}/>
                     <div className="flex-jus-between fa-rap no-select">
-                        <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce)}}/>
+                        <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
                         <Body pageData={this.state.page}
                             scheduleDatas={this.state.caDatas}
                             element={{caCount: this.state.caCount}}
@@ -370,11 +377,14 @@ class Nurture extends Component {
                                     action = {{
                                             popupshow: () => this.PopupManual()
                                             }}
-                                                                                     
+                                                                    
                                                                                      
                         />
+                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}/>
+
                     </div>
                </div>
+                                                                                     
         )
     }
 }
@@ -397,6 +407,7 @@ class Body extends Component {
                                 element={{caCount: this.props.element.caCount[index]}}
                                                       
                             />
+                            
                         )}
                     </div>
                 </main>
@@ -414,9 +425,9 @@ const Sidebar = (props) => {
     const dayString=["月","火","水","木","金","土","日"]
     return(
         <aside className="fa-sideContainer">
-           <div className="buttonBox">
+           <div className="buttonBox" onClick={() => props.action.PopupToggle("addTask")}>
                 <div>
-                    <FontAwesomeIcon icon={faPlus}/> タスクを追加
+                    <FontAwesomeIcon icon={faPlus} /> 予定を追加
                 </div>
            </div>
            <div className="timetable">
