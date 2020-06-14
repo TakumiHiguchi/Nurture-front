@@ -50,6 +50,18 @@
     border-left:1px solid #f0f0f0;
     
 }
+//月表示の曜日部分
+.fa-sceduleLine-month{
+    width:calc(100% / 7);
+    border-left:1px solid #f0f0f0;
+    
+}
+//学期表示の曜日部分
+.fa-sceduleLine-semester{
+    width:calc(100% / 14);
+    border-left:1px solid #f0f0f0;
+    
+}
 //日付表示部分
 div.fa-dateline{
     border:none;

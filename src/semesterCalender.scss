@@ -1,0 +1,32 @@
+.semestarCalenderBox{
+    width:50%;
+    .showMonth{
+        width:50px;
+        background:red;
+    }
+    .showdate{
+        width:calc(100% - 50px);
+        flex-wrap:wrap;
+    }
+    //semestar
+    .semestar-month-dataBox{
+        width:calc(100% / 7);
+        height:100%;
+    }
+    .smdbColor-f{
+        background:red;
+    }
+    .smdbColor-s{
+    
+    }
+    .semestar-month-dateBody{
+        width:100%;
+        height:calc(100% - 20px);
+    }
+    .semestar-month-date{
+        width:100%;
+        height:20px;
+        padding:5px 0;
+        font-size:0.8em;
+    }
+}

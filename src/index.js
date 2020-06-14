@@ -23,6 +23,7 @@ import './Popup.scss';
 
 import Popup from './Popup'
 import MonthLine from './MonthLine'
+import SemesterLine from './SemesterLine'
 import DropDownMenu from './DropDownMenu'
 import * as serviceWorker from './serviceWorker';
 
@@ -145,27 +146,53 @@ const DateBox = (props) => {
                         </div>
                     </div>
                    <div className="flex-jus-between fa-dateContainer fa-endline">
-                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                        <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
                             月
                         </div>
-                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                        <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
                             火
                         </div>
-                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                       <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
                            水
                        </div>
-                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                       <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
                            木
                        </div>
-                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                       <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
                            金
                        </div>
-                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                       <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
                            土
                        </div>
-                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                        <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
                             日
                         </div>
+                   </div>
+               </div>
+        )
+    }else if(props.type == "semester"){
+        return(
+               <div>
+                    <div className="flex-align-center fa-dateContainer">
+                        <div className="bord-month no-pad">
+                            2020年 〜 2021年
+                        </div>
+                    </div>
+                   <div className="flex-jus-between fa-dateContainer fa-endline">
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">月</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">火</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">水</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">木</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">金</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">土</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">日</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">月</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">火</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">水</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">木</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">金</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">土</div>
+                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">日</div>
                    </div>
                </div>
         )
@@ -173,7 +200,7 @@ const DateBox = (props) => {
 }
 const TimeBox = () => {
     return(
-           <div className="fa-timeline"><div className="fa-BT-time"><div className="fab-time">9:00</div></div><div className="fa-class-time"><div className="fab-time">10:30</div></div><div className="fa-BT-time"><div className="fab-time">10:40</div></div><div className="fa-class-time"><div className="fab-time">12:10</div></div><div className="fa-BT-time"><div className="fab-time">13:00</div></div><div className="fa-class-time"><div className="fab-time">14:30</div></div><div className="fa-BT-time"><div className="fab-time">14:40</div></div><div className="fa-class-time"><div className="fab-time">16:10</div></div><div className="fa-BT-time"><div className="fab-time">16:20</div></div><div className="fa-class-time"><div className="fab-time">17:50</div></div><div className="fa-BT-time"><div className="fab-time">18:00</div></div><div className="fa-class-time"><div className="fab-time">19:30</div></div><div className="fa-BT-time"><div className="fab-time">19:40</div></div><div className="fa-class-time"><div className="fab-time">21:10</div></div></div>
+           <div className="fa-timeline"><div className="fa-BT-time"><div className="fab-time">9:00</div></div><div className="fa-class-time"><div className="fab-time">10:30</div></div><div className="fa-BT-time"><div className="fab-time">10:40</div></div><div className="fa-class-time"><div className="fab-time">12:10</div></div><div className="fa-BT-time"><div className="fab-time">13:00</div></div><div className="fa-class-time"><div className="fab-time">14:30</div></div><div className="fa-BT-time"><div className="fab-time">14:40</div></div><div className="fa-class-time"><div className="fab-time">16:10</div></div><div className="fa-BT-time"><div className="fab-time">16:20</div></div><div className="fa-class-time"><div className="fab-time">17:50</div></div><div className="fa-BT-time"><div className="fab-time">18:00</div></div><div className="fa-class-time"><div className="fab-time">19:30</div></div><div className="fa-BT-time"></div></div>
     )
 }
 const Header = (props) => {
@@ -500,10 +527,11 @@ class Nurture extends Component {
                                
 class Body extends Component {
     constructor(props){
-        super(props)
+        super(props);
     }
     
     render(){
+        const semCount = Array.from(Array(27).keys());
         if(this.props.pageData == "week"){
             return(
                 <main className="fa-mainContainer">
@@ -538,15 +566,9 @@ class Body extends Component {
         }else if(this.props.pageData == "semester"){
             return(
                 <main className="fa-mainContainer">
-                   <DateBox type={"month"}/>
+                   <DateBox type={"semester"}/>
                    <div className="fa-scedule">
-                       {this.props.scheduleDatas.map((data,index) =>
-                           <MonthLine daySchedule={data} key={"weekLine"+index} action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
-                               element={{caCount: this.props.element.caCount[index]}}
-                                                     
-                           />
-                           
-                       )}
+                   <SemesterLine data={{year:2020}}/>
                    </div>
                 </main>
             )
