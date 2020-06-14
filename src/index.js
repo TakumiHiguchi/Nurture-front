@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import { Transition } from 'react-transition-group';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
 import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイコン

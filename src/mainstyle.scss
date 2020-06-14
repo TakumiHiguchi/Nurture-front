@@ -23,6 +23,10 @@ html, body{
     justify-content:center;
     align-items: center;
 }
+.flex-align-center{
+    display:flex;
+    align-items: center;
+}
 .flex{
     display:flex;
 }
@@ -31,6 +35,16 @@ input.removeCss{
     word-wrap:break-word;
     outline:none;
     -webkit-tap-highlight-color:transparent;
+}
+textarea.removeTACss{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    resize: none;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
 }
 input.searchInput{
     background-color:white;
