@@ -182,8 +182,8 @@ const Header = (props) => {
                <h1 className="fa-top-h1">N:urture</h1>
                <div className="header-right flex-jus-between">
                     <DropDownMenu action={(mode) => props.action(mode)} />
-                    <FontAwesomeIcon style={pmIconHead} icon={faPlus} onClick={() => props.actionShow()}/>
-                    <FontAwesomeIcon style={pmIconHead} icon={faCog}/>
+                    <FontAwesomeIcon style={pmIconHead} icon={faPlus} onClick={() => props.actionShow("regester")}/>
+                    <FontAwesomeIcon style={pmIconHead} icon={faCog} onClick={() => props.actionShow("setting")}/>
                 </div>
            </header>
     )
@@ -363,7 +363,7 @@ class Nurture extends Component {
         
         this.state = {
             page:"week",
-            popup:{regester:false, editSchedule:false,manual: false,addTask:false},
+        popup:{regester:false, editSchedule:false,manual: false,addTask:false,setting:false},
             selectPopup:0,
             regesterIds:[],
             regesterElements:[],
@@ -395,7 +395,9 @@ class Nurture extends Component {
     }
     PopupToggle(type){
         switch (type){
-            case "addTask": this.setState({popup: {addTask: !this.state.popup.addTask}});
+            case "regester": this.setState({popup: {regester: !this.state.popup.regester}});break;
+            case "addTask": this.setState({popup: {addTask: !this.state.popup.addTask}});break;
+            case "setting": this.setState({popup: {setting: !this.state.popup.setting}});break;
         }
         
     }
@@ -452,7 +454,7 @@ class Nurture extends Component {
     render(){
         return(
                <div>
-                    <Header actionShow={() => this.PopupMenu()} action={(mode) => this.togglePvmode(mode)}/>
+                    <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} />
                     <div className="flex-jus-between fa-rap no-select">
                         <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
                         <Body pageData={this.state.page}
@@ -487,6 +489,7 @@ class Nurture extends Component {
                                                                                      
                         />
                         <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}/>
+                        <Popup type={2} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.setting}/>
                     </div>
                </div>
                                                                                      

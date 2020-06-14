@@ -33,9 +33,38 @@ export default class Popup extends Component {
                    <AddTask isPopup={this.props.status} action={() => this.props.action.PopupToggle("addTask")} changePage={(ce) => this.changePage(ce)} page={this.state.taskPpage}/>
                    
                    )
+        }else if(this.props.type == 2){
+            return(
+                   <Setting isPopup={this.props.status} action={() => this.props.action.PopupToggle("setting")}/>
+                   
+                   )
         }
     }
     
+}
+const Setting = (props) => {
+    return(
+           <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
+                <div className="popup_wrap" onClick={() => props.action() }></div>
+                <div className="whir no-select">
+                    <h2 className="add_scedule">設定</h2>
+                    <div className="pageIndexBox flex">
+                        <div className="aTindexactive">授業開始日の登録</div>
+                        <div>学年の登録</div>
+                        <div>設定1</div>
+                        <div>設定2</div>
+                        <div>設定3</div>
+                    </div>
+                    <div className="pcePopup-item adTaskbody">
+                        <div className="flex-algin-center">
+                            <FontAwesomeIcon icon={faClock} style={clock} />
+                            <div className="calpointer"><Calender /></div> 〜 <div className="calpointer"><Calender /></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+    )
 }
 
 const AddTask = (props) => {
