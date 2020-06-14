@@ -54,11 +54,11 @@ export default class SemesterLine extends Component {
         if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {lastday[1]++;}
         
         
-        const items = [];
-        for (let i = calendar_month; i <= 12; i++) {
-          items.push(
-            <div className="flex-jus-center">
-                <div className="showMonth">{i}月</div>
+        const itemsFir = [];
+        for (let i = calendar_month; i <= 6; i++) {
+          itemsFir.push(
+            <div className="flex fr-mix">
+                <div className="showMonth flex-jus-center">{i}月</div>
                 <div className="showdate flex">
                     {i != 1 ? null : fOf}
                     {Array.from(Array(lastday[i-1] - aFirstDay[i-1]).keys()).map((data,index) =>
@@ -66,8 +66,8 @@ export default class SemesterLine extends Component {
                              <div className="semestar-month-date flex-jus-center">
                                 {index+1 + aFirstDay[i-1]}
                              </div>
-                             <div className="semestar-month-dateBody">
-                                 
+                             <div className="semestar-month-dateBody flex-jus-center">
+                                 授業
                              </div>
                         </div>
                     )}
@@ -76,8 +76,39 @@ export default class SemesterLine extends Component {
                              <div className="semestar-month-date flex-jus-center">
                                 {index+1}
                              </div>
-                             <div className="semestar-month-dateBody">
-                                                                                                     
+                             <div className="semestar-month-dateBody flex-jus-center">
+                                授業
+                             </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+          )
+        }
+        const itemsSec  = [];
+        for (let i = 7; i <= 12; i++) {
+          itemsSec.push(
+            <div className="flex fr-mix">
+                <div className="showMonth flex-jus-center">{i}月</div>
+                <div className="showdate flex">
+                    {i != 1 ? null : fOf}
+                    {Array.from(Array(lastday[i-1] - aFirstDay[i-1]).keys()).map((data,index) =>
+                        <div className={ i % 2 == 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"}>
+                             <div className="semestar-month-date flex-jus-center">
+                                {index+1 + aFirstDay[i-1]}
+                             </div>
+                             <div className="semestar-month-dateBody flex-jus-center">
+                                 授業
+                             </div>
+                        </div>
+                    )}
+                    {Array.from(Array(7 - (new Date(year+("/"+i+"/"+lastday[i-1])).getDay())).keys()).map((data,index) =>
+                        <div className={ i % 2 != 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"}>
+                             <div className="semestar-month-date flex-jus-center">
+                                {index+1}
+                             </div>
+                             <div className="semestar-month-dateBody flex-jus-center">
+                                  授業
                              </div>
                         </div>
                     )}
@@ -87,8 +118,13 @@ export default class SemesterLine extends Component {
         }
         
         return(
-            <div className="semestarCalenderBox">
-               {items}
+            <div className="flex">
+                <div className="semestarCalenderBox">
+                   {itemsFir}
+                </div>
+                <div className="semestarCalenderBox">
+                   {itemsSec}
+                </div>
             </div>
         )
     }

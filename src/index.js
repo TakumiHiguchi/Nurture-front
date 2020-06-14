@@ -179,20 +179,20 @@ const DateBox = (props) => {
                         </div>
                     </div>
                    <div className="flex-jus-between fa-dateContainer fa-endline">
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">月</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">火</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">水</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">木</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">金</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">土</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">日</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">月</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">火</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">水</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">木</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">金</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">土</div>
-                        <div className="fa-sceduleLine-semester fa-dateline flex-jus-center">日</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center of-mon">月</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">火</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">水</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">木</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">金</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">土</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center of-end">日</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center of-mon">月</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">火</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">水</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">木</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">金</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">土</div>
+                        <div className="fa-sceduleLine-semester flex-jus-center">日</div>
                    </div>
                </div>
         )

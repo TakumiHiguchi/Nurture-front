@@ -1,8 +1,12 @@
+.fr-mix{
+    align-items:stretch
+}
 .semestarCalenderBox{
     width:50%;
     .showMonth{
         width:50px;
-        background:red;
+        border-bottom:1px solid #f0f0f0;
+        border-right:1px solid #f0f0f0;
     }
     .showdate{
         width:calc(100% - 50px);
@@ -10,18 +14,22 @@
     }
     //semestar
     .semestar-month-dataBox{
-        width:calc(100% / 7);
-        height:100%;
+        width:calc(calc(100% - 9px) / 7);
+        height:70px;
+        border-right:1px solid #f0f0f0;
+        border-bottom:1px solid #f0f0f0;
     }
     .smdbColor-f{
-        background:red;
+        background:#f8f8f8;
     }
     .smdbColor-s{
     
     }
     .semestar-month-dateBody{
         width:100%;
-        height:calc(100% - 20px);
+        height:calc(100% - 30px);
+        color:#aaa;
+        font-size:0.8em;
     }
     .semestar-month-date{
         width:100%;

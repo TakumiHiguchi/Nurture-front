@@ -58,9 +58,11 @@
 }
 //学期表示の曜日部分
 .fa-sceduleLine-semester{
-    width:calc(100% / 14);
-    border-left:1px solid #f0f0f0;
+    width:calc(calc(calc(100% - 100px) / 14));
     
+}
+div.of-mon{
+    margin-left:50px;
 }
 //日付表示部分
 div.fa-dateline{
