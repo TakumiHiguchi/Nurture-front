@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
 import onClickOutside from 'react-onclickoutside'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";//下矢印
+
+const pmArrow = {
+    fontSize:"1em",
+    color:"#aaa",
+    cursor: "pointer",
+    margin:"0 0 0 10px"
+}
 
 class DropDownMenu extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       listOpen: false,
+      nLp:"週"
     }
   }
  
@@ -16,14 +26,38 @@ class DropDownMenu extends React.Component {
   }
  
   handleClickMenu(val) {
-    this.setState({
-      listOpen: false,
-    })
+      switch(val){
+          case 1: {
+              this.props.action("week");
+              this.setState({
+                nLp:"週",
+                  listOpen: false
+              })
+              break;
+          }
+          case 2: {
+              this.props.action("month");
+              this.setState({
+                nLp:"月",
+                  listOpen: false
+              })
+              break;
+          }
+          case 3: {
+              this.props.action("semester");
+              this.setState({
+                nLp:"学期",
+                  listOpen: false
+              })
+              break;
+          }
+      }
+    
   }
  
   handleClickOutside() {
     this.setState({
-      listOpen: false,
+      listOpen: false
     })
   }
  
@@ -32,11 +66,11 @@ class DropDownMenu extends React.Component {
     return (
       <div style={styles.dropDown}>
         <div onClick={this.toggleList.bind(this)} style={styles.menuButton} className="flex-jus-center">
-          日
+            {this.state.nLp}<FontAwesomeIcon style={pmArrow} icon={faCaretDown}/>
         </div>
         {listOpen && (
           <div style={styles.menuBox}>
-            <div style={styles.menuContent}>
+            <div style={styles.menuContent} className="dropMenuElement">
               <div onClick={this.handleClickMenu.bind(this, 1)}>週表示</div>
             </div>
             <div style={styles.menuContent}>
@@ -62,7 +96,7 @@ const styles = {
     cursor: 'pointer',
     border: '1px solid #aaa',
     borderRadius: '5px',
-    padding:'0 30px 0 10px',
+    padding:'0 10px 0 10px',
     color:'#aaa'
   },
   menuBox: {
@@ -72,12 +106,11 @@ const styles = {
     width: '200px',
     zIndex: 1,
     cursor: 'pointer',
-    border: '1px solid #aaa',
-    background:'white'
+    background:'white',
+    boxShadow: '1px 2px 4px rgba(0,0,0,0.3)'
   },
   menuContent: {
-    padding: '3px 5px',
-    borderBottom: '1px solid #aaa',
+    padding: '3px 5px'
   },
   lastMenuContent: {
     padding: '3px 5px',

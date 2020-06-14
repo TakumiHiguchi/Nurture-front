@@ -13,6 +13,7 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons";//矢印ア�
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";//矢印アイコン
 import { faCog } from "@fortawesome/free-solid-svg-icons";//設定
 
+
 //cssのインポート
 import './header.scss';
 import './mainstyle.scss';
@@ -87,7 +88,7 @@ const DateBox = (props) => {
         return(
                <div>
                     <div className="flex-align-center fa-dateContainer">
-                        <div className="bord-month">
+                        <div className="bord-month  no-pad">
                             2020年6月
                         </div>
                         <div className="faIcon-arrow flex-jus-center">
@@ -106,22 +107,22 @@ const DateBox = (props) => {
                             1(月)
                         </div>
                         <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                            1(月)
+                            2(火)
                         </div>
                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                           1(月)
+                           3(水)
                        </div>
                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                           1(月)
+                           4(木)
                        </div>
                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                           1(月)
+                           5(金)
                        </div>
                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                           1(月)
+                           6(土)
                        </div>
                         <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                            1(月)
+                            7(日)
                         </div>
                    </div>
                </div>
@@ -177,10 +178,10 @@ const TimeBox = () => {
 }
 const Header = (props) => {
     return(
-           <header className="fa-header flex-jus-between">
+           <header className="fa-header flex-jus-between no-select">
                <h1 className="fa-top-h1">N:urture</h1>
                <div className="header-right flex-jus-between">
-                    <DropDownMenu />
+                    <DropDownMenu action={(mode) => props.action(mode)} />
                     <FontAwesomeIcon style={pmIconHead} icon={faPlus} onClick={() => props.actionShow()}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faCog}/>
                 </div>
@@ -361,7 +362,7 @@ class Nurture extends Component {
 
         
         this.state = {
-            page:"semester",
+            page:"week",
             popup:{regester:false, editSchedule:false,manual: false,addTask:false},
             selectPopup:0,
             regesterIds:[],
@@ -397,6 +398,10 @@ class Nurture extends Component {
             case "addTask": this.setState({popup: {addTask: !this.state.popup.addTask}});
         }
         
+    }
+                                                  
+    togglePvmode(mode){
+        this.setState({page: mode})
     }
     AttendanceCount(typeNo, count, position){
         //出欠カウント
@@ -447,7 +452,7 @@ class Nurture extends Component {
     render(){
         return(
                <div>
-                    <Header actionShow={() => this.PopupMenu()}/>
+                    <Header actionShow={() => this.PopupMenu()} action={(mode) => this.togglePvmode(mode)}/>
                     <div className="flex-jus-between fa-rap no-select">
                         <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
                         <Body pageData={this.state.page}
@@ -482,7 +487,6 @@ class Nurture extends Component {
                                                                                      
                         />
                         <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}/>
-
                     </div>
                </div>
                                                                                      
