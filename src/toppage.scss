@@ -9,7 +9,26 @@
 }
 .fa-dateContainer{
     width:100%;
-    height:98px;
+    height:49px;
+    .bord-month{
+        font-size:1.2em;
+        font-weight:bold;
+        margin-left:55px;
+    }
+    div.no-pad{
+        margin:0;
+    }
+    .bord-today{
+        padding:5px;
+        font-size:1.1em;
+        cursor: pointer;
+        &:hover{
+            background:#f8f8f8;
+            border-radius:5px;
+        }
+    }
+}
+.fa-endline{
     border-bottom:1px solid #f0f0f0;
 }
 .fa-timeline{
@@ -27,9 +46,14 @@
     }
 }
 .fa-sceduleLine{
-    width:calc(calc(100% - 82px) / 7);
+    width:calc(calc(100% - 50px) / 7);
     border-left:1px solid #f0f0f0;
     
+}
+//日付表示部分
+div.fa-dateline{
+    border:none;
+    height:100%;
 }
 //時間休み時間部分
 .fa-BT-time{
@@ -89,4 +113,36 @@
         font-size:0.8em;
         color: #aaa;
     }
+}
+
+
+//アイコン
+.faIcon-arrow{
+    padding:7px;
+    margin:0 5px;
+    height:15px;
+    width:15px;
+    cursor: pointer;
+    &:hover{
+        background:#f8f8f8;
+        border-radius:50%;
+    }
+}
+
+//月表示
+.month-dataBox{
+    width:calc(100% / 7);
+    height:100%;
+    border-left:1px solid #f0f0f0;
+    border-bottom:1px solid #f0f0f0;
+}
+.month-dateBody{
+    width:100%;
+    height:calc(100% - 20px);
+}
+.month-date{
+    width:100%;
+    height:20px;
+    padding:5px 0;
+    font-size:0.8em;
 }

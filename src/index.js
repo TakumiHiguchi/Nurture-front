@@ -9,6 +9,9 @@ import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";//plusアイコ
 import { faPlus } from "@fortawesome/free-solid-svg-icons";//plusアイコン
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";//minusアイコン
 import { faTimes } from "@fortawesome/free-solid-svg-icons";//minusアイコン
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";//矢印アイコン
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";//矢印アイコン
+import { faCog } from "@fortawesome/free-solid-svg-icons";//設定
 
 //cssのインポート
 import './header.scss';
@@ -18,6 +21,8 @@ import './toppage.scss';
 import './Popup.scss';
 
 import Popup from './Popup'
+import MonthLine from './MonthLine'
+import DropDownMenu from './DropDownMenu'
 import * as serviceWorker from './serviceWorker';
 
 //css
@@ -25,6 +30,17 @@ const pmIcons = {
     fontSize:"1.2em",
     margin:"0 10",
     color:"#00aced",
+    cursor: "pointer"
+}
+const pmArrow = {
+    fontSize:"1em",
+    color:"#00aced",
+    cursor: "pointer"
+}
+const pmIconHead= {
+    fontSize:"28px",
+    color:"#aaa",
+    margin:"0 10",
     cursor: "pointer"
 }
 const twitterIcon = {
@@ -65,12 +81,94 @@ const WeekLine = (props) => {
             
        )
    }
-const DateBox = () => {
-    return(
-           <div className="flex-jus-between fa-dateContainer">
 
-           </div>
-    )
+const DateBox = (props) => {
+    if(props.type == "week"){
+        return(
+               <div>
+                    <div className="flex-align-center fa-dateContainer">
+                        <div className="bord-month">
+                            2020年6月
+                        </div>
+                        <div className="faIcon-arrow flex-jus-center">
+                            <FontAwesomeIcon style={pmArrow} icon={faChevronLeft}/>
+                        </div>
+                        <div className="bord-today">
+                            今日
+                        </div>
+                        <div className="faIcon-arrow flex-jus-center">
+                            <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/>
+                        </div>
+                    </div>
+                   <div className="flex-jus-between fa-dateContainer fa-endline">
+                        <div className="fa-timeline"></div>
+                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                            1(月)
+                        </div>
+                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                            1(月)
+                        </div>
+                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                           1(月)
+                       </div>
+                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                           1(月)
+                       </div>
+                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                           1(月)
+                       </div>
+                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                           1(月)
+                       </div>
+                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                            1(月)
+                        </div>
+                   </div>
+               </div>
+        )
+    }else if(props.type == "month"){
+        return(
+               <div>
+                    <div className="flex-align-center fa-dateContainer">
+                        <div className="bord-month no-pad">
+                            2020年6月
+                        </div>
+                        <div className="faIcon-arrow flex-jus-center">
+                            <FontAwesomeIcon style={pmArrow} icon={faChevronLeft}/>
+                        </div>
+                        <div className="bord-today">
+                            今日
+                        </div>
+                        <div className="faIcon-arrow flex-jus-center">
+                            <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/>
+                        </div>
+                    </div>
+                   <div className="flex-jus-between fa-dateContainer fa-endline">
+                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                            月
+                        </div>
+                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                            火
+                        </div>
+                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                           水
+                       </div>
+                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                           木
+                       </div>
+                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                           金
+                       </div>
+                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                           土
+                       </div>
+                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
+                            日
+                        </div>
+                   </div>
+               </div>
+        )
+    }
 }
 const TimeBox = () => {
     return(
@@ -81,7 +179,11 @@ const Header = (props) => {
     return(
            <header className="fa-header flex-jus-between">
                <h1 className="fa-top-h1">N:urture</h1>
-               <div className="header-right" onClick={() => props.actionShow()}><i className="op_plus"></i></div>
+               <div className="header-right flex-jus-between">
+                    <DropDownMenu />
+                    <FontAwesomeIcon style={pmIconHead} icon={faPlus} onClick={() => props.actionShow()}/>
+                    <FontAwesomeIcon style={pmIconHead} icon={faCog}/>
+                </div>
            </header>
     )
 }
@@ -259,8 +361,8 @@ class Nurture extends Component {
 
         
         this.state = {
-            page:"week",
-        popup:{regester:false, editSchedule:false,manual: false,addTask:false},
+            page:"semester",
+            popup:{regester:false, editSchedule:false,manual: false,addTask:false},
             selectPopup:0,
             regesterIds:[],
             regesterElements:[],
@@ -398,7 +500,7 @@ class Body extends Component {
         if(this.props.pageData == "week"){
             return(
                 <main className="fa-mainContainer">
-                    <DateBox />
+                    <DateBox type={"week"}/>
                     <div className="flex-jus-between fa-scedule">
                         <TimeBox />
                         {this.props.scheduleDatas.map((data,index) =>
@@ -409,6 +511,36 @@ class Body extends Component {
                             
                         )}
                     </div>
+                </main>
+            )
+        }else if(this.props.pageData == "month"){
+            return(
+                <main className="fa-mainContainer">
+                   <DateBox type={"month"}/>
+                   <div className="fa-scedule">
+                       {this.props.scheduleDatas.map((data,index) =>
+                           <MonthLine daySchedule={data} key={"weekLine"+index} action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
+                               element={{caCount: this.props.element.caCount[index]}}
+                                                     
+                           />
+                           
+                       )}
+                   </div>
+                </main>
+            )
+        }else if(this.props.pageData == "semester"){
+            return(
+                <main className="fa-mainContainer">
+                   <DateBox type={"month"}/>
+                   <div className="fa-scedule">
+                       {this.props.scheduleDatas.map((data,index) =>
+                           <MonthLine daySchedule={data} key={"weekLine"+index} action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
+                               element={{caCount: this.props.element.caCount[index]}}
+                                                     
+                           />
+                           
+                       )}
+                   </div>
                 </main>
             )
         }
