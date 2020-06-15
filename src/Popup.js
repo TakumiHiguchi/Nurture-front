@@ -60,6 +60,10 @@ const Setting = (props) => {
                             <FontAwesomeIcon icon={faClock} style={clock} />
                             <div className="calpointer"><Calender /></div> 〜 <div className="calpointer"><Calender /></div>
                         </div>
+                        <div className="flex-algin-center">
+                            <FontAwesomeIcon icon={faClock} style={clock} />
+                            <div className="calpointer"><Calender /></div> 〜 <div className="calpointer"><Calender /></div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -143,20 +143,3 @@ div.fa-dateline{
     }
 }
 
-//月表示
-.month-dataBox{
-    width:calc(100% / 7);
-    height:100%;
-    border-left:1px solid #f0f0f0;
-    border-bottom:1px solid #f0f0f0;
-}
-.month-dateBody{
-    width:100%;
-    height:calc(100% - 20px);
-}
-.month-date{
-    width:100%;
-    height:20px;
-    padding:5px 0;
-    font-size:0.8em;
-}

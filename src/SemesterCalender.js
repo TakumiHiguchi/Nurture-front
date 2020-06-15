@@ -40,10 +40,13 @@ export default class SemesterLine extends Component {
         //各月最初の月の曜日取得
         const aFirstDay = []
         for (let i = 1; i <= 12; i++) {
+            let dlc = new Date(year+"/"+i+"/1").getDay()
             if(i==1){
                 aFirstDay.push(0);
-            }else if(new Date(year+"/"+i+"/1").getDay() == 0){
+            }else if(dlc == 0){
                 aFirstDay.push(1);
+            }else if(dlc == 1){
+                aFirstDay.push(0);
             }else{
                 aFirstDay.push(8 - new Date(year+"/"+i+"/1").getDay());
             }
@@ -71,10 +74,11 @@ export default class SemesterLine extends Component {
                              </div>
                         </div>
                     )}
-                    {Array.from(Array(7 - (new Date(year+("/"+i+"/"+lastday[i-1])).getDay())).keys()).map((data,index) =>
+                        {Array.from(Array(7 - (new Date(year+("/"+i+"/"+lastday[i-1])).getDay()==0 ? 7 : new Date(year+("/"+i+"/"+lastday[i-1])).getDay())).keys()).map((data,index) =>
+                        
                         <div className={ i % 2 != 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"}>
                              <div className="semestar-month-date flex-jus-center">
-                                {index+1}
+                                {index+1}  
                              </div>
                              <div className="semestar-month-dateBody flex-jus-center">
                                 授業

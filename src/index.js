@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
 import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイコン
+import { faGithub } from "@fortawesome/free-brands-svg-icons"; //githubアイコン
 import { faLine } from "@fortawesome/free-brands-svg-icons"; //lineアイコン
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";//plusアイコン
 import { faPlus } from "@fortawesome/free-solid-svg-icons";//plusアイコン
@@ -22,8 +23,8 @@ import './toppage.scss';
 import './Popup.scss';
 
 import Popup from './Popup'
-import MonthLine from './MonthLine'
-import SemesterLine from './SemesterLine'
+import MonthCalender from './MonthCalender'
+import SemesterCalender from './SemesterCalender'
 import DropDownMenu from './DropDownMenu'
 import * as serviceWorker from './serviceWorker';
 
@@ -49,6 +50,12 @@ const twitterIcon = {
     fontSize:"1.5em",
     margin:"0 15 0 0",
     color:"#00aced",
+    cursor: "pointer"
+}
+const githubIcon = {
+    fontSize:"1em",
+    margin:"0 3 0 0",
+    color:"#24292e",
     cursor: "pointer"
 }
 const lineIcon = {
@@ -553,13 +560,7 @@ class Body extends Component {
                 <main className="fa-mainContainer">
                    <DateBox type={"month"}/>
                    <div className="fa-scedule">
-                       {this.props.scheduleDatas.map((data,index) =>
-                           <MonthLine daySchedule={data} key={"weekLine"+index} action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
-                               element={{caCount: this.props.element.caCount[index]}}
-                                                     
-                           />
-                           
-                       )}
+                      <MonthCalender data={{year:2020,month:6}}/>
                    </div>
                 </main>
             )
@@ -568,7 +569,7 @@ class Body extends Component {
                 <main className="fa-mainContainer">
                    <DateBox type={"semester"}/>
                    <div className="fa-scedule">
-                   <SemesterLine data={{year:2020}}/>
+                   <SemesterCalender data={{year:2020}}/>
                    </div>
                 </main>
             )
@@ -605,6 +606,12 @@ const Sidebar = (props) => {
                     </div>
                 )}
             </div>
+           <div className="side-more flex-align-center">
+                <div>
+                    <div>TakumiHiguchi</div>
+                    <a href="https://github.com/TakumiHiguchi"><FontAwesomeIcon style={githubIcon} icon={faGithub} />github</a>
+                </div>
+           </div>
         </aside>
     )
 }

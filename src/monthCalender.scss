@@ -1,0 +1,33 @@
+
+.monthCalenderBox{
+    width:100%;
+    height:100%;
+    flex-wrap:wrap;
+    align-content:stretch;
+    .month-dataBox{
+        width:calc(calc(100% - 9px) / 7);
+        border-left:1px solid #f0f0f0;
+        border-bottom:1px solid #f0f0f0;
+        cursor: pointer;
+    }
+}
+//月表示
+
+.month-dateBody{
+    width:100%;
+    height:calc(100% - 29px);
+}
+.month-date{
+    width:100%;
+    height:20px;
+    padding:2px 0;
+    margin-top:5px;
+    font-size:0.8em;
+}
+.month-select{
+    width:50px;
+    margin:5px calc(50% - 25px) 0;
+    background:#00aced;
+    border-radius:10px;
+    color:white;
+}

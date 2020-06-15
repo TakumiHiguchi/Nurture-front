@@ -3,6 +3,8 @@ import onClickOutside from 'react-onclickoutside'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";//下矢印
 
+import './dropdown.scss'
+
 const pmArrow = {
     fontSize:"1em",
     color:"#aaa",
@@ -69,14 +71,14 @@ class DropDownMenu extends React.Component {
             {this.state.nLp}<FontAwesomeIcon style={pmArrow} icon={faCaretDown}/>
         </div>
         {listOpen && (
-          <div style={styles.menuBox}>
-            <div style={styles.menuContent} className="dropMenuElement">
+          <div className="dropMenu">
+            <div className="dropMenuElement">
               <div onClick={this.handleClickMenu.bind(this, 1)}>週表示</div>
             </div>
-            <div style={styles.menuContent}>
+            <div className="dropMenuElement">
               <div onClick={this.handleClickMenu.bind(this, 2)}>月表示</div>
             </div>
-            <div style={styles.lastMenuContent}>
+            <div className="dropMenuElement">
               <div onClick={this.handleClickMenu.bind(this, 3)}>学期表示</div>
             </div>
           </div>
@@ -98,19 +100,6 @@ const styles = {
     borderRadius: '5px',
     padding:'0 10px 0 10px',
     color:'#aaa'
-  },
-  menuBox: {
-    position: 'absolute',
-    top: '38px',
-    left:'-40px',
-    width: '200px',
-    zIndex: 1,
-    cursor: 'pointer',
-    background:'white',
-    boxShadow: '1px 2px 4px rgba(0,0,0,0.3)'
-  },
-  menuContent: {
-    padding: '3px 5px'
   },
   lastMenuContent: {
     padding: '3px 5px',

@@ -21,7 +21,7 @@
 .timetable{
     align-items:flex-start;
     width:100%;
-    height:calc(100% - 90px);
+    height:calc(100% - 130px);
     padding:5px 0 20px 0;
     overflow-y: scroll;
     -ms-overflow-style: none;
@@ -59,4 +59,12 @@
         font-size:0.8em;
         color:#aaa;
     }
+}
+
+.side-more{
+    height:54px;
+    width:calc(100% - 20px);
+    padding-left:20px;
+    border-top:1px solid #f0f0f0;
+    font-size:0.9em;
 }

@@ -1,0 +1,19 @@
+.dropMenuElement{
+    padding: 7px 0px 7px 10px;
+    &:hover{
+        background:#f8f8f8;
+    }
+}
+.dropMenu{
+    position: absolute;
+    top: 38px;
+    left: -40px;
+    width: 200px;
+    padding:10px 0;
+    z-index: 1;
+    cursor: pointer;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 4px;
+    background-position: initial initial;
+    background-repeat: initial initial;
+}
