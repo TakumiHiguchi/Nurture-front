@@ -36,7 +36,10 @@ export default class MonthLine extends Component {
                      )
         }
         //月の最後の部分
-        const lastYoubi = new Date(year+"/"+mon+"/"+lastday[mon-1]).getDay();
+        let lastYoubi = new Date(year+"/"+mon+"/"+lastday[mon-1]).getDay();
+        if(lastYoubi === 0){
+            lastYoubi = 7
+        }
         const fEf = [];
         for (let i = 0; i < (7 - lastYoubi); i++) {
             fEf.push(

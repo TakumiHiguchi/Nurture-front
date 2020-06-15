@@ -37,6 +37,7 @@ export default class SemesterLine extends Component {
                      </div>
                      )
         }
+
         //各月最初の月の曜日取得
         const aFirstDay = []
         for (let i = 1; i <= 12; i++) {

@@ -96,9 +96,6 @@ const DateBox = (props) => {
         return(
                <div>
                     <div className="flex-align-center fa-dateContainer">
-                        <div className="bord-month  no-pad">
-                            2020年6月
-                        </div>
                         <div className="faIcon-arrow flex-jus-center">
                             <FontAwesomeIcon style={pmArrow} icon={faChevronLeft}/>
                         </div>
@@ -108,6 +105,10 @@ const DateBox = (props) => {
                         <div className="faIcon-arrow flex-jus-center">
                             <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/>
                         </div>
+                        <div className="bord-month  no-pad">
+                            2020年6月
+                        </div>
+                        
                     </div>
                    <div className="flex-jus-between fa-dateContainer fa-endline">
                         <div className="fa-timeline"></div>
@@ -139,18 +140,19 @@ const DateBox = (props) => {
         return(
                <div>
                     <div className="flex-align-center fa-dateContainer">
-                        <div className="bord-month no-pad">
-                            2020年6月
-                        </div>
-                        <div className="faIcon-arrow flex-jus-center">
+               <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("month",-1)}>
                             <FontAwesomeIcon style={pmArrow} icon={faChevronLeft}/>
                         </div>
                         <div className="bord-today">
                             今日
                         </div>
-                        <div className="faIcon-arrow flex-jus-center">
+                        <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("month",1)}>
                             <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/>
                         </div>
+                        <div className="bord-month no-pad">
+                            {props.data.year}年{props.data.month}月
+                        </div>
+                        
                     </div>
                    <div className="flex-jus-between fa-dateContainer fa-endline">
                         <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
@@ -394,10 +396,11 @@ class Nurture extends Component {
         }
         var tblc = [...Array(7)].map(k=>[...Array(6)].map(k=>[...Array(3)].map(k=>0)))
 
-        
+        const now = new Date();
         this.state = {
             page:"week",
-        popup:{regester:false, editSchedule:false,manual: false,addTask:false,setting:false},
+            popup:{regester:false, editSchedule:false,manual: false,addTask:false,setting:false},
+            select:{year: now.getFullYear(),month: now.getMonth()+1},
             selectPopup:0,
             regesterIds:[],
             regesterElements:[],
@@ -435,7 +438,29 @@ class Nurture extends Component {
         }
         
     }
-                                                  
+    changeSelect(type,amount){
+        //月セレクターの変更
+        let y = this.state.select.year
+        let m = this.state.select.month + parseInt(amount);
+        
+        if(m > 12){
+            let count = Math.floor(m/12);
+            y+=count;
+            m-=12*count + m%12;
+        }else if(m < 0){
+            let count = Math.floor(m/12) * -1;
+            y-=count;
+            m+=12*count + (m%12 * -1) + 1;
+        }else if(m == 0){
+            y-=1;
+            m=12;
+        }else if(m == 12){
+            y+=1;
+            m=1;
+        }
+        
+        this.setState({select:{year:y,month:m}})
+    }
     togglePvmode(mode){
         this.setState({page: mode})
     }
@@ -495,8 +520,10 @@ class Nurture extends Component {
                             scheduleDatas={this.state.caDatas}
                             element={{caCount: this.state.caCount}}
                             action = {{popupshow: () => this.PopupMenu(),
-                                popupEdit: (ce) => this.PopupCCedit(ce)
+                                popupEdit: (ce) => this.PopupCCedit(ce),
+                                changeSelect: (type,amount) => this.changeSelect(type,amount)
                             }}
+                            select = {this.state.select}
                         />
                         <PopupClassRegester isPopup = {this.state.popup}
                                    action = {{
@@ -558,16 +585,16 @@ class Body extends Component {
         }else if(this.props.pageData == "month"){
             return(
                 <main className="fa-mainContainer">
-                   <DateBox type={"month"}/>
+                   <DateBox type={"month"} action={(type,amount) => this.props.action.changeSelect(type,amount)} data={{year:this.props.select.year,month:this.props.select.month}}/>
                    <div className="fa-scedule">
-                      <MonthCalender data={{year:2020,month:6}}/>
+                   <MonthCalender data={{year:this.props.select.year,month:this.props.select.month}}/>
                    </div>
                 </main>
             )
         }else if(this.props.pageData == "semester"){
             return(
                 <main className="fa-mainContainer">
-                   <DateBox type={"semester"}/>
+                   <DateBox type={"semester"} />
                    <div className="fa-scedule">
                    <SemesterCalender data={{year:2020}}/>
                    </div>
