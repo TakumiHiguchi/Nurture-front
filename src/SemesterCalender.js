@@ -25,7 +25,8 @@ export default class SemesterLine extends Component {
         const youbi = now.getDay();
         
         //１月１日の曜日取得
-        const firstYoubi = new Date(year+"/1/1").getDay();
+        let firstYoubi = new Date(year+"/1/1").getDay();
+        if(firstYoubi===0)firstYoubi=7;
         const fOf = [];
         for (let i = 0; i < firstYoubi - 1; i++) {
             fOf.push(
