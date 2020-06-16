@@ -140,10 +140,10 @@ const DateBox = (props) => {
         return(
                <div>
                     <div className="flex-align-center fa-dateContainer">
-               <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("month",-1)}>
+                        <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("month",-1)}>
                             <FontAwesomeIcon style={pmArrow} icon={faChevronLeft}/>
                         </div>
-                        <div className="bord-today">
+                        <div className="bord-today" onClick={() => props.action("today",-1)}>
                             今日
                         </div>
                         <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("month",1)}>
@@ -183,8 +183,17 @@ const DateBox = (props) => {
         return(
                <div>
                     <div className="flex-align-center fa-dateContainer">
+                        <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("year",-1)}>
+                            <FontAwesomeIcon style={pmArrow} icon={faChevronLeft}/>
+                        </div>
+                        <div className="bord-today" onClick={() => props.action("today",-1)}>
+                            今日
+                        </div>
+                        <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("year",1)}>
+                            <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/>
+                        </div>
                         <div className="bord-month no-pad">
-                            2020年 〜 2021年
+                            {props.data.year}年
                         </div>
                     </div>
                    <div className="flex-jus-between fa-dateContainer fa-endline">
@@ -399,7 +408,7 @@ class Nurture extends Component {
         const now = new Date();
         this.state = {
             page:"week",
-        popup:{regester:false, editSchedule:false,manual: false,addTask:false,setting:false,login:true},
+            popup:{regester:false, editSchedule:false,manual: false,addTask:false,setting:false,login:true},
             select:{year: now.getFullYear(),month: now.getMonth()+1},
             selectPopup:0,
             regesterIds:[],
@@ -440,27 +449,27 @@ class Nurture extends Component {
         
     }
     changeSelect(type,amount){
-        //月セレクターの変更
-        let y = this.state.select.year
-        let m = this.state.select.month + parseInt(amount);
         
-        if(m > 12){
-            let count = Math.floor(m/12);
-            y+=count;
-            m-=12*count + m%12;
-        }else if(m < 0){
-            let count = Math.floor(m/12) * -1;
-            y-=count;
-            m+=12*count + (m%12 * -1) + 1;
-        }else if(m == 0){
-            y-=1;
-            m=12;
-        }else if(m == 12){
-            y+=1;
-            m=1;
+        if(type == "today"){
+            const now = new Date();
+            this.setState({select:{year:now.getFullYear(),month:now.getMonth()+1}});
+        }else if(type == "year"){
+            this.setState({select:{year:this.state.select.year + parseInt(amount)}});
+        }else{
+            //月セレクターの変更
+            let y = this.state.select.year
+            let m = this.state.select.month + parseInt(amount);
+            
+            if(m == 0){
+                y-=1;
+                m=12;
+            }else if(m == 13){
+                y+=1;
+                m=1;
+            }
+            
+            this.setState({select:{year:y,month:m}});
         }
-        
-        this.setState({select:{year:y,month:m}})
     }
     togglePvmode(mode){
         this.setState({page: mode})
@@ -596,9 +605,10 @@ class Body extends Component {
         }else if(this.props.pageData == "semester"){
             return(
                 <main className="fa-mainContainer">
-                   <DateBox type={"semester"} />
+                   <DateBox type={"semester"} action={(type,amount) => this.props.action.changeSelect(type,amount)}
+                        data={{year:this.props.select.year,month:this.props.select.month}}/>
                    <div className="fa-scedule">
-                   <SemesterCalender data={{year:2020}}/>
+                   <SemesterCalender data={{year:this.props.select.year,month:this.props.select.month}}/>
                    </div>
                 </main>
             )

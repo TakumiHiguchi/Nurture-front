@@ -72,14 +72,14 @@ class DropDownMenu extends React.Component {
         </div>
         {listOpen && (
           <div className="dropMenu">
-            <div className="dropMenuElement">
-              <div onClick={this.handleClickMenu.bind(this, 1)}>週表示</div>
+            <div className="dropMenuElement" onClick={this.handleClickMenu.bind(this, 1)}>
+              <div>週表示</div>
             </div>
-            <div className="dropMenuElement">
-              <div onClick={this.handleClickMenu.bind(this, 2)}>月表示</div>
+            <div className="dropMenuElement" onClick={this.handleClickMenu.bind(this, 2)}>
+              <div>月表示</div>
             </div>
-            <div className="dropMenuElement">
-              <div onClick={this.handleClickMenu.bind(this, 3)}>学期表示</div>
+            <div className="dropMenuElement" onClick={this.handleClickMenu.bind(this, 3)}>
+              <div>学期表示</div>
             </div>
           </div>
         )}
