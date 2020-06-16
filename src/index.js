@@ -399,7 +399,7 @@ class Nurture extends Component {
         const now = new Date();
         this.state = {
             page:"week",
-            popup:{regester:false, editSchedule:false,manual: false,addTask:false,setting:false},
+        popup:{regester:false, editSchedule:false,manual: false,addTask:false,setting:false,login:true},
             select:{year: now.getFullYear(),month: now.getMonth()+1},
             selectPopup:0,
             regesterIds:[],
@@ -435,6 +435,7 @@ class Nurture extends Component {
             case "regester": this.setState({popup: {regester: !this.state.popup.regester}});break;
             case "addTask": this.setState({popup: {addTask: !this.state.popup.addTask}});break;
             case "setting": this.setState({popup: {setting: !this.state.popup.setting}});break;
+            case "login": this.setState({popup: {login: !this.state.popup.login}});break;
         }
         
     }
@@ -551,6 +552,7 @@ class Nurture extends Component {
                         />
                         <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}/>
                         <Popup type={2} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.setting}/>
+                        <Popup type={3} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.login}/>
                     </div>
                </div>
                                                                                      

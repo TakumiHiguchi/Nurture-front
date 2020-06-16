@@ -5,6 +5,9 @@ import moment from 'moment'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
 import { faClock } from '@fortawesome/free-regular-svg-icons';
+import { faGoogle} from "@fortawesome/free-brands-svg-icons";//Lineアイコン
+import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイコン
+import { faLine } from "@fortawesome/free-brands-svg-icons"; //lineアイコン
 
 //datepicker
 import ja from 'date-fns/locale/ja';
@@ -14,6 +17,18 @@ const clock = {
     fontSize:"1em",
     margin:"0 15 0 5"
 }
+const twitterIcon = {
+    fontSize:"1.5em",
+    color:"white",
+    cursor: "pointer"
+}
+const lineIcon = {
+    fontSize:"1.5em",
+    color:"#Line",
+    cursor: "pointer"
+}
+
+
 
 export default class Popup extends Component {
     constructor(props){
@@ -26,6 +41,12 @@ export default class Popup extends Component {
     changePage(no){
         this.setState({taskPpage:no});
     }
+    sec(type){
+        if(type === 1){
+            this.props.action.PopupToggle("login");
+            this.props.action.PopupToggle("login-dn");
+        }
+    }
     
     render(){
         if(this.props.type == 1){
@@ -36,6 +57,11 @@ export default class Popup extends Component {
         }else if(this.props.type == 2){
             return(
                    <Setting isPopup={this.props.status} action={() => this.props.action.PopupToggle("setting")}/>
+                   
+                   )
+        }else if(this.props.type == 3){
+            return(
+                   <Login isPopup={this.props.status} action={(type) => this.sec(type)}/>
                    
                    )
         }
@@ -69,6 +95,30 @@ const Setting = (props) => {
             </div>
            
     )
+}
+
+const Login = (props) => {
+    return(
+           <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
+                <div className="popup_wrap" ></div>
+                <div className="logwhir">
+                    <div class="her-right">
+                        <h2>N:urture</h2>
+                        <p class="clx">今すぐログインして、自分の予定を管理したり、タスクを追加してみたりしましょう。</p>
+                        <a class="linkBox-google hrm" href=""><FontAwesomeIcon icon={faGoogle}/> Googleでログイン</a>
+                        <p class="ghi hrm"><span>または</span></p>
+                        <a class="linkBox-twitter hrm" href=""><FontAwesomeIcon style={twitterIcon} icon={faTwitter} /> twitterでログイン</a>
+                        <a class="linkBox-line hrm" href=""><FontAwesomeIcon style={lineIcon} icon={faLine} /> Lineでログイン</a>
+                        <div class="new_user" >
+                            <p class="cls">ログインすることにより、N:urture利用規約、データーに関するポリシーに同意したものとみなされます。</p>
+                            <p class="alg">アカウントをお持ちではありませんか？<p onClick={() => props.action(1) }>保存しないで利用する</p></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+    )
+    
 }
 
 const AddTask = (props) => {

@@ -263,3 +263,131 @@ div.cd {
     bottom:0;
     left:0;
 }
+
+
+//ログインのポップアップ
+.logwhir{
+    position:absolute;
+    z-index:11;
+    top:0;
+    width:312px;
+    height:calc(100vh - 100px);
+    padding:0 20px;
+    max-height:645px;
+    background:white;
+    margin:50px auto;
+    left:0;
+    right:0;
+    border-radius:10px;
+    overflow:auto;
+    -ms-overflow-style: none;
+        scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display:none;
+    }
+}
+.her-right{
+    width:calc(100% - 20px);
+    height:calc(70% - 20px);
+    min-height:600px;
+    padding:20px 10px;
+    h2{
+        width:100%;
+        margin:20px 0;
+        text-align:center;
+        font-size:2em;
+        img{
+            width:50%;
+            height:100%;
+        }
+    }
+    .clx{
+        line-height:1.4em;
+        color:#999;
+        text-align:center;
+        margin-bottom:15px;
+    }
+    .cls{
+        font-size:0.6em;
+        color:#999;
+        text-align:center;
+        margin-bottom:15px;
+    }
+    .hrm{
+        margin-bottom:15px;
+    }
+    .alg{
+        font-size:0.8em;
+        cursor: pointer;
+        p{
+            color:#3897f0;
+            &:hover{
+                text-decoration:underline;
+                
+            }
+        }
+    }
+    .ghi {
+        width: 100%;
+        text-align: center;
+    }
+    .linkBox-google{
+        display: block;
+        position:relative;
+        border-radius: 5px;
+        color: #333;
+        border:1px solid #333;
+        width: calc(100% - 40px);
+        padding: 10px 20px 10px 20px;
+        text-decoration: none;
+        text-align: center;
+        svg{
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:20px;
+            margin:auto;
+        }
+    }
+    .linkBox-twitter{
+        display: block;
+        position:relative;
+        border-radius: 5px;
+        color: white;
+        background:#00aced;
+        border:1px solid #00aced;
+        width: calc(100% - 40px);
+        padding: 10px 20px 10px 20px;
+        text-decoration: none;
+        text-align: center;
+        svg{
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:20px;
+            margin:auto;
+        }
+    }
+    .linkBox-line{
+        display: block;
+        position:relative;
+        border-radius: 5px;
+        color: white;
+        background:#00B900;
+        border:1px solid #00B900;
+        width: calc(100% - 40px);
+        padding: 10px 20px 10px 20px;
+        text-decoration: none;
+        text-align: center;
+        svg{
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:20px;
+            margin:auto;
+        }
+    }
+    .new_user{
+        padding:10px 0;
+    }
+}
