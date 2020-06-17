@@ -79,7 +79,8 @@ export default class Popup extends Component {
                                        action={{popupshow: () => this.props.action.popupshow(),
                                                popupshowMnual: () => this.props.action.popupshowMnual(),
                                                addregesterId:(cd, array) => this.props.action.addregesterId(cd, array),
-                                               regester: () => this.props.action.regester()
+                                               regester: () => this.props.action.regester(),
+                                               getSchedule: (val) => this.props.action.getSchedule(val)
                                                }}
                                        sceduleDatas = {{APIresult: this.props.sceduleDatas.APIresult, regesterIds: this.props.sceduleDatas.regesterIds, regesterElements: this.props.sceduleDatas.regesterElements}}/>
                    )
@@ -290,6 +291,13 @@ class Calender extends Component {
 }
 
 class PopupClassRegester extends Component{
+    constructor(props){
+        super(props)
+    }
+    _esGetsc(event){
+        let val = event.target.value;
+        this.props.action.getSchedule(val);
+    }
     render(){
         const dayString=["月","火","水","木","金","土","日"];
         let k = 0;
@@ -299,7 +307,9 @@ class PopupClassRegester extends Component{
                <div className="popup_wrap" onClick={() => this.props.action.popupshow() }></div>
                     <div className="whir no-select">
                         <h2 className="add_scedule">授業の追加</h2>
-                        <input type="text" placeholder="授業名や科目番号で検索" className="removeCss searchInput adSheduleInput"/>
+                        <input type="text" placeholder="授業名や科目番号で検索" className="removeCss searchInput adSheduleInput"
+                            onChange={(e) => this._esGetsc(e)} onBlur={(e) => this._esGetsc(e)}
+                        />
                         <div className="scedulesBox">
                            {APIresult.map((data) =>
                                 <div className="fa-schedule-enm flex" key={data.CoNum + data.title + data.id} onClick={() => this.props.action.addregesterId(data.id, data)}>

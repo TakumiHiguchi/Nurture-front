@@ -360,17 +360,7 @@ class Nurture extends Component {
             regesterElements:[],
             caDatas: tbl,
             caCount: tblc,
-            schedules:[
-                {id:1, title:"人工知能1" ,CoNum:"G610628101" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:0 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:2, title:"人工知能2" ,CoNum:"G610628102" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:41 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:5, title:"臨床心理" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:1 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:6, title:"Java" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:2 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:7, title:"英語" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:3 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:8, title:"離散数学" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:6 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:9, title:"ロキソニン" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:19 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:10, title:"高度オペ" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:21 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:10909, title:"一般教養" ,CoNum:"G610628104" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:4 ,grade:3 ,status: "コース選択必修 コース選択"}
-            ],
+            schedules:[],
             seSchedule: {start_date:1,end_date:2}
             
         }
@@ -378,12 +368,13 @@ class Nurture extends Component {
     //api叩く部分
 
 
-    getScheduleData(){
+    getScheduleData(val){
         const ENDPOINT = 'http://localhost:3020'
         
-        axios.get(ENDPOINT + '/api/v1/schedule')
+        axios.get(ENDPOINT + '/api/v1/schedule?q=' + val)
             .then(response => {
-                console.log(response.data);
+                var scheduleDatas = response.data.schedules
+                this.setState({schedules:scheduleDatas})
             })
             .catch(() => {
                 console.log('通信に失敗しました');
@@ -402,7 +393,7 @@ class Nurture extends Component {
     }
     PopupToggle(type){
         switch (type){
-            case "regester": this.setState({popup: {regester: !this.state.popup.regester}});break;
+            case "regester": this.setState({popup: {regester: !this.state.popup.regester}});this.getScheduleData("");break;
             case "addTask": this.setState({popup: {addTask: !this.state.popup.addTask}});break;
             case "setting": this.setState({popup: {setting: !this.state.popup.setting}});break;
             case "login": this.setState({popup: {login: !this.state.popup.login}});break;
@@ -483,7 +474,7 @@ class Nurture extends Component {
     }
     render(){
         return(
-               <div onClick={() => this.getScheduleData()}>
+               <div>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} />
                     <div className="flex-jus-between fa-rap no-select">
                         <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
@@ -519,7 +510,8 @@ class Nurture extends Component {
                         <Popup type={4} status={this.state.popup.regester}
                                    action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
                                               addregesterId: (cd, array) => this.RegesterId(cd, array),
-                                              regester: () => this.Regester()
+                                              regester: () => this.Regester(),
+                                              getSchedule: (val) => this.getScheduleData(val)
                                             }}
                                    sceduleDatas = {{APIresult: this.state.schedules, regesterIds: this.state.regesterIds, regesterElements: this.state.regesterElements}}/>
                     </div>
