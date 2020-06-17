@@ -8,8 +8,10 @@ import { faClock } from '@fortawesome/free-regular-svg-icons';
 import { faGoogle} from "@fortawesome/free-brands-svg-icons";//Lineアイコン
 import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイコン
 import { faLine } from "@fortawesome/free-brands-svg-icons"; //lineアイコン
+import { faTimes } from "@fortawesome/free-solid-svg-icons";//minusアイコン
 
 import DropDownMenu from './DropDownMenu'
+import GoogleAuthentication from './GoogleAuthentication'
 
 //datepicker
 import ja from 'date-fns/locale/ja';
@@ -71,6 +73,16 @@ export default class Popup extends Component {
                    <Login isPopup={this.props.status} action={(type) => this.sec(type)}/>
                    
                    )
+        }else if(this.props.type == 4){
+            return(
+                   <PopupClassRegester isPopup={this.props.status}
+                                       action={{popupshow: () => this.props.action.popupshow(),
+                                               popupshowMnual: () => this.props.action.popupshowMnual(),
+                                               addregesterId:(cd, array) => this.props.action.addregesterId(cd, array),
+                                               regester: () => this.props.action.regester()
+                                               }}
+                                       sceduleDatas = {{APIresult: this.props.sceduleDatas.APIresult, regesterIds: this.props.sceduleDatas.regesterIds, regesterElements: this.props.sceduleDatas.regesterElements}}/>
+                   )
         }
     }
     
@@ -114,7 +126,7 @@ const Login = (props) => {
                     <div class="her-right">
                         <h2>N:urture</h2>
                         <p class="clx">今すぐログインして、自分の予定を管理したり、タスクを追加してみたりしましょう。</p>
-                        <a class="linkBox-google hrm" href=""><FontAwesomeIcon icon={faGoogle}/> Googleでログイン</a>
+                        <GoogleAuthentication />
                         <p class="ghi hrm"><span>または</span></p>
                         <a class="linkBox-twitter hrm" href=""><FontAwesomeIcon style={twitterIcon} icon={faTwitter} /> twitterでログイン</a>
                         <a class="linkBox-line hrm" href=""><FontAwesomeIcon style={lineIcon} icon={faLine} /> Lineでログイン</a>
@@ -275,4 +287,62 @@ class Calender extends Component {
       />
     );
   }
+}
+
+class PopupClassRegester extends Component{
+    render(){
+        const dayString=["月","火","水","木","金","土","日"];
+        let k = 0;
+        const {APIresult, regesterIds, regesterElements} = this.props.sceduleDatas;
+        return(
+               <div className={this.props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
+               <div className="popup_wrap" onClick={() => this.props.action.popupshow() }></div>
+                    <div className="whir no-select">
+                        <h2 className="add_scedule">授業の追加</h2>
+                        <input type="text" placeholder="授業名や科目番号で検索" className="removeCss searchInput adSheduleInput"/>
+                        <div className="scedulesBox">
+                           {APIresult.map((data) =>
+                                <div className="fa-schedule-enm flex" key={data.CoNum + data.title + data.id} onClick={() => this.props.action.addregesterId(data.id, data)}>
+                                    <div className="checkBoxlap">
+                                        <div className="checkBox"><div className={regesterIds.indexOf(data.id) >= 0 ? "checkBoxInner cBIactive" : "checkBoxInner"}></div></div>
+                                                      
+                                    </div>
+                                    <div className="sceduleDataBox">
+                                          <div className="sceduleName">
+                                            {data.title}
+                                          </div>
+                                          <div className="scheduleSubdata">
+                                              {data.CoNum}・{data.semester}・{dayString[Math.floor(data.position / 6)]}曜 {data.position % 6 + 1}講時
+                                          </div>
+                                          <div className="scheduleSubdata">
+                                              {data.status}
+                                          </div>
+                                          <div className="scheduleSubdata">
+                                              {data.teacher}
+                                          </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div className="infBox">
+                            <div className="flex fa-reges-elementBox">
+                                <div className="fa-reges-h">選択した授業</div>
+                                <div className="flex fa-reges-elementInner">
+                                   {regesterElements.map((element) =>
+                                        <div className="reges-schedule" key={"regester" + element.CoNum + element.title + element.id} onClick={() => this.props.action.addregesterId(element.id, element)}>
+                                            {element.title} <FontAwesomeIcon icon={faTimes} />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="submitBox flex-jus-center">
+                                                                                      
+                            <div className="btn-submit-sub fa-scedule-submit" onClick={() => this.props.action.popupshowMnual()}>手動で授業を追加</div>
+                            <div className="btn-submit fa-scedule-submit" onClick={() => this.props.action.regester()}>選択した授業を追加</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        )
+                                                                                      }
 }

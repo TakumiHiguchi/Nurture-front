@@ -338,60 +338,7 @@ const PopupClassEdit = (props) => {
            </div>
            )
 }
-const PopupClassRegester = (props) => {
-    const dayString=["月","火","水","木","金","土","日"]
-    let k = 0
-    const {APIresult, regesterIds, regesterElements} = props.sceduleDatas
-        return(
-                <div className={props.isPopup.regester ? 'popup popup_effect' : 'popup popup_effect_de'} >
-                    <div className="popup_wrap" onClick={() => props.action.popupshow() }></div>
-                    <div className="whir no-select">
-                        <h2 className="add_scedule">授業の追加</h2>
-                        <input type="text" placeholder="授業名や科目番号で検索" className="removeCss searchInput adSheduleInput"/>
-                        <div className="scedulesBox">
-                           {APIresult.map((data) =>
-                                <div className="fa-schedule-enm flex" key={data.CoNum + data.title + data.id} onClick={() => props.action.addregesterId(data.id, data)}>
-                                    <div className="checkBoxlap">
-                                        <div className="checkBox"><div className={regesterIds.indexOf(data.id) >= 0 ? "checkBoxInner cBIactive" : "checkBoxInner"}></div></div>
-                                                      
-                                    </div>
-                                    <div className="sceduleDataBox">
-                                          <div className="sceduleName">
-                                            {data.title}
-                                          </div>
-                                          <div className="scheduleSubdata">
-                                              {data.CoNum}・{data.semester}・{dayString[Math.floor(data.position / 6)]}曜 {data.position % 6 + 1}講時
-                                          </div>
-                                          <div className="scheduleSubdata">
-                                              {data.status}
-                                          </div>
-                                          <div className="scheduleSubdata">
-                                              {data.teacher}
-                                          </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                        <div className="infBox">
-                            <div className="flex fa-reges-elementBox">
-                                <div className="fa-reges-h">選択した授業</div>
-                                <div className="flex fa-reges-elementInner">
-                                   {regesterElements.map((element) =>
-                                        <div className="reges-schedule" key={"regester" + element.CoNum + element.title + element.id} onClick={() => props.action.addregesterId(element.id, element)}>
-                                            {element.title} <FontAwesomeIcon icon={faTimes} />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="submitBox flex-jus-center">
-                                <div className="btn-submit-sub fa-scedule-submit" onClick={() => props.action.popupshowMnual()}>手動で授業を追加</div>
-                                <div className="btn-submit fa-scedule-submit" onClick={() => props.action.regester()}>選択した授業を追加</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        )
-}
+
                                                                                       
         
 
@@ -535,14 +482,6 @@ class Nurture extends Component {
                             }}
                             select = {this.state.select}
                         />
-                        <PopupClassRegester isPopup = {this.state.popup}
-                                   action = {{
-                                            popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
-                                            addregesterId: (cd, array) => this.RegesterId(cd, array),
-                                            regester: () => this.Regester()
-                                            }}
-                                   sceduleDatas = {{APIresult: this.state.schedules, regesterIds: this.state.regesterIds, regesterElements: this.state.regesterElements}}
-                        />
                         <PopupClassEdit isPopup = {this.state.popup}
                                    action = {{
                                             popupshow: (ce) => this.PopupCCedit(ce),
@@ -560,10 +499,15 @@ class Nurture extends Component {
                                                                                      
                         />
                         <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}
-                                        datas={{schedules:this.state.caDatas}}
-                                                                                     />
+                                        datas={{schedules:this.state.caDatas}}/>
                         <Popup type={2} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.setting}/>
                         <Popup type={3} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.login}/>
+                        <Popup type={4} status={this.state.popup.regester}
+                                   action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
+                                              addregesterId: (cd, array) => this.RegesterId(cd, array),
+                                              regester: () => this.Regester()
+                                            }}
+                                   sceduleDatas = {{APIresult: this.state.schedules, regesterIds: this.state.regesterIds, regesterElements: this.state.regesterElements}}/>
                     </div>
                </div>
                                                                                      
