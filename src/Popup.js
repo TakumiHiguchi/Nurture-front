@@ -9,9 +9,13 @@ import { faGoogle} from "@fortawesome/free-brands-svg-icons";//Lineアイコン
 import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイコン
 import { faLine } from "@fortawesome/free-brands-svg-icons"; //lineアイコン
 
+import DropDownMenu from './DropDownMenu'
+
 //datepicker
 import ja from 'date-fns/locale/ja';
 registerLocale('ja', ja)
+
+
 
 const clock = {
     fontSize:"1em",
@@ -51,7 +55,10 @@ export default class Popup extends Component {
     render(){
         if(this.props.type == 1){
             return(
-                   <AddTask isPopup={this.props.status} action={() => this.props.action.PopupToggle("addTask")} changePage={(ce) => this.changePage(ce)} page={this.state.taskPpage}/>
+                   <AddTask isPopup={this.props.status} action={() => this.props.action.PopupToggle("addTask")}
+                            changePage={(ce) => this.changePage(ce)} page={this.state.taskPpage}
+                            datas={{schedules:this.props.datas.schedules}}
+                            />
                    
                    )
         }else if(this.props.type == 2){
@@ -135,7 +142,17 @@ const AddTask = (props) => {
                     </div>
                     <div className="pcePopup-item adTaskbody">
                         <input type="text" placeholder="タスク名を入力（必須）" className="removeCss formInput task-input"/>
-                        <div className=""><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender /></div></div>
+                        <div className=""><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender /></div>
+                            <select class="swal2-select">
+                                <option value="" disabled="">クリックして講時を選択</option>
+                                <option value="1">1講時</option>
+                                <option value="2">2講時</option>
+                                <option value="3">3講時</option>
+                                <option value="4">4講時</option>
+                                <option value="5">5講時</option>
+                                <option value="5">6講時</option>
+                            </select>
+                        </div>
                     </div>
                     <textarea className="removeTACss task-textarea" placeholder="タスクの内容を入力">
                     </textarea>
@@ -160,8 +177,20 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(2)}>授業の変更</div>
                     </div>
                     <div className="pcePopup-item adTaskbody">
-                        <input type="text" placeholder="試験名を入力（必須）" className="removeCss formInput task-input"/>
-                        <div className=""><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender /></div></div>
+                        <DropDownMenu type={2} data={props.datas.schedules}/>
+                        <div className="">
+                            <FontAwesomeIcon icon={faClock} style={clock} />
+                            <div className="calpointer"><Calender /></div>
+                            <select class="swal2-select">
+                                <option value="" disabled="">クリックして講時を選択</option>
+                                <option value="1">1講時</option>
+                                <option value="2">2講時</option>
+                                <option value="3">3講時</option>
+                                <option value="4">4講時</option>
+                                <option value="5">5講時</option>
+                                <option value="5">6講時</option>
+                            </select>
+                        </div>
                     </div>
                     <textarea className="removeTACss task-textarea" placeholder="試験の内容を入力">
                     </textarea>

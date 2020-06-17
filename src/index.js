@@ -226,7 +226,7 @@ const Header = (props) => {
            <header className="fa-header flex-jus-between no-select">
                <h1 className="fa-top-h1">N:urture</h1>
                <div className="header-right flex-jus-between">
-                    <DropDownMenu action={(mode) => props.action(mode)} />
+                    <DropDownMenu action={(mode) => props.action(mode)} type={1}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faPlus} onClick={() => props.actionShow("regester")}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faCog} onClick={() => props.actionShow("setting")}/>
                 </div>
@@ -454,7 +454,7 @@ class Nurture extends Component {
             const now = new Date();
             this.setState({select:{year:now.getFullYear(),month:now.getMonth()+1}});
         }else if(type == "year"){
-            this.setState({select:{year:this.state.select.year + parseInt(amount)}});
+            this.setState({select:{year:this.state.select.year + parseInt(amount),month:this.state.select.month}});
         }else{
             //月セレクターの変更
             let y = this.state.select.year
@@ -559,7 +559,9 @@ class Nurture extends Component {
                                                                     
                                                                                      
                         />
-                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}/>
+                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}
+                                        datas={{schedules:this.state.caDatas}}
+                                                                                     />
                         <Popup type={2} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.setting}/>
                         <Popup type={3} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.login}/>
                     </div>
