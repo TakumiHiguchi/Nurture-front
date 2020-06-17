@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
 import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイコン
@@ -25,7 +26,7 @@ import './Popup.scss';
 import Popup from './Popup'
 import MonthCalender from './MonthCalender'
 import SemesterCalender from './SemesterCalender'
-import DropDownMenu from './DropDownMenu'
+import DDMbodyChange from './DDMbodyChange'
 import * as serviceWorker from './serviceWorker';
 
 //css
@@ -226,7 +227,7 @@ const Header = (props) => {
            <header className="fa-header flex-jus-between no-select">
                <h1 className="fa-top-h1">N:urture</h1>
                <div className="header-right flex-jus-between">
-                    <DropDownMenu action={(mode) => props.action(mode)} type={1}/>
+                    <DDMbodyChange action={(mode) => props.action(mode)} type={1}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faPlus} onClick={() => props.actionShow("regester")}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faCog} onClick={() => props.actionShow("setting")}/>
                 </div>
@@ -346,10 +347,7 @@ class Nurture extends Component {
     constructor(props){
         super(props)
         
-        var tbl = new Array(7);
-        for(let y = 0; y < 7; y++) {
-          tbl[y] = new Array(6).fill(0);
-        }
+        var tbl  = [...Array(7)].map(k=>[...Array(6)].map(k=>0))
         var tblc = [...Array(7)].map(k=>[...Array(6)].map(k=>[...Array(3)].map(k=>0)))
 
         const now = new Date();
@@ -377,6 +375,22 @@ class Nurture extends Component {
             
         }
     }
+    //api叩く部分
+
+
+    getScheduleData(){
+        const ENDPOINT = 'http://localhost:3020'
+        
+        axios.get(ENDPOINT + '/api/v1/schedule')
+            .then(response => {
+                console.log(response.data);
+            })
+            .catch(() => {
+                console.log('通信に失敗しました');
+            });
+    }
+    
+    
     PopupMenu() {
         this.setState({popup: {regester: !this.state.popup.regester}});
     }
@@ -469,7 +483,7 @@ class Nurture extends Component {
     }
     render(){
         return(
-               <div>
+               <div onClick={() => this.getScheduleData()}>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} />
                     <div className="flex-jus-between fa-rap no-select">
                         <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>

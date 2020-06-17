@@ -10,7 +10,7 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイ�
 import { faLine } from "@fortawesome/free-brands-svg-icons"; //lineアイコン
 import { faTimes } from "@fortawesome/free-solid-svg-icons";//minusアイコン
 
-import DropDownMenu from './DropDownMenu'
+import DDMschedule from './DDMschedule'
 import GoogleAuthentication from './GoogleAuthentication'
 
 //datepicker
@@ -191,7 +191,7 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(2)}>授業の変更</div>
                     </div>
                     <div className="pcePopup-item adTaskbody">
-                        <DropDownMenu type={2} data={props.datas.schedules}/>
+                        <DDMschedule type={2} data={props.datas.schedules}/>
                         <div className="">
                             <FontAwesomeIcon icon={faClock} style={clock} />
                             <div className="calpointer"><Calender /></div>
