@@ -89,10 +89,12 @@ const Setting = (props) => {
                         <div>設定3</div>
                     </div>
                     <div className="pcePopup-item adTaskbody">
+                        <div>前学期</div>
                         <div className="flex-algin-center">
                             <FontAwesomeIcon icon={faClock} style={clock} />
                             <div className="calpointer"><Calender /></div> 〜 <div className="calpointer"><Calender /></div>
                         </div>
+                        <div>後学期</div>
                         <div className="flex-algin-center">
                             <FontAwesomeIcon icon={faClock} style={clock} />
                             <div className="calpointer"><Calender /></div> 〜 <div className="calpointer"><Calender /></div>

@@ -78,7 +78,7 @@ const WeekLine = (props) => {
                             <div className="fa-class-scedule" onClick={() => props.action.popupEdit(data.position)} >
                                 <div>
                                     <div>{data.title}</div>
-                                    <div className="classroom">107</div>
+                                    <div className="classroom">107教室</div>
                                     <div className="status">出席:{props.element.caCount[index][0]} 遅刻:{props.element.caCount[index][1]} 欠席:{props.element.caCount[index][2]}</div>
                                 </div>
                             </div>
@@ -417,14 +417,14 @@ class Nurture extends Component {
             caCount: tblc,
             schedules:[
                 {id:1, title:"人工知能1" ,CoNum:"G610628101" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:0 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:2, title:"人工知能1" ,CoNum:"G610628102" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:41 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:5, title:"臨床心理家族" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:1 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:6, title:"人工知能1" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:2 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:7, title:"人工知能1" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:3 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:8, title:"人工知能1" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:6 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:9, title:"人工知能1" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:19 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:10, title:"人工知能1" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:21 ,grade:3 ,status: "コース選択必修 コース選択"},
-                {id:10909, title:"人工知能1" ,CoNum:"G610628104" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:4 ,grade:3 ,status: "コース選択必修 コース選択"}
+                {id:2, title:"人工知能2" ,CoNum:"G610628102" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:41 ,grade:3 ,status: "コース選択必修 コース選択"},
+                {id:5, title:"臨床心理" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:1 ,grade:3 ,status: "コース選択必修 コース選択"},
+                {id:6, title:"Java" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:2 ,grade:3 ,status: "コース選択必修 コース選択"},
+                {id:7, title:"英語" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:3 ,grade:3 ,status: "コース選択必修 コース選択"},
+                {id:8, title:"離散数学" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:6 ,grade:3 ,status: "コース選択必修 コース選択"},
+                {id:9, title:"ロキソニン" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:19 ,grade:3 ,status: "コース選択必修 コース選択"},
+                {id:10, title:"高度オペ" ,CoNum:"G610628103" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:21 ,grade:3 ,status: "コース選択必修 コース選択"},
+                {id:10909, title:"一般教養" ,CoNum:"G610628104" ,teacher:"和泉　勇治" ,semester:"前学期"　,position:4 ,grade:3 ,status: "コース選択必修 コース選択"}
             ],
             seSchedule: {start_date:1,end_date:2}
             

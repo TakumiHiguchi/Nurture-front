@@ -21,7 +21,8 @@ export default class MonthLine extends Component {
         if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {lastday[1]++;}
         
         //１日の曜日取得
-        const firstYoubi = new Date(year+"/"+mon+"/1").getDay();
+        let firstYoubi = new Date(year+"/"+mon+"/1").getDay();
+        if(firstYoubi===0)firstYoubi=7;
         const fOf = [];
         for (let i = 0; i < firstYoubi - 1; i++) {
             fOf.push(
