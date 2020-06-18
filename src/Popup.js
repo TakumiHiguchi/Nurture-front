@@ -9,9 +9,11 @@ import { faGoogle} from "@fortawesome/free-brands-svg-icons";//Lineアイコン
 import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイコン
 import { faLine } from "@fortawesome/free-brands-svg-icons"; //lineアイコン
 import { faTimes } from "@fortawesome/free-solid-svg-icons";//minusアイコン
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";//矢印アイコン
 
 import DDMschedule from './DDMschedule'
 import GoogleAuthentication from './GoogleAuthentication'
+import DDMsearchPosition from './DDMsearchPosition'
 
 //datepicker
 import ja from 'date-fns/locale/ja';
@@ -33,8 +35,18 @@ const lineIcon = {
     color:"#Line",
     cursor: "pointer"
 }
-
-
+const pmArrow = {
+    fontSize:"0.9em",
+    color:"rgb(170, 170, 170)",
+    cursor: "pointer",
+    padding:"0 0 0 10",
+    height:"28px"
+}
+const pmcr = {
+    fontSize:"1em",
+    color:"rgb(170, 170, 170)",
+    cursor: "pointer"
+}
 
 export default class Popup extends Component {
     constructor(props){
@@ -80,7 +92,7 @@ export default class Popup extends Component {
                                                popupshowMnual: () => this.props.action.popupshowMnual(),
                                                addregesterId:(cd, array) => this.props.action.addregesterId(cd, array),
                                                regester: () => this.props.action.regester(),
-                                               getSchedule: (val) => this.props.action.getSchedule(val)
+                                               getSchedule: (val,position) => this.props.action.getSchedule(val,position)
                                                }}
                                        sceduleDatas = {{APIresult: this.props.sceduleDatas.APIresult, regesterIds: this.props.sceduleDatas.regesterIds, regesterElements: this.props.sceduleDatas.regesterElements}}/>
                    )
@@ -293,10 +305,17 @@ class Calender extends Component {
 class PopupClassRegester extends Component{
     constructor(props){
         super(props)
+        this.state={
+            moreSearch: false
+            
+        }
     }
     _esGetsc(event){
         let val = event.target.value;
-        this.props.action.getSchedule(val);
+        this.props.action.getSchedule(val,"");
+    }
+    togglesh(){
+        this.setState({moreSearch: !this.state.moreSearch})
     }
     render(){
         const dayString=["月","火","水","木","金","土","日"];
@@ -310,6 +329,13 @@ class PopupClassRegester extends Component{
                         <input type="text" placeholder="授業名や科目番号で検索" className="removeCss searchInput adSheduleInput"
                             onChange={(e) => this._esGetsc(e)} onBlur={(e) => this._esGetsc(e)}
                         />
+                        <div className={!this.state.moreSearch ? 'toggle_effect searchBox flex-align-center bgHyu' : 'toggle_effect_de searchBox flex bgHyu'} onClick={() => this.togglesh()}>
+                            <div className="moreSearchIb flex-jus-center">もっと詳しく検索する <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/></div>
+                        </div>
+                        <div className={this.state.moreSearch ? 'toggle_effect searchBox flex' : 'toggle_effect_de searchBox flex'} >
+                            <DDMsearchPosition />
+                            <div className="flex-jus-center crossSC" onClick={() => this.togglesh()}><FontAwesomeIcon icon={faTimes} style={pmcr}/></div>
+                        </div>
                         <div className="scedulesBox">
                            {APIresult.map((data) =>
                                 <div className="fa-schedule-enm flex" key={data.CoNum + data.title + data.id} onClick={() => this.props.action.addregesterId(data.id, data)}>

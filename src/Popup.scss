@@ -75,12 +75,61 @@ input.adSheduleInput{
     height:30px;
     width:calc(100% - 90px);
     font-size:1em;
-    margin:0 30px 20px;
+    margin:0 30px 10px;
     border:1px solid #e8e8e8;
 }
+.searchBox{
+    margin:0 30px 10px;
+    .moreSearchIb{
+        height: 26px;
+        cursor: pointer;
+        border: 1px solid rgb(170, 170, 170);
+        border-radius:5px;
+        padding: 0px 10px;
+        margin:0 0 0 10px;
+        font-size:0.9em;
+        color: rgb(170, 170, 170);
+    }
+}
+.crossSC{
+    height:28px;
+    width:28px;
+    border-radius:50%;
+    cursor: pointer;
+    &:hover{
+        background: #f8f8f8;
+    }
+}
+.bgHyu{
+    height:28px;
+}
+//表示非表示
+.toggle_effect{
+    animation-name:sample02;
+    animation-duration:0.5s;
+    animation-fill-mode: forwards;
+    display:flex;
+    transform: scale(1);
+}
+.toggle_effect_de{
+    pointer-events: none;
+    transform: scale(0);
+    display:none;
+}
+@keyframes sample02 {
+    0% {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 .scedulesBox{
     width:100%;
-    height:calc(100vh - 371px);
+    height:calc(100vh - 391px);
     border-top:1px solid #e8e8e8;
     overflow:auto;
     -ms-overflow-style: none;
@@ -390,3 +439,5 @@ div.cd {
         padding:10px 0;
     }
 }
+
+

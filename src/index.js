@@ -368,10 +368,17 @@ class Nurture extends Component {
     //api叩く部分
 
 
-    getScheduleData(val){
-        const ENDPOINT = 'http://localhost:3020'
+    getScheduleData(val,position){
         
-        axios.get(ENDPOINT + '/api/v1/schedule?q=' + val)
+        const ENDPOINT = 'http://localhost:3020'
+        let eq = "";
+        if(position > 0){
+            let eq = (position - 1).toString();
+        }else{
+            let eq = "";
+        }
+        
+        axios.get(ENDPOINT + '/api/v1/schedule?q=' + val + '&p=' + eq)
             .then(response => {
                 var scheduleDatas = response.data.schedules
                 this.setState({schedules:scheduleDatas})
@@ -393,7 +400,7 @@ class Nurture extends Component {
     }
     PopupToggle(type){
         switch (type){
-            case "regester": this.setState({popup: {regester: !this.state.popup.regester}});this.getScheduleData("");break;
+            case "regester": this.setState({popup: {regester: !this.state.popup.regester}});this.getScheduleData("","");break;
             case "addTask": this.setState({popup: {addTask: !this.state.popup.addTask}});break;
             case "setting": this.setState({popup: {setting: !this.state.popup.setting}});break;
             case "login": this.setState({popup: {login: !this.state.popup.login}});break;
@@ -511,7 +518,7 @@ class Nurture extends Component {
                                    action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
                                               addregesterId: (cd, array) => this.RegesterId(cd, array),
                                               regester: () => this.Regester(),
-                                              getSchedule: (val) => this.getScheduleData(val)
+                                              getSchedule: (val,position) => this.getScheduleData(val,position)
                                             }}
                                    sceduleDatas = {{APIresult: this.state.schedules, regesterIds: this.state.regesterIds, regesterElements: this.state.regesterElements}}/>
                     </div>
