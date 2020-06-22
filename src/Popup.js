@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import moment from 'moment'
+import { GoogleLogout } from 'react-google-login'; //googleログインのログアウト
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
 import { faClock } from '@fortawesome/free-regular-svg-icons';
@@ -16,6 +17,8 @@ import { faCalendarAlt } from "@fortawesome/free-regular-svg-icons";//カレン�
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";//情報
 import { faUsers } from "@fortawesome/free-solid-svg-icons";//ユーザー
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";//リンク
+import { faSignOutAlt,faBook } from "@fortawesome/free-solid-svg-icons";//サインアウト
+
 
 import DDMschedule from './DDMschedule'
 import GoogleAuthentication from './GoogleAuthentication'
@@ -29,6 +32,11 @@ registerLocale('ja', ja)
 const githubIcon = {
     fontSize:"1.3em",
     color:"#24292e",
+    cursor: "pointer"
+}
+const exLogout = {
+    fontSize:"1.2em",
+    color:"#494949",
     cursor: "pointer"
 }
 const exLink = {
@@ -106,7 +114,7 @@ export default class Popup extends Component {
                    )
         }else if(this.props.type == 3){
             return(
-                   <Login user={this.props.user} isPopup={this.props.status} action={{sec: (type) => this.sec(type) ,userSignin: (user,sns) => this.props.action.userSignin(user,sns)}}/>
+                   <Login user={this.props.user} isPopup={this.props.status} action={{sec: (type) => this.sec(type) ,userSignin: (user,sns) => this.props.action.userSignin(user,sns) ,logout: () => this.props.action.logout()}}/>
                    
                    )
         }else if(this.props.type == 4){
@@ -203,7 +211,21 @@ class UserDetail extends Component {
                                     <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={info} icon={faInfoCircle} /></div>
                                     N:urtureについて
                                 </div>
-                                
+                                <div className="menu flex">
+                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={info} icon={faBook} /></div>
+                                    API
+                                </div>
+                                <GoogleLogout
+                                  clientId="653992313170-okt2tfmukp5eg4s4g8fiaf6u3261a0ov.apps.googleusercontent.com"
+                                  render={renderProps => (
+                                    <div className="menu flex" onClick={renderProps.onClick} disabled={renderProps.disabled}>
+                                        <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={exLogout} icon={faSignOutAlt} /></div>
+                                        ログアウト
+                                    </div>
+                                  )}
+                                  buttonText="Logout"
+                                        onLogoutSuccess={() => this.props.logout()}
+                                />
                                 
                                 
                             </div>
@@ -223,7 +245,7 @@ class UserDetail extends Component {
 const Login = (props) => {
     if(props.user.session.length > 0){
         return(
-               <UserDetail isPopup={props.isPopup} action={() => props.action.sec(0)} user={props.user}/>
+               <UserDetail isPopup={props.isPopup} action={() => props.action.sec(0)} user={props.user} logout={() => props.action.logout()}/>
                
         )
     }else{

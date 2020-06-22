@@ -29,7 +29,7 @@ import SemesterCalender from './SemesterCalender'
 import DDMbodyChange from './DDMbodyChange'
 import * as serviceWorker from './serviceWorker';
 
-const ENDPOINT = 'http://localhost:3020'
+const ENDPOINT = 'https://nurture-api.herokuapp.com'
 
 //css
 const pmIcons = {
@@ -414,7 +414,17 @@ class Nurture extends Component {
         }
         
     }
-    
+    logout(){
+        //ログアウト
+        this.setState({user:{key:"",
+                            name: "ゲスト",
+                            imageURL:"",
+                            session:"",
+                            maxAge:0,
+                            mes:""
+        }});
+        this.setState({popup: {login: true}});
+    }
     PopupMenu() {
         this.setState({popup: {regester: !this.state.popup.regester}});
     }
@@ -539,7 +549,7 @@ class Nurture extends Component {
                         <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas}}/>
                         <Popup type={2} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.setting}/>
-                        <Popup type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns)}} status={this.state.popup.login}/>
+                        <Popup type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}/>
                         <Popup type={4} status={this.state.popup.regester}
                                    action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
                                               addregesterId: (cd, array) => this.RegesterId(cd, array),
