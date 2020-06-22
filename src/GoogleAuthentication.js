@@ -49,6 +49,7 @@ export default class GoogleAuthentication extends Component {
                     buttonText="ログイン"
                     onSuccess={this.responseGoogle}
                     onFailure={this.responseGoogle}
+                    isSignedIn={true}
                 />
        )
     }

@@ -7,9 +7,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresom
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 import { faGoogle} from "@fortawesome/free-brands-svg-icons";//Lineアイコン
 import { faTwitter } from "@fortawesome/free-brands-svg-icons"; //twitterアイコン
+import { faGithub } from "@fortawesome/free-brands-svg-icons"; //githubアイコン
 import { faLine } from "@fortawesome/free-brands-svg-icons"; //lineアイコン
 import { faTimes } from "@fortawesome/free-solid-svg-icons";//minusアイコン
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";//矢印アイコン
+
+import { faCalendarAlt } from "@fortawesome/free-regular-svg-icons";//カレンダー
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";//情報
+import { faUsers } from "@fortawesome/free-solid-svg-icons";//ユーザー
+import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";//リンク
 
 import DDMschedule from './DDMschedule'
 import GoogleAuthentication from './GoogleAuthentication'
@@ -20,10 +26,26 @@ import ja from 'date-fns/locale/ja';
 registerLocale('ja', ja)
 
 
-
+const githubIcon = {
+    fontSize:"1.3em",
+    color:"#24292e",
+    cursor: "pointer"
+}
+const exLink = {
+    fontSize:"1em",
+    color:"#494949",
+    cursor: "pointer"
+}
+const info = {
+    fontSize:"1.3em",
+    color:"#00aced",
+    cursor: "pointer"
+}
 const clock = {
     fontSize:"1em",
     margin:"0 15 0 5"
+}
+const calendar={
 }
 const twitterIcon = {
     fontSize:"1.5em",
@@ -133,17 +155,75 @@ const Setting = (props) => {
     )
 }
 
+class UserDetail extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+            drop:{github:false}
+        }
+    }
+    render(){
+        return(
+               <div className={this.props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
+                    <div className="popup_wrap" onClick={() => this.props.action(1) }></div>
+                    <div className="userDetailwhir flex">
+                        <div class="userDetailBox">
+                            <div className="iconBox flex-jus-center">
+                                <div className="userIcon"><img src={this.props.user.imageURL} /></div>
+                            </div>
+                            <div className="userName flex-jus-center">{this.props.user.name}</div>
+                            <div className="flex-jus-center"><div className="userKey flex">{this.props.user.key}</div></div>
+                            <div className="flex-jus-center nsB"><div className="nurtureSettingB flex-jus-center">Nurtureの設定</div></div>
+                            <div className="menuBox">
+                                <a href="https://portal.upex.ce.nihon-u.ac.jp/up/faces/login/Com00501A.jsp" className="menu flex">
+                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={exLink} icon={faExternalLinkAlt} /></div>
+                                    日本大学工学部ポータルサイト
+                                </a>
+                                <a href="https://classroom.google.com/u/0/h" className="menu flex">
+                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={githubIcon} icon={faUsers} /></div>
+                                    GoogleClassroom
+                                </a>
+                                <a href="https://calendar.google.com/calendar/" className="menu flex">
+                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={githubIcon} icon={faCalendarAlt} /></div>
+                                        Googleカレンダー
+                                </a>
+                                <div className="menu flex" onClick={() => this.setState({drop:{github:!this.state.drop.github}})}>
+                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={githubIcon} icon={faGithub} /></div>
+                                    N:urture Githubレポジトリ
+                                </div>
+                                <div className={this.state.drop.github ? 'toggle_effect' : 'toggle_effect_de'} >
+                                    <div className="sContentBox">
+                                        <p>N:urtureは、フロントエンド、バックエンドの全てのソースコードを公開しています。</p>
+                                        <p>N:urture（web版)の主な使用言語はフロントエンド: React、JSX バックエンド: Java、Ruby(API)です。</p>
+                                        <a href="https://github.com/TakumiHiguchi/Nurture-front" className="nurtureGithubB flex-jus-center">N:urture-front-end Repository</a>
+                                        <a href="https://github.com/TakumiHiguchi/Nurture-backendAPI" className="nurtureGithubB flex-jus-center">N:urture-API Repository</a>
+                                    </div>
+                                </div>
+                                <div className="menu flex">
+                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={info} icon={faInfoCircle} /></div>
+                                    N:urtureについて
+                                </div>
+                                
+                                
+                                
+                            </div>
+                        </div>
+                       <div class="newsBox">
+                           <h2>{this.props.user.mes}</h2>
+                           
+                       </div>
+                    </div>
+                </div>
+               
+        )
+    }
+    
+}
+
 const Login = (props) => {
     if(props.user.session.length > 0){
         return(
-               <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
-                    <div className="popup_wrap" onClick={() => props.action.sec(0) }></div>
-                    <div className="logwhir">
-                        <div class="her-right">
-                            <div>{props.user.mes}</div>
-                        </div>
-                    </div>
-                </div>
+               <UserDetail isPopup={props.isPopup} action={() => props.action.sec(0)} user={props.user}/>
                
         )
     }else{
