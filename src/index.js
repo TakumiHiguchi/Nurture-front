@@ -29,6 +29,8 @@ import SemesterCalender from './SemesterCalender'
 import DDMbodyChange from './DDMbodyChange'
 import * as serviceWorker from './serviceWorker';
 
+const ENDPOINT = 'http://localhost:3020'
+
 //css
 const pmIcons = {
     fontSize:"1.2em",
@@ -230,6 +232,7 @@ const Header = (props) => {
                     <DDMbodyChange action={(mode) => props.action(mode)} type={1}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faPlus} onClick={() => props.actionShow("regester")}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faCog} onClick={() => props.actionShow("setting")}/>
+                    <div className="headerIcon"><img src={props.user.imageURL} /></div>
                 </div>
            </header>
     )
@@ -353,6 +356,7 @@ class Nurture extends Component {
         const now = new Date();
         this.state = {
             page:"week",
+        user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:""},
             popup:{regester:false, editSchedule:false,manual: false,addTask:false,setting:false,login:true},
             select:{year: now.getFullYear(),month: now.getMonth()+1},
             selectPopup:0,
@@ -369,8 +373,7 @@ class Nurture extends Component {
 
 
     getScheduleData(val,position){
-        
-        const ENDPOINT = 'http://localhost:3020'
+        //スケジュール取得APIを叩く部分
         let eq = "";
         if(position > 0){
             let eq = (position - 1).toString();
@@ -388,6 +391,29 @@ class Nurture extends Component {
             });
     }
     
+    userSignin(user,sns){
+        //ユーザーのログイン等処理APIを叩く部分
+        if(sns == "Google"){
+            var profile = user.getBasicProfile();
+            var id_token = user.getAuthResponse().id_token;
+            
+            axios.get(ENDPOINT + '/api/v1/userLogin?token=' + id_token)
+            .then(response => {
+                var user = response
+                this.setState({user:{key:user.data.userKey,
+                                    name: user.data.userName,
+                                    imageURL:user.data.pictureURL,
+                                    session:user.data.session,
+                                    maxAge:user.data.maxAge,
+                                    mes:user.data.mes
+                }});
+            })
+            .catch(() => {
+                console.log('通信に失敗しました');
+            });
+        }
+        
+    }
     
     PopupMenu() {
         this.setState({popup: {regester: !this.state.popup.regester}});
@@ -482,7 +508,7 @@ class Nurture extends Component {
     render(){
         return(
                <div>
-                    <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} />
+                    <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">
                         <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
                         <Body pageData={this.state.page}
@@ -513,7 +539,7 @@ class Nurture extends Component {
                         <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas}}/>
                         <Popup type={2} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.setting}/>
-                        <Popup type={3} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.login}/>
+                        <Popup type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns)}} status={this.state.popup.login}/>
                         <Popup type={4} status={this.state.popup.regester}
                                    action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
                                               addregesterId: (cd, array) => this.RegesterId(cd, array),

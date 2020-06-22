@@ -63,6 +63,8 @@ export default class Popup extends Component {
         if(type === 1){
             this.props.action.PopupToggle("login");
             this.props.action.PopupToggle("login-dn");
+        }else{
+            this.props.action.PopupToggle("login");
         }
     }
     
@@ -82,7 +84,7 @@ export default class Popup extends Component {
                    )
         }else if(this.props.type == 3){
             return(
-                   <Login isPopup={this.props.status} action={(type) => this.sec(type)}/>
+                   <Login user={this.props.user} isPopup={this.props.status} action={{sec: (type) => this.sec(type) ,userSignin: (user,sns) => this.props.action.userSignin(user,sns)}}/>
                    
                    )
         }else if(this.props.type == 4){
@@ -132,26 +134,40 @@ const Setting = (props) => {
 }
 
 const Login = (props) => {
-    return(
-           <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
-                <div className="popup_wrap" ></div>
-                <div className="logwhir">
-                    <div class="her-right">
-                        <h2>N:urture</h2>
-                        <p class="clx">今すぐログインして、自分の予定を管理したり、タスクを追加してみたりしましょう。</p>
-                        <GoogleAuthentication />
-                        <p class="ghi hrm"><span>または</span></p>
-                        <a class="linkBox-twitter hrm" href=""><FontAwesomeIcon style={twitterIcon} icon={faTwitter} /> twitterでログイン</a>
-                        <a class="linkBox-line hrm" href=""><FontAwesomeIcon style={lineIcon} icon={faLine} /> Lineでログイン</a>
-                        <div class="new_user" >
-                            <p class="cls">ログインすることにより、N:urture利用規約、データーに関するポリシーに同意したものとみなされます。</p>
-                            <p class="alg">アカウントをお持ちではありませんか？<p onClick={() => props.action(1) }>保存しないで利用する</p></p>
+    if(props.user.session.length > 0){
+        return(
+               <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
+                    <div className="popup_wrap" onClick={() => props.action.sec(0) }></div>
+                    <div className="logwhir">
+                        <div class="her-right">
+                            <div>{props.user.mes}</div>
                         </div>
                     </div>
                 </div>
-            </div>
-           
-    )
+               
+        )
+    }else{
+        return(
+               <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
+                    <div className="popup_wrap" ></div>
+                    <div className="logwhir">
+                        <div class="her-right">
+                            <h2>N:urture</h2>
+                            <p class="clx">今すぐログインして、自分の予定を管理したり、タスクを追加してみたりしましょう。</p>
+                            <GoogleAuthentication action={(user,sns) => props.action.userSignin(user,sns)}/>
+                            <p class="ghi hrm"><span>または</span></p>
+                            <a class="linkBox-twitter hrm" href=""><FontAwesomeIcon style={twitterIcon} icon={faTwitter} /> twitterでログイン</a>
+                            <a class="linkBox-line hrm" href=""><FontAwesomeIcon style={lineIcon} icon={faLine} /> Lineでログイン</a>
+                            <div class="new_user" >
+                                <p class="cls">ログインすることにより、N:urture利用規約、データーに関するポリシーに同意したものとみなされます。</p>
+                                <p class="alg">アカウントをお持ちではありませんか？<p onClick={() => props.action.sec(1) }>保存しないで利用する</p></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+        )
+    }
     
 }
 
