@@ -124,7 +124,12 @@
         }
         .newsBox{
             width:calc(67% - 1px);
-            
+            h2{
+                width:100%;
+                font-weight:bold;
+                font-size:1.2em;
+                padding:20px 0 0;
+            }
         }
     }
     .pceWhir{
@@ -217,29 +222,7 @@ input.adSheduleInput{
 .bgHyu{
     height:28px;
 }
-//表示非表示
-.toggle_effect{
-    animation-name:sample02;
-    animation-duration:0.5s;
-    animation-fill-mode: forwards;
-    display:flex;
-    transform: scale(1);
-}
-.toggle_effect_de{
-    pointer-events: none;
-    transform: scale(0);
-    display:none;
-}
-@keyframes sample02 {
-    0% {
-        opacity: 0;
-        transform: translateX(-10px);
-    }
-    100%{
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
+
 
 .scedulesBox{
     width:100%;
@@ -555,3 +538,68 @@ div.cd {
 }
 
 
+//effect
+//表示非表示
+.toggle_effect{
+    animation-name:leftToright01;
+    animation-duration:0.5s;
+    animation-fill-mode: forwards;
+    display:flex;
+    transform: scale(1);
+}
+.toggle_effect_de{
+    animation-name:leftTorightBack01;
+    animation-duration:0.5s;
+    animation-fill-mode: forwards;
+    pointer-events: none;
+    transform: scale(0);
+    display:none;
+}
+.popup_toggle_effect{
+    animation-name:leftToright01;
+    animation-duration:1s;
+    animation-fill-mode: forwards;
+    transform: scale(1);
+}
+.popup_toggle_effect_de{
+    animation-name:leftTorightBack02;
+    animation-duration:1s;
+    animation-fill-mode: forwards;
+    pointer-events: none;
+    transform: scale(0);
+}
+@keyframes leftToright01 {
+    0% {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+@keyframes leftTorightBack01 {
+    0% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+    100%{
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+}
+@keyframes leftTorightBack02 {
+    0% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+    50%{
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    100%{
+        opacity: 0;
+        transform: translateX(-10px);
+        height:0;
+    }
+}

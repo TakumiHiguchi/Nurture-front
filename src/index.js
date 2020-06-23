@@ -29,7 +29,8 @@ import SemesterCalender from './SemesterCalender'
 import DDMbodyChange from './DDMbodyChange'
 import * as serviceWorker from './serviceWorker';
 
-const ENDPOINT = 'https://nurture-api.herokuapp.com'
+const ENDPOINT = 'http://localhost:3020'
+//'https://nurture-api.herokuapp.com'
 
 //css
 const pmIcons = {
@@ -356,7 +357,7 @@ class Nurture extends Component {
         const now = new Date();
         this.state = {
             page:"week",
-        user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:""},
+            user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:3},
             popup:{regester:false, editSchedule:false,manual: false,addTask:false,setting:false,login:true},
             select:{year: now.getFullYear(),month: now.getMonth()+1},
             selectPopup:0,
@@ -390,6 +391,21 @@ class Nurture extends Component {
                 console.log('通信に失敗しました');
             });
     }
+    loadUserSchedule(key ,session){
+        //ユーザーのスケジュールを取得する部分
+        axios.get(ENDPOINT + '/api/v1/loadSchedule?key='+ key +'&session='+ session)
+            .then(response => {
+                console.log(response.data.schedules);
+                console.log(response.data.mes);
+                console.log(key);
+                console.log(session);
+            })
+            .catch(() => {
+                console.log('通信に失敗しました');
+            });
+        
+        
+    }
     
     userSignin(user,sns){
         //ユーザーのログイン等処理APIを叩く部分
@@ -397,7 +413,7 @@ class Nurture extends Component {
             var profile = user.getBasicProfile();
             var id_token = user.getAuthResponse().id_token;
             
-            axios.get(ENDPOINT + '/api/v1/userLogin?token=' + id_token)
+            axios.get(ENDPOINT + '/api/v1/userLogin?token=' + id_token +'&sns=google')
             .then(response => {
                 var user = response
                 this.setState({user:{key:user.data.userKey,
@@ -405,8 +421,11 @@ class Nurture extends Component {
                                     imageURL:user.data.pictureURL,
                                     session:user.data.session,
                                     maxAge:user.data.maxAge,
-                                    mes:user.data.mes
+                                    mes:user.data.mes,
+                                    grade:3
                 }});
+                
+                this.loadUserSchedule(user.data.userKey ,user.data.session);
             })
             .catch(() => {
                 console.log('通信に失敗しました');
@@ -504,15 +523,35 @@ class Nurture extends Component {
             let w = Math.floor(element.position / 6)
             let d = (element.position % 6)
                                  
-            if(regesArray[w][d] == 0){
-                regesArray[w][d] = element
+            if(regesArray[w][d] == 0 && this.state.user.maxAge > (new Date().getTime() / 1000) ){
+                
+                axios.post(ENDPOINT + '/api/v1/setUserSchedule', {
+                               title: element.title,
+                               teacher: element.teacher,
+                               semester: element.semester,
+                               position: element.position,
+                               grade: element.grade,
+                               key: this.state.user.key,
+                               session: this.state.user.session,
+                               user_grade: this.state.user.grade
+                           })
+                .then(response => {
+                    console.log(response.data.mes);
+                    
+                    if(response.data.status == "SUCCESS"){
+                        regesArray[w][d] = element
+                        this.setState({
+                            caDatas: regesArray,
+                            regesterIds: [],
+                            regesterElements: []
+                        })
+                    }
+                })
+                .catch(() => {
+                    console.log('通信に失敗しました');
+                });
             }
         }
-        this.setState({
-                      caDatas: regesArray,
-                      regesterIds: [],
-                      regesterElements: [],
-                      })
         this.PopupMenu()
     }
     render(){

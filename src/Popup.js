@@ -172,7 +172,7 @@ class UserDetail extends Component {
     }
     render(){
         return(
-               <div className={this.props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
+               <div className={this.props.isPopup ? 'popup popup_toggle_effect' : 'popup popup_toggle_effect_de'} >
                     <div className="popup_wrap" onClick={() => this.props.action(1) }></div>
                     <div className="userDetailwhir flex">
                         <div class="userDetailBox">
@@ -231,7 +231,7 @@ class UserDetail extends Component {
                             </div>
                         </div>
                        <div class="newsBox">
-                           <h2>{this.props.user.mes}</h2>
+                           <h2 className="flex-jus-center">{this.props.user.mes}</h2>
                            
                        </div>
                     </div>
