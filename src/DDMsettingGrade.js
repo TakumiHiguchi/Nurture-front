@@ -29,12 +29,10 @@ class DDMsettingGrade extends Component{
      }
     
      handleClickMenu(val) {
-         let ofs = "";
-         if(this.props.element.grade == val){
-             ofs = "（現在）";
-         }
+         let ofs = "（現在）";
          switch(val){
              case 1: {
+                 this.props.action(1)
                  this.setState({
                     nLp:"1学年"+ofs,
                     listOpen: false
@@ -42,6 +40,7 @@ class DDMsettingGrade extends Component{
                  break;
              }
              case 2: {
+                 this.props.action(2)
                  this.setState({
                     nLp:"2学年"+ofs,
                     listOpen: false
@@ -49,6 +48,7 @@ class DDMsettingGrade extends Component{
                  break;
              }
              case 3: {
+                 this.props.action(3)
                  this.setState({
                     nLp:"3学年"+ofs,
                     listOpen: false
@@ -56,6 +56,7 @@ class DDMsettingGrade extends Component{
                  break;
              }
              case 4: {
+                 this.props.action(4)
                  this.setState({
                     nLp:"4学年"+ofs,
                     listOpen: false
@@ -63,6 +64,7 @@ class DDMsettingGrade extends Component{
                  break;
              }
              case 5: {
+                 this.props.action(5)
                  this.setState({
                     nLp:"5学年"+ofs,
                     listOpen: false
@@ -70,6 +72,7 @@ class DDMsettingGrade extends Component{
                  break;
              }
              case 6: {
+                 this.props.action(6)
                  this.setState({
                     nLp:"6学年"+ofs,
                     listOpen: false
@@ -77,6 +80,7 @@ class DDMsettingGrade extends Component{
                  break;
              }
              case 7: {
+                 this.props.action(7)
                  this.setState({
                     nLp:"7学年"+ofs,
                     listOpen: false
@@ -84,6 +88,7 @@ class DDMsettingGrade extends Component{
                  break;
              }
              case 8: {
+                 this.props.action(8)
                  this.setState({
                     nLp:"8学年"+ofs,
                     listOpen: false
@@ -91,6 +96,7 @@ class DDMsettingGrade extends Component{
                  break;
              }
              case 9: {
+                 this.props.action(9)
                  this.setState({
                     nLp:"9学年"+ofs,
                     listOpen: false
@@ -98,6 +104,7 @@ class DDMsettingGrade extends Component{
                  break;
              }
              case 10: {
+                 this.props.action(10)
                  this.setState({
                     nLp:"10学年"+ofs,
                     listOpen: false

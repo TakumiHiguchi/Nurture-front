@@ -358,7 +358,7 @@ class Nurture extends Component {
         const now = new Date();
         this.state = {
             page:"week",
-            user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:3},
+            user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1},
             popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
             select:{year: now.getFullYear(),month: now.getMonth()+1},
             selectPopup:0,
@@ -394,7 +394,7 @@ class Nurture extends Component {
     }
     loadUserSchedule(key ,session){
         //ユーザーのスケジュールを取得する部分
-        axios.get(ENDPOINT + '/api/v1/loadSchedule?key='+ key +'&session='+ session)
+        axios.get(ENDPOINT + '/api/v1/loadUserDetail?key='+ key +'&session='+ session)
             .then(response => {
                 console.log(response.data.schedules);
                 console.log(response.data.mes);
@@ -406,6 +406,23 @@ class Nurture extends Component {
             });
         
         
+    }
+    setGrade(select){
+        //学年を設定する
+        axios.post(ENDPOINT + '/api/v1/setGrade', {
+            grade: select,
+            key: this.state.user.key,
+            session: this.state.user.session
+        })
+        .then(response => {
+            var user = response
+            var ins = this.state.user
+            ins.grade = select
+            this.setState({user:ins});
+        })
+        .catch(() => {
+            console.log('通信に失敗しました');
+        });
     }
     
     userSignin(user,sns){
@@ -558,6 +575,7 @@ class Nurture extends Component {
     render(){
         return(
                <div>
+               <SettingPage action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select)}} status={this.state.popup.setting} element={{user:this.state.user}}/>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">
                         <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
@@ -586,7 +604,7 @@ class Nurture extends Component {
                                                                     
                                                                                      
                         />
-                        <SettingPage action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.setting} />
+                        
                         <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas}}/>
                         <Popup type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}/>

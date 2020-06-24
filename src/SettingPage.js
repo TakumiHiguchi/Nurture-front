@@ -33,15 +33,15 @@ export default class SettingPage extends Component {
         return(
                <div className={this.props.status ? 'popup popup_effect' : 'popup popup_effect_de'} >
                 <div className="settingWhir no-select">
-                    <h2 className="setting_h2 flex-align-center" onClick={() => this.props.action.PopupToggle("setting") }>
-                        <div className="backButtonBlock flex-jus-center">
+                    <h2 className="setting_h2 flex-align-center" >
+                        <div className="backButtonBlock flex-jus-center" onClick={() => this.props.action.PopupToggle("setting") }>
                             <FontAwesomeIcon icon={faArrowLeft} style={FASiconsstyle.arrowLeft} />
                         </div>
                         設定
                     </h2>
                     <div className="flex">
                         <Sidebar />
-                        <Body />
+                        <Body element={this.props.element} action={{setGrade: (select) => this.props.action.setGrade(select)}}/>
                     </div>
                     <div className="pageIndexBox flex">
                         <div className="aTindexactive">授業開始日の登録</div>
@@ -64,12 +64,12 @@ class Body extends Component{
                <main className="bodyWrap">
                     <section className="settingBody">
                         <h2 className="menu flex-algin-center">現在の学年</h2>
-                        <DDMsettingGrade element={{grade: 3}}/>
+                        <DDMsettingGrade element={{grade: this.props.element.user.grade}} action={(select) => this.props.action.setGrade(select)}/>
                         <p className="secline">ここで選択された学年のスケジュールが、カレンダーに表示されます。</p>
                     </section>
                     <section className="settingBody">
                         <h2 className="menu flex-algin-center">授業開始日</h2>
-                        <DDMsettingGrade element={{grade: 3}}/>
+                        <DDMsettingGrade element={{grade: this.props.element.user.grade}}/>
                         <div className="flex-align-center semeswrap">
                             <div className="semesLabel">前学期</div>
                             <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
