@@ -17,3 +17,16 @@
     background-position: initial initial;
     background-repeat: initial initial;
 }
+.dropMenuGrade{
+    position: absolute;
+    top: 50px;
+    left: 0px;
+    width: 200px;
+    padding:10px 0;
+    z-index: 1;
+    cursor: pointer;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 4px;
+    background-position: initial initial;
+    background-repeat: initial initial;
+}

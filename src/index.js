@@ -24,6 +24,7 @@ import './toppage.scss';
 import './Popup.scss';
 
 import Popup from './Popup'
+import SettingPage from './SettingPage'
 import MonthCalender from './MonthCalender'
 import SemesterCalender from './SemesterCalender'
 import DDMbodyChange from './DDMbodyChange'
@@ -358,7 +359,7 @@ class Nurture extends Component {
         this.state = {
             page:"week",
             user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:3},
-            popup:{regester:false, editSchedule:false,manual: false,addTask:false,setting:false,login:true},
+            popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
             select:{year: now.getFullYear(),month: now.getMonth()+1},
             selectPopup:0,
             regesterIds:[],
@@ -585,9 +586,9 @@ class Nurture extends Component {
                                                                     
                                                                                      
                         />
+                        <SettingPage action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.setting} />
                         <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas}}/>
-                        <Popup type={2} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.setting}/>
                         <Popup type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}/>
                         <Popup type={4} status={this.state.popup.regester}
                                    action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),

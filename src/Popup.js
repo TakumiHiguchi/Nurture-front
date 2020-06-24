@@ -109,8 +109,7 @@ export default class Popup extends Component {
                    )
         }else if(this.props.type == 2){
             return(
-                   <Setting isPopup={this.props.status} action={() => this.props.action.PopupToggle("setting")}/>
-                   
+                    <div></div>
                    )
         }else if(this.props.type == 3){
             return(
@@ -132,36 +131,7 @@ export default class Popup extends Component {
     }
     
 }
-const Setting = (props) => {
-    return(
-           <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
-                <div className="popup_wrap" onClick={() => props.action() }></div>
-                <div className="whir no-select">
-                    <h2 className="add_scedule">設定</h2>
-                    <div className="pageIndexBox flex">
-                        <div className="aTindexactive">授業開始日の登録</div>
-                        <div>学年の登録</div>
-                        <div>設定1</div>
-                        <div>設定2</div>
-                        <div>設定3</div>
-                    </div>
-                    <div className="pcePopup-item adTaskbody">
-                        <div>前学期</div>
-                        <div className="flex-algin-center">
-                            <FontAwesomeIcon icon={faClock} style={clock} />
-                            <div className="calpointer"><Calender /></div> 〜 <div className="calpointer"><Calender /></div>
-                        </div>
-                        <div>後学期</div>
-                        <div className="flex-algin-center">
-                            <FontAwesomeIcon icon={faClock} style={clock} />
-                            <div className="calpointer"><Calender /></div> 〜 <div className="calpointer"><Calender /></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-           
-    )
-}
+
 
 class UserDetail extends Component {
     constructor(props){

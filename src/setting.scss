@@ -1,0 +1,87 @@
+section.settingBody{
+    margin-bottom:40px;
+}
+.secline{
+    font-size:0.8em;
+    color:#aaa;
+    margin:10px 0 0 0;
+    a{
+        display:inline-block;
+        margin:0 3px;
+        text-decoration:none;
+        color:#4285f4;
+        cursor: pointer;
+        &:hover{
+            text-decoration:underline;
+        }
+    }
+}
+.semeswrap{
+    padding:10px 0 0 0;
+    .semesLabel{
+        margin:0 50px 0 0;
+    }
+}
+.settingWhir{
+    height:100vh;
+    width:100vw;
+    background:white;
+    .setting_h2{
+        width:calc(100% - 40px);
+        height:50px;
+        padding:0px 20px;
+        color:#aaa;
+        font-size:1.2em;
+        border-bottom:1px solid #f0f0f0;
+        .backButtonBlock{
+            margin-right:10px;
+            height:37px;
+            width:37px;
+            border-radius:50%;
+            cursor: pointer;
+            color:#aaa;
+            &:hover{
+                background:#f8f8f8;
+            }
+        }
+    }
+}
+.bodyWrap{
+    width:calc(100% - 334px);
+    height:calc(100vh - 40px);
+    padding:20px 30px;
+    h2{
+        color:#aaa;
+        font-size:1.1em;
+        margin-bottom:10px;
+    }
+}
+
+.sidebarWrap{
+    width:275px;
+    height:calc(100vh - 40px);
+    padding:20px 0;
+    .menu{
+        width:calc(100% - 40px);
+        padding:10px 20px;
+        cursor: pointer;
+        border-radius:0 10px 10px 0;
+        &:hover{
+            background:#e0f8ff;
+        }
+    }
+    .active{
+        background:#e0f8ff;
+    }
+}
+
+.calpoint{
+    display:inline-block;
+    cursor: pointer;
+    padding:5px 10px;
+    margin:0 5px;
+    &:hover{
+        background:#f8f8f8;
+        border-radius:5px;
+    }
+}
