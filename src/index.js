@@ -354,11 +354,13 @@ class Nurture extends Component {
         
         var tbl  = [...Array(7)].map(k=>[...Array(6)].map(k=>0))
         var tblc = [...Array(7)].map(k=>[...Array(6)].map(k=>[...Array(3)].map(k=>0)))
+        var insp = {fhSemester1: "", fhSemester2: "", lateSemester1: "", lateSemmester2: ""}
+        var insSP = [...Array(10)].map(k=>insp)
 
         const now = new Date();
         this.state = {
             page:"week",
-            user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1},
+            user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:0},
             popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
             select:{year: now.getFullYear(),month: now.getMonth()+1},
             selectPopup:0,
@@ -367,7 +369,8 @@ class Nurture extends Component {
             caDatas: tbl,
             caCount: tblc,
             schedules:[],
-            seSchedule: {start_date:1,end_date:2}
+            seSchedule: {start_date:1,end_date:2},
+            semesterPeriod:insSP,
             
         }
     }
@@ -400,6 +403,7 @@ class Nurture extends Component {
                 console.log(response.data.mes);
                 console.log(key);
                 console.log(session);
+                
             })
             .catch(() => {
                 console.log('通信に失敗しました');
@@ -407,6 +411,7 @@ class Nurture extends Component {
         
         
     }
+    
     setGrade(select){
         //学年を設定する
         axios.post(ENDPOINT + '/api/v1/setGrade', {
@@ -419,6 +424,30 @@ class Nurture extends Component {
             var ins = this.state.user
             ins.grade = select
             this.setState({user:ins});
+            console.log(response.data.mes);
+        })
+        .catch(() => {
+            console.log('通信に失敗しました');
+        });
+    }
+    
+    setSemesterDate(date1,date2,date3,date4,grade){
+        //学年ごとの期間を設定する
+        axios.post(ENDPOINT + '/api/v1/setSemesterDate', {
+            date1:date1,
+            date2:date2,
+            date3:date3,
+            date4:date4,
+            grade: grade,
+            key: this.state.user.key,
+            session: this.state.user.session
+        })
+        .then(response => {
+            //var user = response
+            //var ins = this.state.semesterPeriod
+            //ins[grade - 1] = select
+            //this.setState({semesterPeriod:response.data.semesterPeriod});
+            console.log(response.data.mes);
         })
         .catch(() => {
             console.log('通信に失敗しました');
@@ -440,10 +469,16 @@ class Nurture extends Component {
                                     session:user.data.session,
                                     maxAge:user.data.maxAge,
                                     mes:user.data.mes,
-                                    grade:3
+                                    grade:user.data.grade
                 }});
                 
+                this.setState({semesterPeriod:response.data.semesterPeriod});
+                console.log(this.state.semesterPeriod);
+                
+                
                 this.loadUserSchedule(user.data.userKey ,user.data.session);
+                
+                this.setSemesterDate("2020-2-1","2020-3-1","2020-5-1","2020-9-1",3)
             })
             .catch(() => {
                 console.log('通信に失敗しました');
@@ -575,9 +610,11 @@ class Nurture extends Component {
     render(){
         return(
                <div>
-               <SettingPage action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select)}} status={this.state.popup.setting} element={{user:this.state.user}}/>
+               
+                    <SettingPage action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select)}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">
+                        
                         <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
                         <Body pageData={this.state.page}
                             scheduleDatas={this.state.caDatas}
