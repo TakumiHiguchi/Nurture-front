@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,useState } from 'react';
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker"
 import moment from 'moment'
 
@@ -41,7 +41,9 @@ export default class SettingPage extends Component {
                     </h2>
                     <div className="flex">
                         <Sidebar />
-                    <Body element={{user:this.props.element.user,semesterDate: this.props.element.semesterDate}} action={{setGrade: (select) => this.props.action.setGrade(select)}}/>
+                    <Body element={{user:this.props.element.user,semesterDate: this.props.element.semesterDate}} action={{setGrade: (select) => this.props.action.setGrade(select)}}
+                        regesSemesterDate = {(date,position) => this.props.regesSemesterDate(date,position)}
+                    />
                     </div>
                     <div className="pageIndexBox flex">
                         <div className="aTindexactive">授業開始日の登録</div>
@@ -63,16 +65,54 @@ class Body extends Component{
     constructor(props){
         super(props);
         this.state={
-            semesterDateGrade:3
+            semesterDateGrade:1
         }
         
     }
     
-    setDate(date,position){
-        console.log(date);
+    parDate(target){
+        var dateSeme = target.split('/');
+        let stDate = new Date();
+        if(dateSeme.length == 3){
+            stDate = new Date(dateSeme[0],dateSeme[1] - 1,dateSeme[2]);
+        }
+        return stDate
     }
     
+    setDate(date,position){
+        let target = this.props.element.semesterDate[this.state.semesterDateGrade - 1]
+        
+        switch(position){
+            case 1: {
+                if(this.parDate(target[1]) > this.parDate(date)){
+                    target[0] = date;
+                    this.props.regesSemesterDate(target,this.state.semesterDateGrade);
+                }
+            }
+            case 2:{
+                if(this.parDate(date) > this.parDate(target[0]) && this.parDate(date) < this.parDate(target[2])){
+                    target[1] = date;
+                    this.props.regesSemesterDate(target,this.state.semesterDateGrade);
+                }
+            }
+            case 3:{
+                if(this.parDate(date) > this.parDate(target[1]) && this.parDate(date) < this.parDate(target[3])){
+                    target[2] = date;
+                    this.props.regesSemesterDate(target,this.state.semesterDateGrade);
+                }
+            }
+            case 4:{
+                if(this.parDate(date) > this.parDate(target[2]) ){
+                    target[3] = date;
+                    this.props.regesSemesterDate(target,this.state.semesterDateGrade);
+                }
+            }
+        }
+    }
+    
+
     render(){
+        var semeDate = this.props.element.semesterDate[this.state.semesterDateGrade - 1];
         return(
                <main className="bodyWrap">
                     <section className="settingBody">
@@ -86,12 +126,18 @@ class Body extends Component{
                         <div className="flex-align-center semeswrap">
                             <div className="semesLabel">前学期</div>
                             <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
-                        <div className="calpoint"><Calender element={this.props.element.semesterDate[this.state.semesterDateGrade - 1].fhSemester1} action={(date) => this.setDate(date,1)}/></div> 〜 <div className="calpoint"><Calender element={this.props.element.semesterDate[this.state.semesterDateGrade - 1].fhSemester2} action={(date) => this.setDate(date,2)}/></div>
+                            <DateRangeDatePicker date={{start:this.parDate(semeDate[0]),end:this.parDate(semeDate[1])}}
+                                action={(date,select) => this.setDate(date,select)}
+                                start={1}
+                            />
                         </div>
                         <div className="flex-align-center semeswrap">
                             <div className="semesLabel">後学期</div>
                             <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
-                        <div className="calpoint"><Calender element={this.props.element.semesterDate[this.state.semesterDateGrade - 1].lateSemester1} action={(date) => this.setDate(date,3)}/></div> 〜 <div className="calpoint"><Calender element={this.props.element.semesterDate[this.state.semesterDateGrade - 1].lateSemmester2} action={(date) => this.setDate(date,4)}/></div>
+                            <DateRangeDatePicker date={{start:this.parDate(semeDate[2]),end:this.parDate(semeDate[3])}}
+                                action={(date,select) => this.setDate(date,select)}
+                                start={3}
+                            />
                         </div>
                         <p className="secline">ここで選択された日時をもとに、カレンダーにスケジュールを表示します。</p>
                         <p className="secline">不正な日時であった場合登録されません。登録条件については<a>ヘルプ: 授業開始日の登録について</a>をご覧ください。</p>
@@ -118,39 +164,50 @@ const Sidebar = (props) => {
     
 }
 
-class Calender extends Component {
-  state = {
-    startDate: new Date()
-  };
- 
-  handleChange = date => {
-      //親のアクションを呼ぶ
-      this.props.action(this.parseAsMoment(date).format('YYYY/MM/DD'));
-  };
-  parseAsMoment = (dateTimeStr) => {
-    //dateオブジェクトから変換
-    return moment.utc(dateTimeStr, 'YYYY-MM-DDTHH:mm:00Z', 'ja').utcOffset(9)
+
+
+const DateRangeDatePicker = (props) => {
+  const handleChangeStart = (selectedDate) => {
+      props.action(parseAsMoment(selectedDate).format('YYYY/MM/DD'),props.start);
   }
- 
-  render() {
-      // YYYY/MM/DD形式から、dateオブジェクトを生成
-      var dateSeme = this.props.element.split('/');
-      let stDate = new Date();
-      if(dateSeme.length == 3){
-          stDate = new Date(dateSeme[0],dateSeme[1],dateSeme[2]);
-          console.log(stDate);
-      }
-      return (
-        <DatePicker
-        selected={stDate}
-        onChange={this.handleChange}
-        locale="ja"
-        customInput={
-          <div>
-            {this.parseAsMoment(stDate).format('YYYY年 MM月 DD日')}
-          </div>
-        }
-      />
-    );
+  const handleChangeEnd = (selectedDate) => {
+      props.action(parseAsMoment(selectedDate).format('YYYY/MM/DD'),props.start + 1);
   }
+  const parseAsMoment = (dateTimeStr) => {
+      //dateオブジェクトから変換
+      return moment.utc(dateTimeStr, 'YYYY-MM-DDTHH:mm:00Z', 'ja').utcOffset(9)
+    }
+  return (
+    <div className="flex">
+        <div className="calpoint">
+            <DatePicker
+                selected={props.date.start}
+                selectsStart
+                startDate={props.date.start}
+                endDate={props.date.end}
+                onChange={handleChangeStart}
+                customInput={
+                    <div>
+                        {parseAsMoment(props.date.start).format('YYYY年 MM月 DD日')}
+                    </div>
+                }
+            />
+        </div>
+        <div className="flex-jus-center"> 〜 </div>
+        <div className="calpoint">
+          <DatePicker
+            selected={props.date.end}
+            selectsEnd
+            startDate={props.date.start}
+            endDate={props.date.end}
+            onChange={handleChangeEnd}
+            customInput={
+              <div>
+                {parseAsMoment(props.date.end).format('YYYY年 MM月 DD日')}
+              </div>
+            }
+          />
+        </div>
+    </div>
+  )
 }

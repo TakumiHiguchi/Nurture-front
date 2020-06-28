@@ -354,8 +354,8 @@ class Nurture extends Component {
         
         var tbl  = [...Array(7)].map(k=>[...Array(6)].map(k=>0))
         var tblc = [...Array(7)].map(k=>[...Array(6)].map(k=>[...Array(3)].map(k=>0)))
-        var insp = {fhSemester1: "", fhSemester2: "", lateSemester1: "", lateSemmester2: ""}
-        var insSP = [...Array(10)].map(k=>insp)
+        
+        var insSP = [...Array(10)].map(k=>[...Array(4)].map(k=>""))
 
         const now = new Date();
         this.state = {
@@ -443,10 +443,6 @@ class Nurture extends Component {
             session: this.state.user.session
         })
         .then(response => {
-            //var user = response
-            //var ins = this.state.semesterPeriod
-            //ins[grade - 1] = select
-            //this.setState({semesterPeriod:response.data.semesterPeriod});
             console.log(response.data.mes);
         })
         .catch(() => {
@@ -472,13 +468,20 @@ class Nurture extends Component {
                                     grade:user.data.grade
                 }});
                 
-                this.setState({semesterPeriod:response.data.semesterPeriod});
-                console.log(this.state.semesterPeriod);
+                //学期期間の取得部分
+                let insDate = this.state.semesterPeriod;
+                
+                for(var i = 0;i < response.data.semesterPeriod.length;i++){
+                    let date = response.data.semesterPeriod[i]
+                    insDate[i][0] = date.fhSemester1;
+                    insDate[i][1] = date.fhSemester2;
+                    insDate[i][2] = date.lateSemester1;
+                    insDate[i][3] = date.lateSemester2;
+                }
                 
                 
                 this.loadUserSchedule(user.data.userKey ,user.data.session);
                 
-                this.setSemesterDate("2020-2-1","2020-3-1","2020-5-1","2020-9-1",3)
             })
             .catch(() => {
                 console.log('通信に失敗しました');
@@ -568,6 +571,14 @@ class Nurture extends Component {
         }
         
     }
+                              
+    regesSemesterDate(date,position){
+        //学期期間の登録関数
+        let insDate = this.state.semesterPeriod;
+        insDate[position - 1] = date;
+        this.setState({semesterPeriod:insDate});
+        this.setSemesterDate(insDate[position - 1][0],insDate[position - 1][1],insDate[position - 1][2],insDate[position - 1][3],position)
+    }
     Regester() {
         var regesArray = this.state.caDatas;
         
@@ -611,7 +622,7 @@ class Nurture extends Component {
         return(
                <div>
                
-                    <SettingPage action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select)}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
+                    <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select)}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">
                         
