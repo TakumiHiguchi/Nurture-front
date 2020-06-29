@@ -25,6 +25,7 @@ import './Popup.scss';
 
 import Popup from './Popup'
 import SettingPage from './SettingPage'
+import WeekCalender from './WeekCalender'
 import MonthCalender from './MonthCalender'
 import SemesterCalender from './SemesterCalender'
 import DDMbodyChange from './DDMbodyChange'
@@ -68,33 +69,8 @@ const lineIcon = {
     color:"#00B900",
     cursor: "pointer"
 }
-const WeekLine = (props) => {
-       return(
-           <div className="fa-sceduleLine">
-              {props.daySchedule.map((data,index) =>
-                <div key={"ds" + data +index }>
-                    <div className="fa-BT-scedule"></div>
-                    <div className="flex-jus-center fa-class-sceduleContainer">
-                        {data == 0 ?
-                            <div className="fa-class-scedule flex-jus-center" onClick={() => props.action.popupshow() }>
-                            <div className="status"></div>
-                            </div>
-                        :
-                            <div className="fa-class-scedule" onClick={() => props.action.popupEdit(data.position)} >
-                                <div>
-                                    <div>{data.title}</div>
-                                    <div className="classroom">107教室</div>
-                                    <div className="status">出席:{props.element.caCount[index][0]} 遅刻:{props.element.caCount[index][1]} 欠席:{props.element.caCount[index][2]}</div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            )}
-           </div>
-            
-       )
-   }
+
+
 
 const DateBox = (props) => {
     if(props.type == "week"){
@@ -352,7 +328,7 @@ class Nurture extends Component {
     constructor(props){
         super(props)
         
-        var tbl  = [...Array(7)].map(k=>[...Array(6)].map(k=>0))
+        var tbl  = [...Array(10)].map(k=>[...Array(2)].map(k=>[...Array(7)].map(k=>[...Array(6)].map(k=>0))))
         var tblc = [...Array(7)].map(k=>[...Array(6)].map(k=>[...Array(3)].map(k=>0)))
         
         var insSP = [...Array(10)].map(k=>[...Array(4)].map(k=>""))
@@ -360,9 +336,9 @@ class Nurture extends Component {
         const now = new Date();
         this.state = {
             page:"week",
-            user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:0},
+            user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1},
             popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
-            select:{year: now.getFullYear(),month: now.getMonth()+1},
+            select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDay()},
             selectPopup:0,
             regesterIds:[],
             regesterElements:[],
@@ -403,6 +379,7 @@ class Nurture extends Component {
                 console.log(response.data.mes);
                 console.log(key);
                 console.log(session);
+                this.setState({caDatas:response.data.schedules})
                 
             })
             .catch(() => {
@@ -581,13 +558,16 @@ class Nurture extends Component {
     }
     Regester() {
         var regesArray = this.state.caDatas;
-        
+        var grade = this.state.user.grade - 1;//更新する学年
+            
         for (let i = 0; i < this.state.regesterElements.length; i++) {
             let element = this.state.regesterElements[i]
             let w = Math.floor(element.position / 6)
             let d = (element.position % 6)
+            
+            if(element.semester == "前学期"){var semester = 0}else{ var semester = 1}
                                  
-            if(regesArray[w][d] == 0 && this.state.user.maxAge > (new Date().getTime() / 1000) ){
+            if(regesArray[grade][semester][w][d] == 0 && this.state.user.maxAge > (new Date().getTime() / 1000) ){
                 
                 axios.post(ENDPOINT + '/api/v1/setUserSchedule', {
                                title: element.title,
@@ -603,7 +583,7 @@ class Nurture extends Component {
                     console.log(response.data.mes);
                     
                     if(response.data.status == "SUCCESS"){
-                        regesArray[w][d] = element
+                        regesArray[grade][semester][w][d] = element
                         this.setState({
                             caDatas: regesArray,
                             regesterIds: [],
@@ -619,6 +599,7 @@ class Nurture extends Component {
         this.PopupMenu()
     }
     render(){
+                
         return(
                <div>
                
@@ -626,9 +607,9 @@ class Nurture extends Component {
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">
                         
-                        <Sidebar scheduleDatas = {this.state.caDatas} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
+                        <Sidebar scheduleDatas = {this.state.caDatas[this.state.user.grade - 1][0]} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
                         <Body pageData={this.state.page}
-                            scheduleDatas={this.state.caDatas}
+                            scheduleDatas={this.state.caDatas[this.state.user.grade - 1][0]}
                             element={{caCount: this.state.caCount}}
                             action = {{popupshow: () => this.PopupMenu(),
                                 popupEdit: (ce) => this.PopupCCedit(ce),
@@ -641,7 +622,7 @@ class Nurture extends Component {
                                             popupshow: (ce) => this.PopupCCedit(ce),
                                             count: (typeNo, count, position) => this.AttendanceCount(typeNo, count, position)
                                             }}
-                                   element = {{caDatas: this.state.caDatas[Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6],
+                                   element = {{caDatas: this.state.caDatas[this.state.user.grade - 1][0][Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6],
                                               caCount: this.state.caCount[Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6]
                                             }}
                         />
@@ -654,7 +635,7 @@ class Nurture extends Component {
                         />
                         
                         <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}
-                                        datas={{schedules:this.state.caDatas}}/>
+                                        datas={{schedules:this.state.caDatas[this.state.user.grade - 1][0]}}/>
                         <Popup type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}/>
                         <Popup type={4} status={this.state.popup.regester}
                                    action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
@@ -677,20 +658,16 @@ class Body extends Component {
     }
     
     render(){
-        const semCount = Array.from(Array(27).keys());
         if(this.props.pageData == "week"){
             return(
                 <main className="fa-mainContainer">
                     <DateBox type={"week"}/>
                     <div className="flex-jus-between fa-scedule">
                         <TimeBox />
-                        {this.props.scheduleDatas.map((data,index) =>
-                            <WeekLine daySchedule={data} key={"weekLine"+index} action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
-                                element={{caCount: this.props.element.caCount[index]}}
-                                                      
-                            />
-                            
-                        )}
+                        <WeekCalender action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
+                            scheduleData = {this.props.scheduleDatas}
+                            element={{caCount: this.props.element.caCount}}
+                        />
                     </div>
                 </main>
             )
