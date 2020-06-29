@@ -29,10 +29,11 @@ import WeekCalender from './WeekCalender'
 import MonthCalender from './MonthCalender'
 import SemesterCalender from './SemesterCalender'
 import DDMbodyChange from './DDMbodyChange'
+import DateBox from './DateBox'
 import * as serviceWorker from './serviceWorker';
 
 const ENDPOINT = 'http://localhost:3020'
-//'https://nurture-api.herokuapp.com'
+//const ENDPOINT = 'https://nurture-api.herokuapp.com'
 
 //css
 const pmIcons = {
@@ -72,131 +73,7 @@ const lineIcon = {
 
 
 
-const DateBox = (props) => {
-    if(props.type == "week"){
-        return(
-               <div>
-                    <div className="flex-align-center fa-dateContainer">
-                        <div className="faIcon-arrow flex-jus-center">
-                            <FontAwesomeIcon style={pmArrow} icon={faChevronLeft}/>
-                        </div>
-                        <div className="bord-today">
-                            今日
-                        </div>
-                        <div className="faIcon-arrow flex-jus-center">
-                            <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/>
-                        </div>
-                        <div className="bord-month  no-pad">
-                            2020年6月
-                        </div>
-                        
-                    </div>
-                   <div className="flex-jus-between fa-dateContainer fa-endline">
-                        <div className="fa-timeline"></div>
-                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                            1(月)
-                        </div>
-                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                            2(火)
-                        </div>
-                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                           3(水)
-                       </div>
-                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                           4(木)
-                       </div>
-                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                           5(金)
-                       </div>
-                       <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                           6(土)
-                       </div>
-                        <div className="fa-sceduleLine fa-dateline flex-jus-center">
-                            7(日)
-                        </div>
-                   </div>
-               </div>
-        )
-    }else if(props.type == "month"){
-        return(
-               <div>
-                    <div className="flex-align-center fa-dateContainer">
-                        <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("month",-1)}>
-                            <FontAwesomeIcon style={pmArrow} icon={faChevronLeft}/>
-                        </div>
-                        <div className="bord-today" onClick={() => props.action("today",-1)}>
-                            今日
-                        </div>
-                        <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("month",1)}>
-                            <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/>
-                        </div>
-                        <div className="bord-month no-pad">
-                            {props.data.year}年{props.data.month}月
-                        </div>
-                        
-                    </div>
-                   <div className="flex-jus-between fa-dateContainer fa-endline">
-                        <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
-                            月
-                        </div>
-                        <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
-                            火
-                        </div>
-                       <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
-                           水
-                       </div>
-                       <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
-                           木
-                       </div>
-                       <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
-                           金
-                       </div>
-                       <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
-                           土
-                       </div>
-                        <div className="fa-sceduleLine-month fa-dateline flex-jus-center">
-                            日
-                        </div>
-                   </div>
-               </div>
-        )
-    }else if(props.type == "semester"){
-        return(
-               <div>
-                    <div className="flex-align-center fa-dateContainer">
-                        <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("year",-1)}>
-                            <FontAwesomeIcon style={pmArrow} icon={faChevronLeft}/>
-                        </div>
-                        <div className="bord-today" onClick={() => props.action("today",-1)}>
-                            今日
-                        </div>
-                        <div className="faIcon-arrow flex-jus-center" onClick={() => props.action("year",1)}>
-                            <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/>
-                        </div>
-                        <div className="bord-month no-pad">
-                            {props.data.year}年
-                        </div>
-                    </div>
-                   <div className="flex-jus-between fa-dateContainer fa-endline">
-                        <div className="fa-sceduleLine-semester flex-jus-center of-mon">月</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">火</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">水</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">木</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">金</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">土</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center of-end">日</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center of-mon">月</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">火</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">水</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">木</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">金</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">土</div>
-                        <div className="fa-sceduleLine-semester flex-jus-center">日</div>
-                   </div>
-               </div>
-        )
-    }
-}
+
 const TimeBox = () => {
     return(
            <div className="fa-timeline"><div className="fa-BT-time"><div className="fab-time">9:00</div></div><div className="fa-class-time"><div className="fab-time">10:30</div></div><div className="fa-BT-time"><div className="fab-time">10:40</div></div><div className="fa-class-time"><div className="fab-time">12:10</div></div><div className="fa-BT-time"><div className="fab-time">13:00</div></div><div className="fa-class-time"><div className="fab-time">14:30</div></div><div className="fa-BT-time"><div className="fab-time">14:40</div></div><div className="fa-class-time"><div className="fab-time">16:10</div></div><div className="fa-BT-time"><div className="fab-time">16:20</div></div><div className="fa-class-time"><div className="fab-time">17:50</div></div><div className="fa-BT-time"><div className="fab-time">18:00</div></div><div className="fa-class-time"><div className="fab-time">19:30</div></div><div className="fa-BT-time"></div></div>
@@ -345,7 +222,7 @@ class Nurture extends Component {
             page:"week",
             user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1},
             popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
-            select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDay()},
+            select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDate()},
             selectPopup:0,
             regesterIds:[],
             regesterElements:[],
@@ -507,10 +384,18 @@ class Nurture extends Component {
         
         if(type == "today"){
             const now = new Date();
-            this.setState({select:{year:now.getFullYear(),month:now.getMonth()+1}});
+            this.setState({select:{year:now.getFullYear(),month:now.getMonth()+1,day:now.getDate()}});
+        }else if(type == "week"){
+            const selectDate = new Date(this.state.select.year+"/"+this.state.select.month+"/"+ (this.state.select.day + parseInt(amount)))
+            
+            let y = selectDate.getFullYear();
+            let m = selectDate.getMonth() + 1;
+            let d = selectDate.getDate();
+            
+            this.setState({select:{year:y,month:m,day:d}});
         }else if(type == "year"){
             this.setState({select:{year:this.state.select.year + parseInt(amount),month:this.state.select.month}});
-        }else{
+        }else if(type == "month"){
             //月セレクターの変更
             let y = this.state.select.year
             let m = this.state.select.month + parseInt(amount);
@@ -669,12 +554,13 @@ class Body extends Component {
         if(this.props.pageData == "week"){
             return(
                 <main className="fa-mainContainer">
-                    <DateBox type={"week"}/>
+                    <DateBox type={"week"} action={(type,amount) => this.props.action.changeSelect(type,amount)} select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}/>
                     <div className="flex-jus-between fa-scedule">
                         <TimeBox />
                         <WeekCalender action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
                             scheduleData = {this.props.scheduleDatas}
                             element={{caCount: this.props.element.caCount}}
+                            select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}
                         />
                     </div>
                 </main>

@@ -76,6 +76,12 @@ div.fa-dateline{
     border:none;
     height:100%;
 }
+.fa-date-active div{
+    border-radius:100px;
+    background:#00aced;
+    color:white;
+    padding:0 15px;
+}
 //時間休み時間部分
 .fa-BT-time{
     position:relative;
