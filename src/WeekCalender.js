@@ -5,7 +5,6 @@ export default class WeekCalender extends Component{
         super(props);
     }
     render(){
-        console.log(this.props.scheduleData)
         return(
                <div className="flex-jus-between fa-scedule-in">
                {this.props.scheduleData.map((data,index) =>

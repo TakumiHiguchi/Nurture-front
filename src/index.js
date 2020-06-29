@@ -210,7 +210,14 @@ const Header = (props) => {
                     <DDMbodyChange action={(mode) => props.action(mode)} type={1}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faPlus} onClick={() => props.actionShow("regester")}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faCog} onClick={() => props.actionShow("setting")}/>
-                    <div className="headerIcon"><img src={props.user.imageURL} /></div>
+                    {props.user.imageURL=="" ?
+                        <div className="" onClick={() => props.actionShow("login")}>
+                        </div>
+                        :
+                        <div className="headerIcon flex-jus-center" onClick={() => props.actionShow("login")}>
+                            <img src={props.user.imageURL}/>
+                        </div>
+                    }
                 </div>
            </header>
     )
@@ -468,15 +475,16 @@ class Nurture extends Component {
     }
     logout(){
         //ログアウト
-        this.setState({user:{key:"",
-                            name: "ゲスト",
-                            imageURL:"",
-                            session:"",
-                            maxAge:0,
-                            mes:""
-        }});
+        let tbl  = [...Array(10)].map(k=>[...Array(2)].map(k=>[...Array(7)].map(k=>[...Array(6)].map(k=>0))))
+        let user = this.state.user
+        user.session = ""
+        user.key = ""
+        user.maxAge = 0
+        user.imageURL = ""
+        this.setState({user:user,caDatas: tbl});
         this.setState({popup: {login: true}});
     }
+    
     PopupMenu() {
         this.setState({popup: {regester: !this.state.popup.regester}});
     }

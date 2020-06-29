@@ -25,9 +25,14 @@ export default class SettingPage extends Component {
     constructor(props){
         super(props);
         this.state={
-            page: 0
+            page: 1
         }
     }
+    
+    changePage(page){
+        this.setState({page:page})
+    }
+    
     render(){
         
         return(
@@ -40,20 +45,10 @@ export default class SettingPage extends Component {
                         設定
                     </h2>
                     <div className="flex">
-                        <Sidebar />
-                    <Body element={{user:this.props.element.user,semesterDate: this.props.element.semesterDate}} action={{setGrade: (select) => this.props.action.setGrade(select)}}
-                        regesSemesterDate = {(date,position) => this.props.regesSemesterDate(date,position)}
-                    />
-                    </div>
-                    <div className="pageIndexBox flex">
-                        <div className="aTindexactive">授業開始日の登録</div>
-                        <div>学年の登録</div>
-                        <div>設定1</div>
-                        <div>設定2</div>
-                        <div>設定3</div>
-                    </div>
-                    <div className="pcePopup-item adTaskbody">
-                        
+                        <Sidebar action={(page) => this.changePage(page)} page={this.state.page}/>
+                        <Body element={{user:this.props.element.user,semesterDate: this.props.element.semesterDate,page:this.state.page}} action={{setGrade: (select) => this.props.action.setGrade(select)}}
+                            regesSemesterDate = {(date,position) => this.props.regesSemesterDate(date,position)}
+                        />
                     </div>
                 </div>
             </div>
@@ -79,7 +74,9 @@ class Body extends Component{
         return stDate
     }
     
+
     setDate(date,position){
+        //カレンダーの日付処理
         let target = this.props.element.semesterDate[this.state.semesterDateGrade - 1]
         
         switch(position){
@@ -113,40 +110,51 @@ class Body extends Component{
 
     render(){
         var semeDate = this.props.element.semesterDate[this.state.semesterDateGrade - 1];
-        return(
-               <main className="bodyWrap">
-                    <section className="settingBody">
-                        <h2 className="menu flex-algin-center">現在の学年</h2>
-                        <DDMsettingGrade element={this.props.element.user.grade} action={(select) => this.props.action.setGrade(select)}/>
-                        <p className="secline">ここで選択された学年のスケジュールが、カレンダーに表示されます。</p>
-                    </section>
-                    <section className="settingBody">
-                        <h2 className="menu flex-algin-center">授業開始日</h2>
-                        <DDMsettingGrade element={this.state.semesterDateGrade} action={(select) => this.setState({semesterDateGrade:select})}/>
-                        <div className="flex-align-center semeswrap">
-                            <div className="semesLabel">前学期</div>
-                            <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
-                            <DateRangeDatePicker date={{start:this.parDate(semeDate[0]),end:this.parDate(semeDate[1])}}
-                                action={(date,select) => this.setDate(date,select)}
-                                start={1}
-                            />
-                        </div>
-                        <div className="flex-align-center semeswrap">
-                            <div className="semesLabel">後学期</div>
-                            <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
-                            <DateRangeDatePicker date={{start:this.parDate(semeDate[2]),end:this.parDate(semeDate[3])}}
-                                action={(date,select) => this.setDate(date,select)}
-                                start={3}
-                            />
-                        </div>
-                        <p className="secline">ここで選択された日時をもとに、カレンダーにスケジュールを表示します。</p>
-                        <p className="secline">不正な日時であった場合登録されません。登録条件については<a>ヘルプ: 授業開始日の登録について</a>をご覧ください。</p>
-                    </section>
-               </main>
-               
-               
-               
-               );
+        if(this.props.element.page === 1){
+            return(
+                   <main key={"p1"} className={this.props.element.page === 1 ? 'bodyWrap popup_toggle_effect' : 'bodyWrap popup_toggle_effect_de'}>
+                        <section className="settingBody">
+                            <h2 className="menu flex-algin-center">現在の学年</h2>
+                            <DDMsettingGrade element={this.props.element.user.grade} action={(select) => this.props.action.setGrade(select)}/>
+                            <p className="secline">ここで選択された学年のスケジュールが、カレンダーに表示されます。</p>
+                        </section>
+                        <section className="settingBody">
+                            <h2 className="menu flex-algin-center">授業開始日</h2>
+                            <DDMsettingGrade element={this.state.semesterDateGrade} action={(select) => this.setState({semesterDateGrade:select})}/>
+                            <div className="flex-align-center semeswrap">
+                                <div className="semesLabel">前学期</div>
+                                <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
+                                <DateRangeDatePicker date={{start:this.parDate(semeDate[0]),end:this.parDate(semeDate[1])}}
+                                    action={(date,select) => this.setDate(date,select)}
+                                    start={1}
+                                />
+                            </div>
+                            <div className="flex-align-center semeswrap">
+                                <div className="semesLabel">後学期</div>
+                                <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
+                                <DateRangeDatePicker date={{start:this.parDate(semeDate[2]),end:this.parDate(semeDate[3])}}
+                                    action={(date,select) => this.setDate(date,select)}
+                                    start={3}
+                                />
+                            </div>
+                            <p className="secline">ここで選択された日時をもとに、カレンダーにスケジュールを表示します。</p>
+                            <p className="secline">不正な日時であった場合登録されません。登録条件については<a>ヘルプ: 授業開始日の登録について</a>をご覧ください。</p>
+                        </section>
+                   </main>
+                   
+                   
+                   
+                );
+        }else{
+            return(
+                   <main key={"p2"} className={this.props.element.page === 2 ? 'bodyWrap popup_toggle_effect' : 'bodyWrap popup_toggle_effect_de'}>
+                        <section className="settingBody">
+                            <h2 className="menu flex-algin-center">アカウント</h2>
+                            
+                        </section>
+                   </main>
+                   );
+        }
     }
     
 }
@@ -154,8 +162,8 @@ class Body extends Component{
 const Sidebar = (props) => {
     return(
            <aside className="sidebarWrap">
-                <div className="menu flex-algin-center active">基本設定</div>
-                
+                <div className={props.page === 1 ? 'menu flex-algin-center active' : 'menu flex-algin-center'} onClick={(page) => props.action(1)}>基本設定</div>
+                <div className={props.page === 2 ? 'menu flex-algin-center active' : 'menu flex-algin-center'} onClick={(page) => props.action(2)}>アカウント</div>
            </aside>
            
            

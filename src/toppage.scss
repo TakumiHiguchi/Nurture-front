@@ -51,10 +51,12 @@
     height:100%;
 }
 .fa-sceduleLine{
-    width:calc(calc(100% - 50px) / 7);
+    width:calc(100% / 7);
     border-left:1px solid #f0f0f0;
     
 }
+
+
 //月表示の曜日部分
 .fa-sceduleLine-month{
     width:calc(100% / 7);
@@ -77,7 +79,7 @@ div.fa-dateline{
 //時間休み時間部分
 .fa-BT-time{
     position:relative;
-    height:25px;
+    height:10px;
     width:100%;
     margin-bottom:10px;
     .fab-time{
@@ -105,7 +107,7 @@ div.fa-dateline{
 }
 //スケジュール休み時間部分
 .fa-BT-scedule{
-    height:25px;
+    height:10px;
     width:100%;
     margin-bottom:10px;
 }

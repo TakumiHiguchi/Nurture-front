@@ -65,13 +65,18 @@ section.settingBody{
         width:calc(100% - 40px);
         padding:10px 20px;
         cursor: pointer;
-        border-radius:0 10px 10px 0;
+        border-radius:0 1000px 1000px 0;
         &:hover{
             background:#e0f8ff;
         }
     }
     .active{
-        background:#e0f8ff;
+        background:#00aced;
+        color:white;
+        border-radius:0 1000px 1000px 0;
+        &:hover{
+            background:#00aced;
+        }
     }
 }
 
