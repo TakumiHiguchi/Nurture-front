@@ -220,7 +220,7 @@ class Nurture extends Component {
         const now = new Date();
         this.state = {
             page:"week",
-            user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1},
+            user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1, created_at:""},
             popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
             select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDate()},
             selectPopup:0,
@@ -326,7 +326,8 @@ class Nurture extends Component {
                                     session:user.data.session,
                                     maxAge:user.data.maxAge,
                                     mes:user.data.mes,
-                                    grade:user.data.grade
+                                    grade:user.data.grade,
+                                    created_at:user.data.created_at
                 }});
                 
                 //学期期間の取得部分
@@ -356,10 +357,12 @@ class Nurture extends Component {
         let user = this.state.user
         user.session = ""
         user.key = ""
+        user.name = "ゲスト"
         user.maxAge = 0
         user.imageURL = ""
+        user.created_at = ""
         this.setState({user:user,caDatas: tbl});
-        this.setState({popup: {login: true}});
+        this.setState({popup: {login: true,setting:false}});
     }
     
     PopupMenu() {
@@ -386,10 +389,10 @@ class Nurture extends Component {
             const now = new Date();
             this.setState({select:{year:now.getFullYear(),month:now.getMonth()+1,day:now.getDate()}});
         }else if(type == "week"){
-            const selectDate = new Date(this.state.select.year+"/"+this.state.select.month+"/"+ (this.state.select.day + parseInt(amount)))
+            const selectDate = new Date(this.state.select.year,this.state.select.month, (this.state.select.day + parseInt(amount)))
             
             let y = selectDate.getFullYear();
-            let m = selectDate.getMonth() + 1;
+            let m = selectDate.getMonth();
             let d = selectDate.getDate();
             
             this.setState({select:{year:y,month:m,day:d}});
@@ -496,14 +499,14 @@ class Nurture extends Component {
         return(
                <div>
                
-                    <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select)}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
+               <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">
                         
                         <Sidebar scheduleDatas = {this.state.caDatas[this.state.user.grade - 1][0]} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
                         <Body pageData={this.state.page}
-                            scheduleDatas={this.state.caDatas[this.state.user.grade - 1][0]}
-                            element={{caCount: this.state.caCount}}
+                            scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}
+                            element={{caCount: this.state.caCount,semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
                             action = {{popupshow: () => this.PopupMenu(),
                                 popupEdit: (ce) => this.PopupCCedit(ce),
                                 changeSelect: (type,amount) => this.changeSelect(type,amount)
@@ -559,7 +562,7 @@ class Body extends Component {
                         <TimeBox />
                         <WeekCalender action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
                             scheduleData = {this.props.scheduleDatas}
-                            element={{caCount: this.props.element.caCount}}
+                            element={this.props.element}
                             select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}
                         />
                     </div>

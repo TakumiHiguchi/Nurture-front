@@ -16,6 +16,9 @@ section.settingBody{
         }
     }
 }
+.sec-main{
+    margin-bottom:20px;
+}
 .semeswrap{
     padding:10px 0 0 0;
     .semesLabel{
@@ -89,4 +92,78 @@ section.settingBody{
         background:#f8f8f8;
         border-radius:5px;
     }
+}
+
+
+//アカウントの情報表示
+.userAccountBox{
+    border:1px solid #f0f0f0;
+    width:330px;
+    height:385px;
+    box-shadow: 0 0 15px #ddd;
+    .iconBox{
+        width:100%;
+        padding:22px 0;
+
+        .icon{
+            border:1px solid #f0f0f0;
+            
+            width:80px;
+            height:80px;
+            border-radius:50%;
+            img{
+                width:100%;
+                height:100%;
+                border-radius:50%;
+                object-fit: cover;
+                
+            }
+        }
+    }
+    .logoutB{
+        width:100%;
+        height:calc(100% - 318px);
+        padding-bottom:20px;
+        div{
+            background:#e0f8ff;
+            border-radius:1000px;
+            padding:10px 50px;
+            cursor: pointer;
+            color:#aaa;
+        }
+    }
+    .userProfBox{
+        text-align:center;
+        word-wrap: break-word;
+        .name{
+            font-size:1.1em;
+        }
+        .university,.key{
+            font-size:0.8em;
+            color:#aaa;
+        }
+        .drw-menu-rap{
+            padding:30px 0 20px 0;
+            .drw-menu{
+                width:calc(calc(100% - 2px) / 3);
+                padding:10px 0;
+                text-align:center;
+                .drw-he{
+                    font-size:0.6em;
+                    color:#aaa;
+                }
+                .drw-ens{
+                    font-size:0.8em;
+                    padding:5px 0 0px;
+                }
+            }
+            .drw-line{
+                border-right:1px solid #f0f0f0;
+                
+            }
+        }
+    }
+}
+h2.alp{
+   margin-bottom:20px;
 }

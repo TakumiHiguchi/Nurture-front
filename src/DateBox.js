@@ -11,7 +11,6 @@ const pmArrow = {
 export default class DateBox extends Component{
     render(){
         if(this.props.type == "week"){
-            let weekDate = new Array(7);
             const selectDay = this.props.select.day;
             const selectMonth = this.props.select.month;
             const selectYear = this.props.select.year;
@@ -21,12 +20,12 @@ export default class DateBox extends Component{
             //今日
             const today = new Date()
             //選択している日
-            const selectDate = new Date(selectYear+"/"+selectMonth+"/"+selectDay)
+            const selectDate = new Date(selectYear,selectMonth + 1,selectDay)
             //週の初めの日
             const startDay = selectDate.getDate() - selectDate.getDay() + 1
             
-            weekDate = [...Array(7)].map((_, i) => new Date(selectYear+"/"+selectMonth+"/"+(startDay + i)).getDate())
-
+            let weekDate = [...Array(7)].map((_, i) => new Date(selectYear,selectMonth,(startDay + i)).getDate())
+            let weekMonth = [...Array(7)].map((_, i) => new Date(selectYear,selectMonth,(startDay + i)).getMonth())
             
             
             
@@ -50,7 +49,7 @@ export default class DateBox extends Component{
                        <div className="flex-jus-between fa-dateContainer fa-endline">
                             <div className="fa-timeline"></div>
                             {weekDate.map((date,index) =>
-                                          <div className={today.getDate() === date && (today.getMonth() + 1) === selectMonth && today.getFullYear() === selectYear ? "fa-sceduleLine fa-dateline flex-jus-center fa-date-active" : "fa-sceduleLine fa-dateline flex-jus-center"}>
+                                <div className={today.getDate() === date && (today.getMonth() + 1) === weekMonth[index] && today.getFullYear() === selectYear ? "fa-sceduleLine fa-dateline flex-jus-center fa-date-active" : "fa-sceduleLine fa-dateline flex-jus-center"}>
                                     <div>
                                           {date}({dayString[index]})
                                     </div>

@@ -4,17 +4,53 @@ export default class WeekCalender extends Component{
     constructor(props){
         super(props);
     }
+    
+    parDate(target){
+        var dateSeme = target.split('/');
+        let stDate = new Date();
+        if(dateSeme.length == 3){
+            stDate = new Date(dateSeme[0],dateSeme[1] - 1,dateSeme[2]);
+        }
+        return stDate
+    }
+    
     render(){
+        //からの配列を生成
+        const plCal = [...Array(7)].map(k=>[...Array(6)].map(k=>0));
+        
+        //stateを入れる
+        const selectDay = this.props.select.day;
+        const selectMonth = this.props.select.month;
+        const selectYear = this.props.select.year;
+        //学期の期間
+        let semeD = this.props.element.semesterDate
+        
+        //選択している日
+        const selectDate = new Date(selectYear+"/"+selectMonth+"/"+selectDay)
+        //週の初めの日
+        const startDay = selectDate.getDate() - selectDate.getDay() + 1
+        //年/月/日形式になおす
+        let stringSelectDate = this.props.select.year + "/" + this.props.select.month + "/"
+        
         return(
                <div className="flex-jus-between fa-scedule-in">
-               {this.props.scheduleData.map((data,index) =>
-                   <WeekLine daySchedule={data} key={"weekLine"+index}
-                       action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
-                       element={{caCount: this.props.element.caCount[index]}}
-                                             
-                   />
-                   
-               )}
+                   {[...Array(7)].map((_,index) =>
+                        <WeekLine daySchedule={this.parDate(semeD[0]) <= new Date(selectYear+"/"+selectMonth+"/"+(startDay + index)) && new Date(selectYear+"/"+selectMonth+"/"+(startDay + index)) <= this.parDate(semeD[1]) ?
+                            this.props.scheduleData[0][index]
+                            :
+                            (this.parDate(semeD[2]) <= new Date(selectYear+"/"+selectMonth+"/"+(startDay + index)) && new Date(selectYear+"/"+selectMonth+"/"+(startDay + index)) <= this.parDate(semeD[3]) ?
+                                this.props.scheduleData[1][index]
+                                :
+                                plCal[index]
+                             )
+                            }
+                            key={"weekLine"+index}
+                            action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
+                            element={{caCount: this.props.element.caCount[index],semesterDate: semeD}}
+                                                 
+                       />
+                       
+                   )}
                </div>
                );
     }
