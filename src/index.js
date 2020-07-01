@@ -397,7 +397,9 @@ class Nurture extends Component {
             
             this.setState({select:{year:y,month:m,day:d}});
         }else if(type == "year"){
-            this.setState({select:{year:this.state.select.year + parseInt(amount),month:this.state.select.month}});
+            let select = this.state.select;
+            select.year += parseInt(amount);
+            this.setState({select:select});
         }else if(type == "month"){
             //月セレクターの変更
             let y = this.state.select.year
@@ -411,7 +413,10 @@ class Nurture extends Component {
                 m=1;
             }
             
-            this.setState({select:{year:y,month:m}});
+            let select = this.state.select;
+            select.year = y;
+            select.month = m;
+            this.setState({select:select});
         }
     }
     togglePvmode(mode){
@@ -573,7 +578,7 @@ class Body extends Component {
                 <main className="fa-mainContainer">
                    <DateBox type={"month"} action={(type,amount) => this.props.action.changeSelect(type,amount)} data={{year:this.props.select.year,month:this.props.select.month}}/>
                    <div className="fa-scedule">
-                   <MonthCalender data={{year:this.props.select.year,month:this.props.select.month}}/>
+                        <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} scheduleData = {this.props.scheduleDatas} element={this.props.element}/>
                    </div>
                 </main>
             )

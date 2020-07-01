@@ -15,7 +15,32 @@
 
 .month-dateBody{
     width:100%;
-    height:calc(100% - 29px);
+    height:calc(100% - 39px);
+    padding:5px 0;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display:none;
+    }
+    .plans{
+           width:calc(90% - 15px);
+           background:#f0f0f0;
+           border-radius:0 100px 100px 0;
+           padding:3px 10px 3px 5px;
+           margin-bottom:5px;
+           div{
+               width:100%;
+               font-size:0.8em;
+               white-space: nowrap;
+               overflow-x: scroll;
+               -ms-overflow-style: none;
+               scrollbar-width: none;
+               &::-webkit-scrollbar {
+                   display:none;
+               }
+           }
+       }
 }
 .month-date{
     width:100%;

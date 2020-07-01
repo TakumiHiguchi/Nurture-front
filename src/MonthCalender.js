@@ -7,12 +7,26 @@ export default class MonthLine extends Component {
     constructor(props){
         super(props);
     }
+    parDate(target){
+        var dateSeme = target.split('/');
+        let stDate = new Date();
+        if(dateSeme.length == 3){
+            stDate = new Date(dateSeme[0],dateSeme[1] - 1,dateSeme[2]);
+        }
+        return stDate
+    }
+    
     render(){
+        const dayString=["日","月","火","水","木","金","土"];
+        //stateを入れる
+        const selectDay = this.props.select.day;
+        const selectMonth = this.props.select.month;
+        const selectYear = this.props.select.year;
         
         //日付と時間の設定
         const now = new Date();
-        const year = this.props.data.year
-        const mon = this.props.data.month;
+        const year = this.props.select.year
+        const mon = this.props.select.month;
         const day = now.getDate();
         const youbi = now.getDay();
         
@@ -69,10 +83,30 @@ export default class MonthLine extends Component {
             }
         }
 
+        //学期の期間
+        let semeD = this.props.element.semesterDate
+        
+        //授業がある場合フラグを立たせる
+        let schflag = this.props.scheduleData.map((data) =>
+                                           data.map((schedule,index) =>
+                                                    schedule.find(item => item !== 0)
+                                                    )
+                                           )
+        console.log(schflag)
         
         const itemsFir = [];
         itemsFir.push(fOf);
         for (let i = 1; i <= lastday[mon - 1]; i++) {
+            
+            //曜日の処理
+            let youbi = firstYoubi
+            youbi += (i - 1);
+            if(youbi >= 7)youbi=youbi%7;
+            
+            //スケジュール参照場所用変数の処理
+            let parWe = youbi - 1;
+            if(youbi === 0)parWe = 6;
+            
             itemsFir.push(
                 <div className="month-dataBox">
                     <div className="">
@@ -81,7 +115,24 @@ export default class MonthLine extends Component {
                           
                          </div>
                          <div className="month-dateBody">
-                             
+                             {this.parDate(semeD[0]) <= new Date(selectYear+"/"+selectMonth+"/"+i) && new Date(selectYear+"/"+selectMonth+"/"+i) <= this.parDate(semeD[1]) ?
+                                (schflag[0][parWe] != void 0 ?
+                                        <div className="plans"><div>{dayString[youbi]}曜日授業</div></div>
+                                 :
+                                        null
+                                 )
+                                
+                                :
+                                (this.parDate(semeD[2]) <= new Date(selectYear+"/"+selectMonth+"/"+i) && new Date(selectYear+"/"+selectMonth+"/"+i) <= this.parDate(semeD[3]) ?
+                                       (schflag[1][parWe] != void 0 ?
+                                        <div className="plans"><div>{dayString[youbi]}曜日授業</div></div>
+                                       :
+                                              null
+                                       )
+                                   :
+                                   null
+                                )
+                             }
                          </div>
                     </div>
                 </div>
