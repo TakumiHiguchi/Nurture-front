@@ -20,11 +20,11 @@ export default class DateBox extends Component{
             //今日
             const today = new Date()
             //選択している日
-            const selectDate = new Date(selectYear,selectMonth + 1,selectDay)
+            const selectDate = new Date(selectYear,selectMonth - 1,selectDay)
             //週の初めの日
             const startDay = selectDate.getDate() - selectDate.getDay() + 1
             
-            let weekDate = [...Array(7)].map((_, i) => new Date(selectYear,selectMonth,(startDay + i)).getDate())
+            let weekDate = [...Array(7)].map((_, i) => new Date(selectYear,selectMonth - 1,(startDay + i)).getDate())
             let weekMonth = [...Array(7)].map((_, i) => new Date(selectYear,selectMonth,(startDay + i)).getMonth())
             
             
@@ -42,9 +42,8 @@ export default class DateBox extends Component{
                                 <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/>
                             </div>
                             <div className="bord-month no-pad">
-                                {this.props.select.year}年{this.props.select.month}月
+                                {this.props.select.year}年{selectDate.getMonth() + 1}月
                             </div>
-                            
                         </div>
                        <div className="flex-jus-between fa-dateContainer fa-endline">
                             <div className="fa-timeline"></div>

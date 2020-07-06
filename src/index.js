@@ -272,6 +272,23 @@ class Nurture extends Component {
         
         
     }
+    setTask(value){
+        //タスクを生成する
+        axios.post(ENDPOINT + '/api/v1/task', {
+            key: this.state.user.key,
+            session: this.state.user.session,
+            title: value.taskTitle,
+            content:value.taskCont,
+            taskdate:value.taskDate,
+            position:"0"
+        })
+        .then(response => {
+            console.log(response.data.mes);
+        })
+        .catch(() => {
+            console.log('通信に失敗しました');
+        });
+    }
     
     setGrade(select){
         //学年を設定する
@@ -389,10 +406,10 @@ class Nurture extends Component {
             const now = new Date();
             this.setState({select:{year:now.getFullYear(),month:now.getMonth()+1,day:now.getDate()}});
         }else if(type == "week"){
-            const selectDate = new Date(this.state.select.year,this.state.select.month, (this.state.select.day + parseInt(amount)))
             
+            const selectDate = new Date(this.state.select.year,this.state.select.month - 1, this.state.select.day + parseInt(amount));
             let y = selectDate.getFullYear();
-            let m = selectDate.getMonth();
+            let m = selectDate.getMonth() + 1;
             let d = selectDate.getDate();
             
             this.setState({select:{year:y,month:m,day:d}});
@@ -402,16 +419,9 @@ class Nurture extends Component {
             this.setState({select:select});
         }else if(type == "month"){
             //月セレクターの変更
-            let y = this.state.select.year
-            let m = this.state.select.month + parseInt(amount);
-            
-            if(m == 0){
-                y-=1;
-                m=12;
-            }else if(m == 13){
-                y+=1;
-                m=1;
-            }
+            const selectDate = new Date(this.state.select.year,this.state.select.month - 1 + parseInt(amount), this.state.select.day );
+            let y = selectDate.getFullYear();
+            let m = selectDate.getMonth() + 1;
             
             let select = this.state.select;
             select.year = y;
@@ -535,7 +545,7 @@ class Nurture extends Component {
                                                                                      
                         />
                         
-                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce)}} status={this.state.popup.addTask}
+                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.setTask(value)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas[this.state.user.grade - 1][0]}}/>
                         <Popup type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}/>
                         <Popup type={4} status={this.state.popup.regester}

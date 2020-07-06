@@ -80,10 +80,13 @@ const pmcr = {
 
 export default class Popup extends Component {
     constructor(props){
-        super(props)
+        super(props);
+        let d = new Date();
+        d = this.parseAsMoment(d).format('YYYY/MM/DD');
         this.state={
             taskPpage:0,
-            selectDate: new Date()
+            selectDate: new Date(),
+            value:{taskTitle:"",taskCont:"",taskDate:d}
         }
     }
     changePage(no){
@@ -97,11 +100,32 @@ export default class Popup extends Component {
             this.props.action.PopupToggle("login");
         }
     }
+    parseAsMoment = (dateTimeStr) => {
+      return moment.utc(dateTimeStr, 'YYYY-MM-DDTHH:mm:00Z', 'ja').utcOffset(9)
+    }
+    setTask(){
+        let value = this.state.value
+        this.props.action.setTask(value);
+    }
+    
+    handleOnChange(index,e){
+        let ins = this.state.value
+        
+        switch (index){
+            case "taskTitle" : ins.taskTitle = e.target.value;break;
+            case "taskCont" : ins.taskCont = e.target.value;break;
+            case "taskDate" : ins.taskDate = e;break;
+        }
+        console.log(e);
+        this.setState({value:ins});
+    }
     
     render(){
         if(this.props.type == 1){
             return(
                    <AddTask isPopup={this.props.status} action={() => this.props.action.PopupToggle("addTask")}
+                            setTask={() => this.setTask()}
+                            handleOnChange={(index,e) => this.handleOnChange(index,e)}
                             changePage={(ce) => this.changePage(ce)} page={this.state.taskPpage}
                             datas={{schedules:this.props.datas.schedules}}
                             />
@@ -256,8 +280,8 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(2)}>授業の変更</div>
                     </div>
                     <div className="pcePopup-item adTaskbody">
-                        <input type="text" placeholder="タスク名を入力（必須）" className="removeCss formInput task-input"/>
-                        <div className=""><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender /></div>
+                        <input type="text" placeholder="タスク名を入力（必須）" className="removeCss formInput task-input" onChange={e => props.handleOnChange("taskTitle",e)}/>
+                        <div className=""><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender action={(date) => props.handleOnChange("taskDate",date)}/></div>
                             <select class="swal2-select">
                                 <option value="" disabled="">クリックして講時を選択</option>
                                 <option value="1">1講時</option>
@@ -269,12 +293,12 @@ const AddTask = (props) => {
                             </select>
                         </div>
                     </div>
-                    <textarea className="removeTACss task-textarea" placeholder="タスクの内容を入力">
+                    <textarea className="removeTACss task-textarea" placeholder="タスクの内容を入力" onChange={e => props.handleOnChange("taskCont",e)}>
                     </textarea>
                     <div className="infBox flex-jus-center cd">
                         <div className="submitBox flex-jus-center ">
-                            <div className="btn-submit-sub fa-scedule-submit" >キャンセル</div>
-                            <div className="btn-submit fa-scedule-submit">タスクを追加</div>
+                            <div className="btn-submit-sub fa-scedule-submit" onClick={() => props.action()}>キャンセル</div>
+                            <div className="btn-submit fa-scedule-submit" onClick={() => props.setTask()}>タスクを追加</div>
                         </div>
                     </div>
                 </div>
@@ -311,7 +335,7 @@ const AddTask = (props) => {
                     </textarea>
                     <div className="infBox flex-jus-center cd">
                         <div className="submitBox flex-jus-center ">
-                            <div className="btn-submit-sub fa-scedule-submit" >キャンセル</div>
+                            <div className="btn-submit-sub fa-scedule-submit" onClick={() => props.action()}>キャンセル</div>
                             <div className="btn-submit fa-scedule-submit">試験を追加</div>
                         </div>
                     </div>
@@ -349,7 +373,7 @@ const AddTask = (props) => {
                     </div>
                     <div className="infBox flex-jus-center cd fa-df-uo">
                         <div className="submitBox flex-jus-center ">
-                            <div className="btn-submit-sub fa-scedule-submit" >キャンセル</div>
+                            <div className="btn-submit-sub fa-scedule-submit" onClick={() => props.action()}>キャンセル</div>
                             <div className="btn-submit fa-scedule-submit">授業を追加</div>
                         </div>
                     </div>
@@ -360,35 +384,7 @@ const AddTask = (props) => {
     
 }
 
-class Calender extends Component {
-  state = {
-    startDate: new Date()
-  };
- 
-  handleChange = date => {
-    this.setState({
-      startDate: date
-    });
-  };
-  parseAsMoment = (dateTimeStr) => {
-    return moment.utc(dateTimeStr, 'YYYY-MM-DDTHH:mm:00Z', 'ja').utcOffset(9)
-  }
- 
-  render() {
-    return (
-      <DatePicker
-        selected={this.state.startDate}
-        onChange={this.handleChange}
-        locale="ja"
-        customInput={
-          <div>
-            {this.parseAsMoment(this.state.startDate).format('YYYY年 MM月 DD日')}
-          </div>
-        }
-      />
-    );
-  }
-}
+
 
 class PopupClassRegester extends Component{
     constructor(props){
@@ -468,5 +464,38 @@ class PopupClassRegester extends Component{
                     </div>
                 </div>
         )
-                                                                                      }
+    }
+}
+
+class Calender extends Component {
+     constructor(props){
+         super(props)
+         this.state={
+             startDate: new Date()
+         }
+     }
+  handleChange = date => {
+    this.setState({
+      startDate: date
+    });
+      this.props.action(this.parseAsMoment(date).format('YYYY/MM/DD'));
+  };
+  parseAsMoment = (dateTimeStr) => {
+    return moment.utc(dateTimeStr, 'YYYY-MM-DDTHH:mm:00Z', 'ja').utcOffset(9)
+  }
+ 
+  render() {
+    return (
+      <DatePicker
+        selected={this.state.startDate}
+        onChange={this.handleChange}
+        locale="ja"
+        customInput={
+          <div>
+            {this.parseAsMoment(this.state.startDate).format('YYYY年 MM月 DD日')}
+          </div>
+        }
+      />
+    );
+  }
 }
