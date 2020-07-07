@@ -23,6 +23,7 @@ import './sidebar.scss';
 import './toppage.scss';
 import './Popup.scss';
 
+import ResultWindow from './ResultWindow'
 import Popup from './Popup'
 import SettingPage from './SettingPage'
 import WeekCalender from './WeekCalender'
@@ -220,6 +221,7 @@ class Nurture extends Component {
         const now = new Date();
         this.state = {
             page:"week",
+            rWindow:{isRWindow:0,type:0,mes:""},
             user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1, created_at:""},
             popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
             select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDate()},
@@ -273,6 +275,8 @@ class Nurture extends Component {
         
     }
     setTask(value){
+        this.rWindow(true,0,"");
+        
         //タスクを生成する
         axios.post(ENDPOINT + '/api/v1/task', {
             key: this.state.user.key,
@@ -283,10 +287,10 @@ class Nurture extends Component {
             position:"0"
         })
         .then(response => {
-            console.log(response.data.mes);
+            this.rWindow(true,1,"タスクを保存しました");
         })
         .catch(() => {
-            console.log('通信に失敗しました');
+            this.rWindow(true,2,'通信に失敗しました');
         });
     }
     loadTask(){
@@ -304,6 +308,7 @@ class Nurture extends Component {
     
     
     setGrade(select){
+        this.rWindow(true,0,"");
         //学年を設定する
         axios.post(ENDPOINT + '/api/v1/setGrade', {
             grade: select,
@@ -316,13 +321,15 @@ class Nurture extends Component {
             ins.grade = select
             this.setState({user:ins});
             console.log(response.data.mes);
+            this.rWindow(true,1,"学年を変更しました");
         })
         .catch(() => {
-            console.log('通信に失敗しました');
+            this.rWindow(true,2,'通信に失敗しました');
         });
     }
     
     setSemesterDate(date1,date2,date3,date4,grade){
+        this.rWindow(true,0,"");
         //学年ごとの期間を設定する
         axios.post(ENDPOINT + '/api/v1/setSemesterDate', {
             date1:date1,
@@ -334,10 +341,10 @@ class Nurture extends Component {
             session: this.state.user.session
         })
         .then(response => {
-            console.log(response.data.mes);
+            this.rWindow(true,1,"学期の期間を保存しました");
         })
         .catch(() => {
-            console.log('通信に失敗しました');
+            this.rWindow(true,2,'通信に失敗しました');
         });
     }
     
@@ -413,6 +420,20 @@ class Nurture extends Component {
             case "login": this.setState({popup: {login: !this.state.popup.login}});break;
         }
         
+    }
+    rWindow(window_bool,type,cont){
+        let ins = this.state.rWindow;
+        if(window_bool){
+            ins.isRWindow = window_bool;
+        }else{
+            if(ins.isRWindow !== 0){
+                ins.isRWindow = window_bool;
+            }
+        }
+        
+        ins.type = type;
+        ins.mes = cont;
+        this.setState({rWindow:ins});
     }
     changeSelect(type,amount){
         
@@ -492,8 +513,8 @@ class Nurture extends Component {
             
             if(element.semester == "前学期"){var semester = 0}else{ var semester = 1}
                                  
-            if(regesArray[grade][semester][w][d] == 0 && this.state.user.maxAge > (new Date().getTime() / 1000) ){
-                
+            
+                this.rWindow(true,0,"");
                 axios.post(ENDPOINT + '/api/v1/setUserSchedule', {
                                title: element.title,
                                teacher: element.teacher,
@@ -505,21 +526,22 @@ class Nurture extends Component {
                                user_grade: this.state.user.grade
                            })
                 .then(response => {
-                    console.log(response.data.mes);
-                    
                     if(response.data.status == "SUCCESS"){
                         regesArray[grade][semester][w][d] = element
                         this.setState({
                             caDatas: regesArray,
                             regesterIds: [],
                             regesterElements: []
-                        })
+                        });
+                        this.rWindow(true,1,"授業を登録しました。");
+                    }else{
+                        this.rWindow(true,2,response.data.mes);
                     }
                 })
                 .catch(() => {
-                    console.log('通信に失敗しました');
+                    this.rWindow(true,2,"通信に失敗しました。");
                 });
-            }
+            
         }
         this.PopupMenu()
     }
@@ -527,8 +549,8 @@ class Nurture extends Component {
                 
         return(
                <div>
-               
-               <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
+                    <ResultWindow value={this.state.rWindow} action={(a,b,c) => this.rWindow(a,this.state.rWindow.type,this.state.rWindow.mes)}/>
+                    <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">
                         

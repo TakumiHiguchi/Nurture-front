@@ -106,6 +106,7 @@ export default class Popup extends Component {
     setTask(){
         let value = this.state.value
         this.props.action.setTask(value);
+        this.props.action.PopupToggle("addTask")
     }
     
     handleOnChange(index,e){
@@ -421,8 +422,8 @@ class PopupClassRegester extends Component{
                             <div className="flex-jus-center crossSC" onClick={() => this.togglesh()}><FontAwesomeIcon icon={faTimes} style={pmcr}/></div>
                         </div>
                         <div className="scedulesBox">
-                           {APIresult.map((data) =>
-                                <div className="fa-schedule-enm flex" key={data.CoNum + data.title + data.id} onClick={() => this.props.action.addregesterId(data.id, data)}>
+                           {APIresult.map((data,index) =>
+                                <div className="fa-schedule-enm flex" key={data.CoNum + data.title + data.id + index} onClick={() => this.props.action.addregesterId(data.id, data)}>
                                     <div className="checkBoxlap">
                                         <div className="checkBox"><div className={regesterIds.indexOf(data.id) >= 0 ? "checkBoxInner cBIactive" : "checkBoxInner"}></div></div>
                                                       
