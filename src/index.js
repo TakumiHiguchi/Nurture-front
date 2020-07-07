@@ -289,6 +289,19 @@ class Nurture extends Component {
             console.log('通信に失敗しました');
         });
     }
+    loadTask(){
+        //タスクを取得
+        const session = this.state.user.session;
+        const key = this.state.user.key;
+        axios.get(ENDPOINT + '/api/v1/task?key=' + key + '&session=' + session)
+        .then(response => {
+            console.log(response.data.tasks);
+        })
+        .catch(() => {
+            console.log('通信に失敗しました');
+        });
+    }
+    
     
     setGrade(select){
         //学年を設定する
@@ -360,6 +373,7 @@ class Nurture extends Component {
                 
                 
                 this.loadUserSchedule(user.data.userKey ,user.data.session);
+                this.loadTask();
                 
             })
             .catch(() => {
