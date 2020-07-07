@@ -96,7 +96,15 @@ export default class MonthLine extends Component {
         
         const itemsFir = [];
         itemsFir.push(fOf);
+        
+        //task関係処理
+        let tasks = this.props.task[year][mon];
+        
         for (let i = 1; i <= lastday[mon - 1]; i++) {
+            let taskCount = 0;
+            if(tasks[i] !== void 0){
+                taskCount = tasks[i].length;
+            }
             
             //曜日の処理
             let youbi = firstYoubi
@@ -132,6 +140,11 @@ export default class MonthLine extends Component {
                                    :
                                    null
                                 )
+                             }
+                            {taskCount !== 0 &&
+                                <div className="taskBox">
+                                    {taskCount}件のタスク
+                                </div>
                              }
                          </div>
                     </div>

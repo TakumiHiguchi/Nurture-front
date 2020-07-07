@@ -233,7 +233,7 @@ class Nurture extends Component {
             schedules:[],
             seSchedule: {start_date:1,end_date:2},
             semesterPeriod:insSP,
-            
+            task:{}
         }
     }
     //api叩く部分
@@ -288,6 +288,7 @@ class Nurture extends Component {
         })
         .then(response => {
             this.rWindow(true,1,"タスクを保存しました");
+            this.loadTask();
         })
         .catch(() => {
             this.rWindow(true,2,'通信に失敗しました');
@@ -300,6 +301,7 @@ class Nurture extends Component {
         axios.get(ENDPOINT + '/api/v1/task?key=' + key + '&session=' + session)
         .then(response => {
             console.log(response.data.tasks);
+            this.setState({task:response.data.tasks})
         })
         .catch(() => {
             console.log('通信に失敗しました');
@@ -567,6 +569,7 @@ class Nurture extends Component {
                                 changeSelect: (type,amount) => this.changeSelect(type,amount)
                             }}
                             select = {this.state.select}
+                            task ={this.state.task}
                         />
                         <PopupClassEdit isPopup = {this.state.popup}
                                    action = {{
@@ -628,7 +631,7 @@ class Body extends Component {
                 <main className="fa-mainContainer">
                    <DateBox type={"month"} action={(type,amount) => this.props.action.changeSelect(type,amount)} data={{year:this.props.select.year,month:this.props.select.month}}/>
                    <div className="fa-scedule">
-                        <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} scheduleData = {this.props.scheduleDatas} element={this.props.element}/>
+                    <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} scheduleData = {this.props.scheduleDatas} element={this.props.element} task={this.props.task}/>
                    </div>
                 </main>
             )
