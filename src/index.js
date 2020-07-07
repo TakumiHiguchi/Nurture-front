@@ -536,6 +536,10 @@ class Nurture extends Component {
                         this.rWindow(true,1,"授業を登録しました。");
                     }else{
                         this.rWindow(true,2,response.data.mes);
+                        this.setState({
+                            regesterIds: [],
+                            regesterElements: []
+                        });
                     }
                 })
                 .catch(() => {
