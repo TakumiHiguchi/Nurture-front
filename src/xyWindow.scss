@@ -20,7 +20,7 @@
 }
 .xyWindowInner{
     max-height:300px;
-    margin:10px;
+    margin:10px 0px;
     overflow-x: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -67,11 +67,11 @@
     font-size:0.9em;
     position: relative;
     font-weight:bold;
-    padding:0 0 0 1.3em;
+    padding:5px 0 5px calc(1.3em + 5px);
     &:before{
         position: absolute;
         top:50%;
-        left:0px;
+        left:5px;
         -webkit-transform : translateY(-50%);
         transform : translateY(-50%);
         content:'';
@@ -83,15 +83,16 @@
 }
 .taskList{
     cursor: pointer;
-    padding:0 0 5px 0;
+    padding:0 5px 0 5px;
     &:hover .tlp{
-        text-decoration:underline;
+        background:#f8f8f8;
+        border-radius:5px;
     }
 }
 
 //schedule
 .scheduleList{
-    padding:5px 0;
+    padding:5px 0 5px 15px;
 }
 .sbu-window{
     font-size:0.8em;

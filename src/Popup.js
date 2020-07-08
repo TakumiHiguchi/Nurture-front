@@ -21,6 +21,7 @@ import { faSignOutAlt,faBook } from "@fortawesome/free-solid-svg-icons";//サイ
 
 
 import DDMschedule from './DDMschedule'
+import DDMposition from './DDMposition'
 import GoogleAuthentication from './GoogleAuthentication'
 import DDMsearchPosition from './DDMsearchPosition'
 
@@ -86,7 +87,7 @@ export default class Popup extends Component {
         this.state={
             taskPpage:0,
             selectDate: new Date(),
-            value:{taskTitle:"",taskCont:"",taskDate:d}
+            value:{taskTitle:"",taskCont:"",taskDate:d,position:1}
         }
     }
     changePage(no){
@@ -114,6 +115,7 @@ export default class Popup extends Component {
         value.taskTitle = "";
         value.taskCont = "";
         value.taskDate = d;
+        value.position = 1;
         
         this.setState({value:value});
     }
@@ -125,6 +127,7 @@ export default class Popup extends Component {
             case "taskTitle" : ins.taskTitle = e.target.value;break;
             case "taskCont" : ins.taskCont = e.target.value;break;
             case "taskDate" : ins.taskDate = e;break;
+            case "position" : ins.position = e;break;
         }
         this.setState({value:ins});
     }
@@ -292,15 +295,7 @@ const AddTask = (props) => {
                     <div className="pcePopup-item adTaskbody">
                         <input type="text" placeholder="タスク名を入力（必須）" className="removeCss formInput task-input" onChange={e => props.handleOnChange("taskTitle",e)} value={props.value.taskTitle}/>
                         <div className=""><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender action={(date) => props.handleOnChange("taskDate",date)}/></div>
-                            <select class="swal2-select">
-                                <option value="" disabled="">クリックして講時を選択</option>
-                                <option value="1">1講時</option>
-                                <option value="2">2講時</option>
-                                <option value="3">3講時</option>
-                                <option value="4">4講時</option>
-                                <option value="5">5講時</option>
-                                <option value="5">6講時</option>
-                            </select>
+                            <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)}/>
                         </div>
                     </div>
                     <textarea className="removeTACss task-textarea" placeholder="タスクの内容を入力" onChange={e => props.handleOnChange("taskCont",e)} value={props.value.taskCont}>

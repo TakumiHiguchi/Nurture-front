@@ -5,7 +5,7 @@ export default class xyWindow extends Component{
     constructor(props){
         super(props);
         this.state={
-        page:0
+            page:0
         }
     }
     

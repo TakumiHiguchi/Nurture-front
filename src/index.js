@@ -286,7 +286,7 @@ class Nurture extends Component {
             title: value.taskTitle,
             content:value.taskCont,
             taskdate:value.taskDate,
-            position:"0"
+            position:value.position - 1
         })
         .then(response => {
             this.rWindow(true,1,"タスクを保存しました");
