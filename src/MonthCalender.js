@@ -6,6 +6,7 @@ import './monthCalender.scss';
 export default class MonthLine extends Component {
     constructor(props){
         super(props);
+        
     }
     parDate(target){
         var dateSeme = target.split('/');
@@ -16,6 +17,7 @@ export default class MonthLine extends Component {
         return stDate
     }
     
+
     render(){
         const dayString=["日","月","火","水","木","金","土"];
         //stateを入れる
@@ -92,18 +94,22 @@ export default class MonthLine extends Component {
                                                     schedule.find(item => item !== 0)
                                                     )
                                            )
-        console.log(schflag)
         
         const itemsFir = [];
         itemsFir.push(fOf);
         
         //task関係処理
-        let tasks = this.props.task[year][mon];
+        let tasks = this.props.task;
         
         for (let i = 1; i <= lastday[mon - 1]; i++) {
+            //task関係処理
             let taskCount = 0;
-            if(tasks[i] !== void 0){
-                taskCount = tasks[i].length;
+            let task = {};
+            if(tasks[year] !== void 0 && tasks[year][mon] !== void 0){
+                if(tasks[year][mon][i] !== void 0){
+                    taskCount = tasks[year][mon][i].length;
+                    task = tasks[year][mon][i]
+                }
             }
             
             //曜日の処理
@@ -115,24 +121,39 @@ export default class MonthLine extends Component {
             let parWe = youbi - 1;
             if(youbi === 0)parWe = 6;
             
+            //判定式
+            let bool1 = this.parDate(semeD[0]) <= new Date(selectYear+"/"+selectMonth+"/"+i) && new Date(selectYear+"/"+selectMonth+"/"+i) <= this.parDate(semeD[1]);//前学期
+            let bool2 = this.parDate(semeD[2]) <= new Date(selectYear+"/"+selectMonth+"/"+i) && new Date(selectYear+"/"+selectMonth+"/"+i) <= this.parDate(semeD[3]);//後学期
+            let bool3 = schflag[0][parWe] != void 0;
+            let bool4 = schflag[1][parWe] != void 0;
+            let bool5 = (bool1 && bool3) || (bool2 && bool4) || taskCount > 0
+            
+            //前学期後学期を判定
+            let semesterNom = -1;
+            if(bool1){
+                semesterNom = 0;
+            }else if(bool2){
+                semesterNom = 1;
+            }
+            
             itemsFir.push(
-                <div className="month-dataBox">
+                <div className="month-dataBox" onClick={bool5 && ((e) => this.props.action.showWindow(e.pageX,e.pageY,task,year,mon,i,semesterNom)) } key={i + "mdb"}>
                     <div className="">
                          <div className={now.getDate() == i && mon == (now.getMonth() + 1) && year == now.getFullYear() ? "month-date flex-jus-center month-select" : "month-date flex-jus-center"}>
                              {i}
                           
                          </div>
                          <div className="month-dateBody">
-                             {this.parDate(semeD[0]) <= new Date(selectYear+"/"+selectMonth+"/"+i) && new Date(selectYear+"/"+selectMonth+"/"+i) <= this.parDate(semeD[1]) ?
-                                (schflag[0][parWe] != void 0 ?
+                             {bool1 ?
+                                (bool3 ?
                                         <div className="plans"><div>{dayString[youbi]}曜日授業</div></div>
                                  :
                                         null
                                  )
                                 
                                 :
-                                (this.parDate(semeD[2]) <= new Date(selectYear+"/"+selectMonth+"/"+i) && new Date(selectYear+"/"+selectMonth+"/"+i) <= this.parDate(semeD[3]) ?
-                                       (schflag[1][parWe] != void 0 ?
+                                (bool2 ?
+                                       (bool4 ?
                                         <div className="plans"><div>{dayString[youbi]}曜日授業</div></div>
                                        :
                                               null
@@ -141,7 +162,7 @@ export default class MonthLine extends Component {
                                    null
                                 )
                              }
-                            {taskCount !== 0 &&
+                            {taskCount > 0 &&
                                 <div className="taskBox">
                                     {taskCount}件のタスク
                                 </div>

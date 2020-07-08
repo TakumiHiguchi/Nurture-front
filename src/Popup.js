@@ -106,7 +106,16 @@ export default class Popup extends Component {
     setTask(){
         let value = this.state.value
         this.props.action.setTask(value);
-        this.props.action.PopupToggle("addTask")
+        this.props.action.PopupToggle("addTask");
+        
+        //初期化
+        let d = new Date();
+        d = this.parseAsMoment(d).format('YYYY/MM/DD');
+        value.taskTitle = "";
+        value.taskCont = "";
+        value.taskDate = d;
+        
+        this.setState({value:value});
     }
     
     handleOnChange(index,e){
@@ -117,7 +126,6 @@ export default class Popup extends Component {
             case "taskCont" : ins.taskCont = e.target.value;break;
             case "taskDate" : ins.taskDate = e;break;
         }
-        console.log(e);
         this.setState({value:ins});
     }
     
@@ -129,6 +137,7 @@ export default class Popup extends Component {
                             handleOnChange={(index,e) => this.handleOnChange(index,e)}
                             changePage={(ce) => this.changePage(ce)} page={this.state.taskPpage}
                             datas={{schedules:this.props.datas.schedules}}
+                            value={this.state.value}
                             />
                    
                    )
@@ -281,7 +290,7 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(2)}>授業の変更</div>
                     </div>
                     <div className="pcePopup-item adTaskbody">
-                        <input type="text" placeholder="タスク名を入力（必須）" className="removeCss formInput task-input" onChange={e => props.handleOnChange("taskTitle",e)}/>
+                        <input type="text" placeholder="タスク名を入力（必須）" className="removeCss formInput task-input" onChange={e => props.handleOnChange("taskTitle",e)} value={props.value.taskTitle}/>
                         <div className=""><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender action={(date) => props.handleOnChange("taskDate",date)}/></div>
                             <select class="swal2-select">
                                 <option value="" disabled="">クリックして講時を選択</option>
@@ -294,7 +303,7 @@ const AddTask = (props) => {
                             </select>
                         </div>
                     </div>
-                    <textarea className="removeTACss task-textarea" placeholder="タスクの内容を入力" onChange={e => props.handleOnChange("taskCont",e)}>
+                    <textarea className="removeTACss task-textarea" placeholder="タスクの内容を入力" onChange={e => props.handleOnChange("taskCont",e)} value={props.value.taskCont}>
                     </textarea>
                     <div className="infBox flex-jus-center cd">
                         <div className="submitBox flex-jus-center ">

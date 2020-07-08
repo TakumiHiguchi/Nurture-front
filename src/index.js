@@ -23,6 +23,7 @@ import './sidebar.scss';
 import './toppage.scss';
 import './Popup.scss';
 
+import XYWindow from './xyWindow'
 import ResultWindow from './ResultWindow'
 import Popup from './Popup'
 import SettingPage from './SettingPage'
@@ -224,6 +225,7 @@ class Nurture extends Component {
             rWindow:{isRWindow:0,type:0,mes:""},
             user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1, created_at:""},
             popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
+            xyWindow:{window:false,x:0,y:0,task:"",year:0,month:0,date:0,semesterNom:0},
             select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDate()},
             selectPopup:0,
             regesterIds:[],
@@ -437,6 +439,21 @@ class Nurture extends Component {
         ins.mes = cont;
         this.setState({rWindow:ins});
     }
+    
+    showWindow(x,y,task,year,month,date,semesterNom){
+        let ins = this.state.xyWindow;
+        ins.window = !ins.window;
+        ins.x = x;
+        ins.y = y;
+        ins.task = task;
+        ins.year = year;
+        ins.month = month;
+        ins.date = date;
+        ins.semesterNom = semesterNom;
+        this.setState({xyWindow:ins})
+        
+    }
+    
     changeSelect(type,amount){
         
         if(type == "today"){
@@ -555,6 +572,7 @@ class Nurture extends Component {
                 
         return(
                <div>
+                    <XYWindow value={this.state.xyWindow} action={(x,y,task,year,month,date,semesterNom) => this.showWindow(x,y,task,year,month,date,semesterNom)} scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}/>
                     <ResultWindow value={this.state.rWindow} action={(a,b,c) => this.rWindow(a,this.state.rWindow.type,this.state.rWindow.mes)}/>
                     <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
@@ -566,7 +584,8 @@ class Nurture extends Component {
                             element={{caCount: this.state.caCount,semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
                             action = {{popupshow: () => this.PopupMenu(),
                                 popupEdit: (ce) => this.PopupCCedit(ce),
-                                changeSelect: (type,amount) => this.changeSelect(type,amount)
+                                changeSelect: (type,amount) => this.changeSelect(type,amount),
+                                showWindow:(x,y,task,year,month,date,semesterNom) => this.showWindow(x,y,task,year,month,date,semesterNom)
                             }}
                             select = {this.state.select}
                             task ={this.state.task}
@@ -631,7 +650,7 @@ class Body extends Component {
                 <main className="fa-mainContainer">
                    <DateBox type={"month"} action={(type,amount) => this.props.action.changeSelect(type,amount)} data={{year:this.props.select.year,month:this.props.select.month}}/>
                    <div className="fa-scedule">
-                    <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} scheduleData = {this.props.scheduleDatas} element={this.props.element} task={this.props.task}/>
+                   <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} scheduleData = {this.props.scheduleDatas} element={this.props.element} task={this.props.task} action={{showWindow:(x,y,task,year,month,date,semesterNom) => this.props.action.showWindow(x,y,task,year,month,date,semesterNom)}}/>
                    </div>
                 </main>
             )
