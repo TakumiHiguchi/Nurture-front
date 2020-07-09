@@ -403,7 +403,7 @@ class Nurture extends Component {
         user.maxAge = 0
         user.imageURL = ""
         user.created_at = ""
-        this.setState({user:user,caDatas: tbl});
+        this.setState({user:user,caDatas: tbl,task : []});
         this.setState({popup: {login: true,setting:false}});
     }
     

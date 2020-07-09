@@ -7,7 +7,7 @@
     cursor: pointer;
 }
 .xyWindowWrap{
-    min-width:400px;
+    width:400px;
     position:absolute;
     background:white;
     z-index:99999;
@@ -89,6 +89,36 @@
         border-radius:5px;
     }
 }
+.xyTaskContant .completeBtn{
+    display:inline-block;
+    font-size:0.8em;
+    border-radius:5px;
+    padding:2px 10px;
+    margin:0px 0 5px 10px;
+    &:hover{
+        background:#f8f8f8;
+    }
+}
+.xyTaskContant .mainCont{
+    padding:5px 10px;
+    border-bottom:1px solid #f0f0f0;
+    margin-bottom:5px;
+    ol{
+        padding:0 0 0 30px;
+    }
+    ul{
+        padding:0 0 0 20px;
+    }
+}
+.xyTaskEf{
+    animation-name:xyEffect;
+    animation-duration:0.3s;
+    transform: scale(1);
+}
+.xyTaskEf_de{
+    display:none;
+}
+
 
 //schedule
 .scheduleList{
@@ -102,10 +132,11 @@
 @keyframes xyEffect {
     0% {
         opacity: 0;
-        transform: translateX(-10px);
+        transform: translateX(-20px);
     }
     100%{
         opacity: 1;
         transform: translateX(0);
     }
 }
+

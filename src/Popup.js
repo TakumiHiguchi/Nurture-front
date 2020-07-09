@@ -25,6 +25,8 @@ import DDMposition from './DDMposition'
 import GoogleAuthentication from './GoogleAuthentication'
 import DDMsearchPosition from './DDMsearchPosition'
 
+import TlEditor from './TlEditor'
+
 //datepicker
 import ja from 'date-fns/locale/ja';
 registerLocale('ja', ja)
@@ -125,7 +127,7 @@ export default class Popup extends Component {
         
         switch (index){
             case "taskTitle" : ins.taskTitle = e.target.value;break;
-            case "taskCont" : ins.taskCont = e.target.value;break;
+            case "taskCont" : ins.taskCont = e;break;
             case "taskDate" : ins.taskDate = e;break;
             case "position" : ins.position = e;break;
         }
@@ -298,8 +300,8 @@ const AddTask = (props) => {
                             <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)}/>
                         </div>
                     </div>
-                    <textarea className="removeTACss task-textarea" placeholder="タスクの内容を入力" onChange={e => props.handleOnChange("taskCont",e)} value={props.value.taskCont}>
-                    </textarea>
+                    
+                    <TlEditor onChange={(val) => props.handleOnChange("taskCont",val)}/>
                     <div className="infBox flex-jus-center cd">
                         <div className="submitBox flex-jus-center ">
                             <div className="btn-submit-sub fa-scedule-submit" onClick={() => props.action()}>キャンセル</div>

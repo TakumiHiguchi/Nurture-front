@@ -91,7 +91,8 @@ const styles = {
     dropDown:{
         position: 'relative',
         display:'inline-block',
-        margin:'0 0 0 10px'
+        margin:'0 0 0 10px',
+        zIndex:'9999'
     },
   menuButton: {
     height: '26px',

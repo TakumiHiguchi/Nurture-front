@@ -1,15 +1,30 @@
 import React, { Component } from 'react';
 
+
 import './xyWindow.scss'
 export default class xyWindow extends Component{
     constructor(props){
         super(props);
         this.state={
-            page:0
+            page:0,
+            taskOpenFlag:-1
+        }
+    }
+    xyWindowClose(){
+        this.props.action(0,0,{},0,0,0,0);
+        //タスクの詳細表示のフラグを初期化
+        this.setState({taskOpenFlag:-1});
+    }
+    handleTask(index){
+        if(this.state.taskOpenFlag !== index){
+            this.setState({taskOpenFlag:index});
+        }else{
+            this.setState({taskOpenFlag:-1});
         }
     }
     
     render(){
+        
         const xyWindowMain = {
             top:this.props.value.y + "px",
             left:this.props.value.x + 40 + "px"
@@ -51,7 +66,7 @@ export default class xyWindow extends Component{
         
         return(
                <div className="no-select">
-                   <div className={this.props.value.window ? "xyw xyWindow" : "xyw_de xyWindow"} onClick={() => this.props.action(0,0,{},0,0,0,0)}>
+                   <div className={this.props.value.window ? "xyw xyWindow" : "xyw_de xyWindow"} onClick={() => this.xyWindowClose()}>
                    </div>
                    <div style={xyWindowMain} className={this.props.value.window ? "xyw-inner xyWindowWrap" : "xyw_de-inner xyWindowWrap"}>
                         <div className="windowDate">{value.year}年{value.month}月{value.date}日</div>
@@ -60,9 +75,15 @@ export default class xyWindow extends Component{
                             {(value.task.length !== void 0 && this.state.page == 0) &&(
                                     <div className="taskListWrap">
                                         {[...Array(value.task.length)].map((_,index) =>
-                                                                           <div className="taskList">
-                                                                                <div className="tlp">{value.task[index].title}</div>
-                                                                           </div>
+                                            <div className="taskList" key={"taskWindow" + index}>
+                                                <div className="tlp" onClick={() => this.handleTask(index)} key={"taskTitle" + index}>{value.task[index].title}</div>
+                                                <div className={this.state.taskOpenFlag === index ? "xyTaskEf xyTaskContant" : "xyTaskEf_de xyTaskContant"}>
+                                                    <div className="mainCont" dangerouslySetInnerHTML={{
+                                                      __html: value.task[index].content
+                                                    }}></div>
+                                                    <div className="completeBtn">完了にする</div>
+                                                </div>
+                                            </div>
                                         )}
                                     </div>
                             )}
