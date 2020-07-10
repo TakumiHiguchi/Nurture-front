@@ -276,6 +276,27 @@ class Nurture extends Component {
         
         
     }
+    setExam(value){
+        this.rWindow(true,0,"");
+        
+        //タスクを生成する
+        axios.post(ENDPOINT + '/api/v1/exam', {
+            key: this.state.user.key,
+            session: this.state.user.session,
+            title: value.examTitle,
+            content:value.examCont,
+            examdate:value.examDate,
+            position:value.position - 1
+        })
+        .then(response => {
+            this.rWindow(true,1,response.data.mes);
+            this.loadTask();//変更
+        })
+        .catch(() => {
+            this.rWindow(true,2,'通信に失敗しました');
+        });
+    }
+    
     setTask(value){
         this.rWindow(true,0,"");
         
@@ -607,8 +628,8 @@ class Nurture extends Component {
                                                                                      
                         />
                         
-                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.setTask(value)}} status={this.state.popup.addTask}
-                                        datas={{schedules:this.state.caDatas[this.state.user.grade - 1][0]}}/>
+                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.setTask(value), setExam: (value) => this.setExam(value)}} status={this.state.popup.addTask}
+                                        datas={{schedules:this.state.caDatas[this.state.user.grade - 1]}}/>
                         <Popup type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}/>
                         <Popup type={4} status={this.state.popup.regester}
                                    action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),

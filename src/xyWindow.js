@@ -32,7 +32,7 @@ export default class xyWindow extends Component{
         let value = this.props.value;
         
         //授業フラグ
-        let schflag = [0,0,0,0,0,0,0];
+        let schflag = [void 0,void 0,void 0,void 0,void 0,void 0];
         if(value.semesterNom !== -1){
             schflag = this.props.scheduleDatas[value.semesterNom].map((schedule,index) =>
                 schedule.find(item => item !== 0)

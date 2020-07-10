@@ -27,7 +27,9 @@ export default class TlEditor extends React.Component {
               <RichTextEditor
                 value={this.state.value}
                 onChange={value => this.onChange(value)}
+                placeholder={this.props.placeholder}
               />
+                <div className="tlEDeleteButton" onClick={() => this.setState({value: RichTextEditor.createEmptyValue()})}>文章を削除</div>
             </div>
     );
   }
