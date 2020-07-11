@@ -31,6 +31,13 @@
         height:calc(100% - 30px);
         color:#aaa;
         font-size:0.8em;
+        .plans{
+            text-align:center;
+            div{
+                color:#aaa;
+                font-size:0.9em;
+            }
+        }
     }
     .semestar-month-date{
         width:100%;
@@ -41,3 +48,21 @@
 }
 
 
+.taskBox_semester{
+    background:#00aced;
+    width:1em;
+    height:1em;
+    margin:3px;
+}
+.examBox_semester{
+    background:#EF454A;
+    width:1em;
+    height:1em;
+    margin:3px;
+}
+.changeBox_semester{
+    background:#aaa;
+    width:1em;
+    height:1em;
+    margin:3px;
+}

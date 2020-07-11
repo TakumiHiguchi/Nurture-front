@@ -204,7 +204,7 @@ export default class MonthLine extends Component {
                                </div>
                             }
                             {(changeScheduleCount > 0 || cscBefore > 0) &&
-                               <div className="taskBox">
+                               <div className="changeBox">
                                    {changeScheduleCount + cscBefore}件の授業変更
                                </div>
                             }

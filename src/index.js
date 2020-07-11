@@ -479,7 +479,14 @@ class Nurture extends Component {
         user.maxAge = 0
         user.imageURL = ""
         user.created_at = ""
-        this.setState({user:user,caDatas: tbl,task : []});
+        this.setState({
+            user:user,
+            caDatas: tbl,
+            task:{},
+            exam:{},
+            change_schedules_after:{},
+            change_schedules_before:{}
+        });
         this.setState({popup: {login: true,setting:false}});
     }
     
@@ -741,9 +748,14 @@ class Body extends Component {
             return(
                 <main className="fa-mainContainer">
                    <DateBox type={"semester"} action={(type,amount) => this.props.action.changeSelect(type,amount)}
-                        data={{year:this.props.select.year,month:this.props.select.month}}/>
+                        data={{year:this.props.select.year,month:this.props.select.month}}
+                   />
                    <div className="fa-scedule">
-                   <SemesterCalender data={{year:this.props.select.year,month:this.props.select.month}}/>
+                   <SemesterCalender data={{year:this.props.select.year,month:this.props.select.month}}
+                        scheduleData = {this.props.scheduleDatas} element={this.props.element}
+                        task={this.props.task} exam={this.props.exam} change_schedules ={this.props.change_schedules}
+                        action={{showWindow:(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.props.action.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)}}
+                   />
                    </div>
                 </main>
             )

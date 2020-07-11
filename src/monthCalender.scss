@@ -94,3 +94,26 @@
         height:0.8em;
     }
 }
+.changeBox{
+    color:#aaa;
+    font-size:0.9em;
+    position: relative;
+    font-weight:bold;
+    padding:0px 0 0px 1.3em;
+    margin:0 0 5px 5px;
+    &:before{
+        position: absolute;
+        top:50%;
+        left:0px;
+        -webkit-transform : translateY(-50%);
+        transform : translateY(-50%);
+        content:'';
+        background:#aaa;
+        width:0.8em;
+        height:0.8em;
+    }
+}
+
+.dateStyles{
+    color:#aaa;
+}

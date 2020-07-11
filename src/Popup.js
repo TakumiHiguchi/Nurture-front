@@ -88,8 +88,7 @@ const p2inner ={
 fontSize:"0.8em"
 }
 const beforeBox={
-    marginBottom: "40px",
-paddingLeft:"20px"
+    marginBottom: "40px"
 }
 const exdp = {
 zIndex:9999
@@ -126,11 +125,7 @@ export default class Popup extends Component {
         this.props.action.PopupToggle("addTask");
         
         //初期化
-        let d = new Date();
-        d = this.parseAsMoment(d).format('YYYY/MM/DD');
         value.taskTitle = "";
-        value.taskDate = d;
-        value.position = 1;
         
         this.setState({value:value});
     }
@@ -141,11 +136,7 @@ export default class Popup extends Component {
         this.props.action.PopupToggle("addTask");
         
         //初期化
-        let d = new Date();
-        d = this.parseAsMoment(d).format('YYYY/MM/DD');
         value.examTitle = "";
-        value.examDate = d;
-        value.position = 1;
         
         this.setState({value:value});
     }

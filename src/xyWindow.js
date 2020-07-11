@@ -8,7 +8,11 @@ export default class xyWindow extends Component{
         this.state={
             page:0,
             taskOpenFlag:-1,
-            examOpenFlag:-1
+            examOpenFlag:-1,
+            size:{
+                width: 0,
+                height: 0
+            }
         }
     }
     xyWindowClose(){
@@ -30,12 +34,52 @@ export default class xyWindow extends Component{
             this.setState({examOpenFlag:-1});
         }
     }
-    render(){
-        
-        const xyWindowMain = {
-            top:this.props.value.y + "px",
-            left:this.props.value.x + 40 + "px"
+    
+    //画面の大きさを取得
+    componentWillMount () {
+        window.addEventListener('load', () =>{
+            this.getWindowSize();
+        });
+        window.addEventListener('resize', () => {
+            this.getWindowSize();
+        });
+    }
+    getWindowSize(){
+        let width = window.innerWidth
+        let height = window.innerHeight;
+        let wsize = {
+            width: width,
+            height: height
         }
+        this.setState({size: wsize});
+    }
+    
+    render(){
+        const bl1 = this.props.value.y + 300 > this.state.size.height;
+        const bl2 = this.props.value.x + 410 > this.state.size.width;
+        let xyWindowMain = {};
+        if(bl1 && bl2){
+            xyWindowMain = {
+                top:this.props.value.y - 300 + "px",
+                left:this.props.value.x - 450 + "px"
+            }
+        }else if(bl1 && !bl2){
+            xyWindowMain = {
+                top:this.props.value.y - 300 + "px",
+                left:this.props.value.x + 40 + "px"
+            }
+        }else if(!bl1 && bl2){
+            xyWindowMain = {
+                top:this.props.value.y + "px",
+                left:this.props.value.x - 450 + "px"
+            }
+        }else{
+            xyWindowMain = {
+                top:this.props.value.y + "px",
+                left:this.props.value.x + 40 + "px"
+            }
+        }
+        
         let value = this.props.value;
         
         //授業フラグ
