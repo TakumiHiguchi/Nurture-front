@@ -22,7 +22,9 @@ export default class DateBox extends Component{
             //選択している日
             const selectDate = new Date(selectYear,selectMonth - 1,selectDay)
             //週の初めの日
-            const startDay = selectDate.getDate() - selectDate.getDay() + 1
+            let sc = selectDate.getDay() ;
+            if(sc === 0)sc=7;
+            const startDay = selectDate.getDate() - sc + 1
             
             let weekDate = [...Array(7)].map((_, i) => new Date(selectYear,selectMonth - 1,(startDay + i)).getDate())
             let weekMonth = [...Array(7)].map((_, i) => new Date(selectYear,selectMonth,(startDay + i)).getMonth())

@@ -6,7 +6,7 @@ export default class xyWindow extends Component{
     constructor(props){
         super(props);
         this.state={
-            page:0,
+            page:-1,
             taskOpenFlag:-1,
             examOpenFlag:-1,
             size:{
@@ -18,7 +18,7 @@ export default class xyWindow extends Component{
     xyWindowClose(){
         this.props.action(0,0,0,0,0,0,{},{},{},{});
         //詳細表示のフラグを初期化
-        this.setState({taskOpenFlag:-1,examOpenFlag:-1});
+        this.setState({page:-1,taskOpenFlag:-1,examOpenFlag:-1});
     }
     handleTask(index){
         if(this.state.taskOpenFlag !== index){
@@ -96,6 +96,12 @@ export default class xyWindow extends Component{
         date -= 1
         
         
+        //初期値の時のpage
+        if(schflag[date] !== void 0 || value.changeSchedule.length !== void 0)if(this.state.page == -1)this.setState({page:2});
+        if(value.task.length !== void 0)if(this.state.page == -1)this.setState({page:1});
+        if(value.exam.length !== void 0)if(this.state.page == -1)this.setState({page:0});
+        
+        
         let index = [];
         let taskData = [];
         if(value.exam.length !== void 0){
@@ -107,6 +113,7 @@ export default class xyWindow extends Component{
                        );
         }
         if(value.task.length !== void 0){
+            
             index.push(
                        <div onClick={() => this.setState({page:1})} className={this.state.page === 1 ? "aTindexactive" : null}>
                             タスク
