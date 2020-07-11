@@ -80,6 +80,20 @@ const pmcr = {
     color:"rgb(170, 170, 170)",
     cursor: "pointer"
 }
+const p2head ={
+    color:"#aaa"
+}
+const p2inner ={
+    color:"#aaa",
+fontSize:"0.8em"
+}
+const beforeBox={
+    marginBottom: "40px",
+paddingLeft:"20px"
+}
+const exdp = {
+zIndex:9999
+}
 
 export default class Popup extends Component {
     constructor(props){
@@ -89,7 +103,7 @@ export default class Popup extends Component {
         this.state={
             taskPpage:0,
             selectDate: new Date(),
-        value:{taskTitle:"",taskCont:"",taskDate:d,position:1,examTitle:"",examCont:"",examDate:d}
+            value:{taskTitle:"",taskCont:"",taskDate:d,position:1,examTitle:"",examCont:"",examDate:d,selectSchedule:{},changeScheduleBeforeDate:"",changeScheduleAfterDate:""}
         }
     }
     changePage(no){
@@ -135,6 +149,13 @@ export default class Popup extends Component {
         
         this.setState({value:value});
     }
+    
+    setChangeSchedule(){
+        let value = this.state.value
+        this.props.action.setChangeSchedule(value);
+        this.props.action.PopupToggle("addTask");
+        
+    }
     handleOnChange(index,e){
         let ins = this.state.value
         
@@ -146,6 +167,9 @@ export default class Popup extends Component {
             case "examCont" : ins.examCont = e;break;
             case "examDate" : ins.examDate = e;break;
             case "examTitle" : ins.examTitle = e;break;
+            case "changeScheduleBeforeDate" : ins.changeScheduleBeforeDate = e;break;
+            case "changeScheduleAfterDate" : ins.changeScheduleAfterDate = e;break;
+            case "selectSchedule" : ins.selectSchedule = e;console.log(e);break;
         }
         this.setState({value:ins});
     }
@@ -156,10 +180,12 @@ export default class Popup extends Component {
                    <AddTask isPopup={this.props.status} action={() => this.props.action.PopupToggle("addTask")}
                             setTask={() => this.setTask()}
                             setExam={() => this.setExam()}
+                            setChangeSchedule={() => this.setChangeSchedule()}
                             handleOnChange={(index,e) => this.handleOnChange(index,e)}
                             changePage={(ce) => this.changePage(ce)} page={this.state.taskPpage}
-                            datas={{schedules:this.props.datas.schedules}}
+                            datas={this.props.datas}
                             value={this.state.value}
+                            selectSchedule={this.state.value.selectSchedule}
                             />
                    
                    )
@@ -313,7 +339,7 @@ const AddTask = (props) => {
                     </div>
                     <div className="pcePopup-item adTaskbody">
                         <input type="text" placeholder="タスク名を入力（必須）" className="removeCss formInput task-input" onChange={e => props.handleOnChange("taskTitle",e)} value={props.value.taskTitle}/>
-                        <div className=""><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender action={(date) => props.handleOnChange("taskDate",date)}/></div>
+                        <div className=""><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender action={(date) => props.handleOnChange("taskDate",date)} key={"dscal0"}/></div>
                         <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)} key={"page1DDM"}/>
                         </div>
                     </div>
@@ -340,10 +366,10 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(2)}>授業の変更</div>
                     </div>
                     <div className="pcePopup-item adTaskbody">
-                        <DDMschedule type={2} data={props.datas.schedules} action={(val) => props.handleOnChange("examTitle",val)}/>
+                        <DDMschedule type={2} data={props.datas.schedules} fLabel={"試験がある授業を選択"} action={(val) => props.handleOnChange("examTitle",val.title)} key={"DDMschedule1"}/>
                         <div className="">
                             <FontAwesomeIcon icon={faClock} style={clock} />
-                            <div className="calpointer"><Calender action={(date) => props.handleOnChange("examDate",date)}/></div>
+                            <div className="calpointer"><Calender action={(date) => props.handleOnChange("examDate",date)} key={"dscal1"}/></div>
                             <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)} key={"page2DDM"}/>
                         </div>
                     </div>
@@ -358,6 +384,12 @@ const AddTask = (props) => {
             </div>
         )
     }else if (props.page == 2){
+        let semesNum = 0
+        if(props.selectSchedule.position !== void 0){
+            if(props.selectSchedule.semester != "前学期"){
+                semesNum = 1;
+            }
+        }
         return(
             <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
                 <div className="popup_wrap" onClick={() => props.action() }></div>
@@ -369,27 +401,32 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(2)} className="aTindexactive">授業の変更</div>
                     </div>
                     <div className="pcePopup-item adTaskbody">
-                       <input type="text" placeholder="授業名を入力（必須）" className="removeCss formInput task-input"/>
-                       <input type="text" placeholder="教師名を入力（必須）" className="removeCss formInput task-input"/>
-                       <input type="text" placeholder="学年を入力（必須）" className="removeCss formInput task-input"/>
-                        <div>
-                            <FontAwesomeIcon icon={faClock} style={clock} />
-                            <div className="calpointer"><Calender /></div>
-                            <select class="swal2-select">
-                                <option value="" disabled="">クリックして講時を選択</option>
-                                <option value="1">1講時</option>
-                                <option value="2">2講時</option>
-                                <option value="3">3講時</option>
-                                <option value="4">4講時</option>
-                                <option value="5">5講時</option>
-                                <option value="5">6講時</option>
-                            </select>
+                        <div style={p2head}>変更する授業と日時</div>
+                        <div style={beforeBox}>
+                            <DDMschedule type={2} data={props.datas.schedules} fLabel={"変更する授業を選択"} action={(val) => props.handleOnChange("selectSchedule",val)} key={"DDMschedule2"}/>
+                            
+                            {props.selectSchedule.position !== void 0 &&
+                                <div>
+                                    <FontAwesomeIcon icon={faClock} style={clock} />
+                                    <div className="calpointer"><ExCalender action={(date) => props.handleOnChange("changeScheduleBeforeDate",date)} select={parseInt(props.selectSchedule.position / 6)} semesterMinDate={props.datas.semesterDate[semesNum]} semesterMaxDate={props.datas.semesterDate[semesNum + 2]}/></div>
+                                </div>
+                            }
+                            
                         </div>
+                        <div style={p2head}>授業の変更先日時</div>
+                        <div style={beforeBox}>
+                            <FontAwesomeIcon icon={faClock} style={clock} />
+                            <div className="calpointer"><Calender action={(date) => props.handleOnChange("changeScheduleAfterDate",date)} key={"dscal2"}/></div>
+                            <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)} key={"page2DDM"}/>
+                            <div style={p2inner}>ここで選択された日時をもとに授業を変更します。変更前の授業は、表示されなくなります。</div>
+                            <div style={p2inner}>詳しくは、ヘルプをご覧ください。</div>
+                        </div>
+                        
                     </div>
                     <div className="infBox flex-jus-center cd fa-df-uo">
                         <div className="submitBox flex-jus-center ">
                             <div className="btn-submit-sub fa-scedule-submit" onClick={() => props.action()}>キャンセル</div>
-                            <div className="btn-submit fa-scedule-submit">授業を追加</div>
+                            <div className="btn-submit fa-scedule-submit" onClick={() => props.setChangeSchedule()}>授業を追加</div>
                         </div>
                     </div>
                 </div>
@@ -514,3 +551,46 @@ class Calender extends Component {
     );
   }
 }
+
+class ExCalender extends Component {
+     constructor(props){
+         super(props)
+         this.state={
+             startDate: new Date()
+         }
+     }
+  handleChange = date => {
+    this.setState({
+      startDate: date
+    });
+      this.props.action(this.parseAsMoment(date).format('YYYY/MM/DD'));
+  };
+  parseAsMoment = (dateTimeStr) => {
+    return moment.utc(dateTimeStr, 'YYYY-MM-DDTHH:mm:00Z', 'ja').utcOffset(9)
+  }
+  render() {
+      const isWeekday = date => {
+          let select = this.props.select +1;
+          if(select === 7)select = 0;
+          const day = date.getDay();
+          return day === select;
+      };
+    return (
+      <DatePicker
+        selected={this.state.startDate}
+        onChange={this.handleChange}
+        locale="ja"
+        filterDate={isWeekday}
+            minDate={new Date(this.props.semesterMinDate)}
+            maxDate={new Date(this.props.semesterMaxDate)}
+            style={exdp}
+        customInput={
+          <div>
+            {this.parseAsMoment(this.state.startDate).format('YYYY年 MM月 DD日')}
+          </div>
+        }
+      />
+    );
+  }
+}
+                                                                                      

@@ -225,7 +225,7 @@ class Nurture extends Component {
             rWindow:{isRWindow:0,type:0,mes:""},
             user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1, created_at:""},
             popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
-            xyWindow:{window:false,x:0,y:0,task:"",year:0,month:0,date:0,semesterNom:0},
+            xyWindow:{window:false,x:0,y:0,year:0,month:0,date:0,semesterNom:0,task:{},exam:{},changeSchedule:{},csBefore:{}},
             select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDate()},
             selectPopup:0,
             regesterIds:[],
@@ -235,7 +235,10 @@ class Nurture extends Component {
             schedules:[],
             seSchedule: {start_date:1,end_date:2},
             semesterPeriod:insSP,
-            task:{}
+            task:{},
+            exam:{},
+            change_schedules_after:{},
+            change_schedules_before:{}
         }
     }
     //api叩く部分
@@ -290,10 +293,23 @@ class Nurture extends Component {
         })
         .then(response => {
             this.rWindow(true,1,response.data.mes);
-            this.loadTask();//変更
+            this.loadExam();//変更
         })
         .catch(() => {
             this.rWindow(true,2,'通信に失敗しました');
+        });
+    }
+    loadExam(){
+        //タスクを取得
+        const session = this.state.user.session;
+        const key = this.state.user.key;
+        axios.get(ENDPOINT + '/api/v1/exam?key=' + key + '&session=' + session)
+        .then(response => {
+            console.log(response.data.exams);
+            this.setState({exam:response.data.exams})
+        })
+        .catch(() => {
+            console.log('通信に失敗しました');
         });
     }
     
@@ -331,6 +347,43 @@ class Nurture extends Component {
         });
     }
     
+    setChangeSchedule(value){
+        this.rWindow(true,0,"");
+        
+        //タスクを生成する
+        axios.post(ENDPOINT + '/api/v1/change_schedule', {
+            key: this.state.user.key,
+            session: this.state.user.session,
+            selectSchedule_id: value.selectSchedule.id,
+            beforeDate:value.changeScheduleBeforeDate,
+            afterDate:value.changeScheduleAfterDate,
+            position:value.position - 1
+        })
+        .then(response => {
+            if(response.data.status == "SUCCESS"){
+                this.rWindow(true,1,"授業の変更を保存しました");
+                this.loadChangeSchedule();
+            }else{
+                this.rWindow(true,1,response.data.mes);
+            }
+        })
+        .catch(() => {
+            this.rWindow(true,2,'通信に失敗しました');
+        });
+    }
+    loadChangeSchedule(){
+        //タスクを取得
+        const session = this.state.user.session;
+        const key = this.state.user.key;
+        axios.get(ENDPOINT + '/api/v1/change_schedule?key=' + key + '&session=' + session)
+        .then(response => {
+            console.log(response.data.change_schedules_before);
+            this.setState({change_schedules_after:response.data.change_schedules_after,change_schedules_before:response.data.change_schedules_before})
+        })
+        .catch(() => {
+            console.log('通信に失敗しました');
+        });
+    }
     
     setGrade(select){
         this.rWindow(true,0,"");
@@ -406,6 +459,8 @@ class Nurture extends Component {
                 
                 this.loadUserSchedule(user.data.userKey ,user.data.session);
                 this.loadTask();
+                this.loadExam();
+                this.loadChangeSchedule();
                 
             })
             .catch(() => {
@@ -461,12 +516,15 @@ class Nurture extends Component {
         this.setState({rWindow:ins});
     }
     
-    showWindow(x,y,task,year,month,date,semesterNom){
+    showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore){
         let ins = this.state.xyWindow;
         ins.window = !ins.window;
         ins.x = x;
         ins.y = y;
         ins.task = task;
+        ins.exam = exam;
+        ins.changeSchedule = changeSchedule;
+        ins.csBefore = csBefore;
         ins.year = year;
         ins.month = month;
         ins.date = date;
@@ -593,7 +651,7 @@ class Nurture extends Component {
                 
         return(
                <div>
-                    <XYWindow value={this.state.xyWindow} action={(x,y,task,year,month,date,semesterNom) => this.showWindow(x,y,task,year,month,date,semesterNom)} scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}/>
+                    <XYWindow value={this.state.xyWindow} action={(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)} scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}/>
                     <ResultWindow value={this.state.rWindow} action={(a,b,c) => this.rWindow(a,this.state.rWindow.type,this.state.rWindow.mes)}/>
                     <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
@@ -606,10 +664,12 @@ class Nurture extends Component {
                             action = {{popupshow: () => this.PopupMenu(),
                                 popupEdit: (ce) => this.PopupCCedit(ce),
                                 changeSelect: (type,amount) => this.changeSelect(type,amount),
-                                showWindow:(x,y,task,year,month,date,semesterNom) => this.showWindow(x,y,task,year,month,date,semesterNom)
+                                showWindow:(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)
                             }}
                             select = {this.state.select}
                             task ={this.state.task}
+                            exam ={this.state.exam}
+                            change_schedules ={{after:this.state.change_schedules_after,before:this.state.change_schedules_before}}
                         />
                         <PopupClassEdit isPopup = {this.state.popup}
                                    action = {{
@@ -628,8 +688,10 @@ class Nurture extends Component {
                                                                                      
                         />
                         
-                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.setTask(value), setExam: (value) => this.setExam(value)}} status={this.state.popup.addTask}
-                                        datas={{schedules:this.state.caDatas[this.state.user.grade - 1]}}/>
+                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.setTask(value), setExam: (value) => this.setExam(value),setChangeSchedule:(value) => this.setChangeSchedule(value)}} status={this.state.popup.addTask}
+                                        datas={{schedules:this.state.caDatas[this.state.user.grade - 1],semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
+                                                                                     
+                                                                                     />
                         <Popup type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}/>
                         <Popup type={4} status={this.state.popup.regester}
                                    action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
@@ -671,7 +733,7 @@ class Body extends Component {
                 <main className="fa-mainContainer">
                    <DateBox type={"month"} action={(type,amount) => this.props.action.changeSelect(type,amount)} data={{year:this.props.select.year,month:this.props.select.month}}/>
                    <div className="fa-scedule">
-                   <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} scheduleData = {this.props.scheduleDatas} element={this.props.element} task={this.props.task} action={{showWindow:(x,y,task,year,month,date,semesterNom) => this.props.action.showWindow(x,y,task,year,month,date,semesterNom)}}/>
+                   <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} scheduleData = {this.props.scheduleDatas} element={this.props.element} task={this.props.task} exam={this.props.exam} change_schedules ={this.props.change_schedules} action={{showWindow:(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.props.action.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)}}/>
                    </div>
                 </main>
             )

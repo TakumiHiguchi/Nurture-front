@@ -100,6 +100,12 @@ export default class MonthLine extends Component {
         
         //task関係処理
         let tasks = this.props.task;
+        //exam関係処理
+        let exams = this.props.exam;
+        //授業変更関係処理
+        let changeSchedulesAfter = this.props.change_schedules.after;
+        let changeSchedulesBefore = this.props.change_schedules.before;
+        
         
         for (let i = 1; i <= lastday[mon - 1]; i++) {
             //task関係処理
@@ -109,6 +115,36 @@ export default class MonthLine extends Component {
                 if(tasks[year][mon][i] !== void 0){
                     taskCount = tasks[year][mon][i].length;
                     task = tasks[year][mon][i]
+                }
+            }
+            
+            //exam関係処理
+            let examCount = 0;
+            let exam = {};
+            if(exams[year] !== void 0 && exams[year][mon] !== void 0){
+                if(exams[year][mon][i] !== void 0){
+                    examCount = exams[year][mon][i].length;
+                    exam = exams[year][mon][i]
+                }
+            }
+            
+            //授業変更関係処理
+            let changeScheduleCount = 0;
+            let changeSchedule = {};
+            if(changeSchedulesAfter[year] !== void 0 && changeSchedulesAfter[year][mon] !== void 0){
+                if(changeSchedulesAfter[year][mon][i] !== void 0){
+                    changeScheduleCount = changeSchedulesAfter[year][mon][i].length;
+                    changeSchedule = changeSchedulesAfter[year][mon][i]
+                }
+            }
+            
+            //授業変更元関係処理
+            let cscBefore = 0;
+            let csBefore = {};
+            if(changeSchedulesBefore[year] !== void 0 && changeSchedulesBefore[year][mon] !== void 0){
+                if(changeSchedulesBefore[year][mon][i] !== void 0){
+                    cscBefore = changeSchedulesBefore[year][mon][i].length;
+                    csBefore = changeSchedulesBefore[year][mon][i]
                 }
             }
             
@@ -126,7 +162,7 @@ export default class MonthLine extends Component {
             let bool2 = this.parDate(semeD[2]) <= new Date(selectYear+"/"+selectMonth+"/"+i) && new Date(selectYear+"/"+selectMonth+"/"+i) <= this.parDate(semeD[3]);//後学期
             let bool3 = schflag[0][parWe] != void 0;
             let bool4 = schflag[1][parWe] != void 0;
-            let bool5 = (bool1 && bool3) || (bool2 && bool4) || taskCount > 0
+            let bool5 = (bool1 && bool3) || (bool2 && bool4) || taskCount > 0 || examCount > 0 || changeScheduleCount > 0 || cscBefore > 0
             
             //前学期後学期を判定
             let semesterNom = -1;
@@ -137,7 +173,7 @@ export default class MonthLine extends Component {
             }
             
             itemsFir.push(
-                <div className="month-dataBox" onClick={bool5 && ((e) => this.props.action.showWindow(e.pageX,e.pageY,task,year,mon,i,semesterNom)) } key={i + "mdb"}>
+                <div className="month-dataBox" onClick={bool5 && ((e) => this.props.action.showWindow(e.pageX,e.pageY,year,mon,i,semesterNom,task,exam,changeSchedule,csBefore)) } key={i + "mdb"}>
                     <div className="">
                          <div className={now.getDate() == i && mon == (now.getMonth() + 1) && year == now.getFullYear() ? "month-date flex-jus-center month-select" : "month-date flex-jus-center"}>
                              {i}
@@ -162,11 +198,22 @@ export default class MonthLine extends Component {
                                    null
                                 )
                              }
+                            {examCount > 0 &&
+                               <div className="examBox">
+                                   {examCount}件の試験
+                               </div>
+                            }
+                            {(changeScheduleCount > 0 || cscBefore > 0) &&
+                               <div className="taskBox">
+                                   {changeScheduleCount + cscBefore}件の授業変更
+                               </div>
+                            }
                             {taskCount > 0 &&
                                 <div className="taskBox">
                                     {taskCount}件のタスク
                                 </div>
                              }
+                            
                          </div>
                     </div>
                 </div>

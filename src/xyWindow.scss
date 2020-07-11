@@ -61,6 +61,34 @@
     }
 }
 
+//exam
+.examList{
+    cursor: pointer;
+    padding:0 5px 0 5px;
+    &:hover .tlp{
+        background:#f8f8f8;
+        border-radius:5px;
+    }
+}
+.elp{
+    color:#aaa;
+    font-size:0.9em;
+    position: relative;
+    font-weight:bold;
+    padding:5px 0 5px calc(1.3em + 5px);
+    &:before{
+        position: absolute;
+        top:50%;
+        left:5px;
+        -webkit-transform : translateY(-50%);
+        transform : translateY(-50%);
+        content:'';
+        background:#EF454A;
+        width:0.8em;
+        height:0.8em;
+        border-radius:50%;
+    }
+}
 //task
 .tlp{
     color:#aaa;
@@ -84,7 +112,7 @@
 .taskList{
     cursor: pointer;
     padding:0 5px 0 5px;
-    &:hover .tlp{
+    &:hover .tlp,&:hover .elp{
         background:#f8f8f8;
         border-radius:5px;
     }
@@ -129,6 +157,32 @@
     color:#aaa;
 }
 
+.sbu-window{
+    font-size:0.8em;
+    color:#aaa;
+    s{
+        color:#aaa;
+    }
+}
+.sbu-window-c{
+    margin-bottom:5px;
+    font-size:0.8em;
+    color:#aaa;
+    s{
+        color:#aaa;
+    }
+}
+//授業変更のスタイル
+.changeScheduleMark{
+    background:#00aced;
+    color:white;
+    border-radius:5px;
+    padding:0px 10px;
+    font-size:0.8em;
+    margin-left:10px;
+    line-height:20px;
+}
+
 @keyframes xyEffect {
     0% {
         opacity: 0;
@@ -139,4 +193,5 @@
         transform: translateX(0);
     }
 }
+
 

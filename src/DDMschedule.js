@@ -17,7 +17,7 @@ class DDMscheduleSelect extends Component{
        super(props)
        this.state = {
          listOpen: false,
-         nLp:"試験がある授業を選択"
+            nLp:this.props.fLabel
        }
      }
     
@@ -33,7 +33,7 @@ class DDMscheduleSelect extends Component{
      }
     handleClickMenu(val) {
       this.setState({
-        nLp:val,
+      nLp:val.title,
         listOpen: false
       })
         this.props.action(val);
@@ -45,12 +45,12 @@ class DDMscheduleSelect extends Component{
          const semesterString=["前学期","後学期"];
        let item = [];
         for(var k=0;k<2;k++){
-            item.push(<div className="DDMsemeIndex">{semesterString[k]}</div>)
+            item.push(<div className="DDMsemeIndex" key={"semesIndex"+k}>{semesterString[k]}</div>)
            for(var i=0;i<7;i++){
                this.props.data[k][i].forEach(data =>{
                                         if(data !=0){
                                             item.push(
-                                                      <div className="dropMenuElement" onClick={() => this.handleClickMenu(data.title)} key={data.title + data.position}>{data.title} ({dayString[Math.floor(data.position / 6)]}曜 {data.position % 6 + 1}講時)</div>
+                                                      <div className="dropMenuElement" onClick={() => this.handleClickMenu(data)} key={data.title + data.position}>{data.title} ({dayString[Math.floor(data.position / 6)]}曜 {data.position % 6 + 1}講時)</div>
                                             )
                                         }
                                     })
