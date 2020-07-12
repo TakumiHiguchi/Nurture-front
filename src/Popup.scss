@@ -600,7 +600,7 @@ div.react-datepicker-popper{
 //タスク入力のcss
 .task-textarea{
     position:relative;
-    height:calc(100% - 345px);
+    height:calc(100% - 335px);
     width:calc(100% - 64px);
     font-size:1em;
     margin:10px 32px 10px 32px;
@@ -637,4 +637,9 @@ div.react-datepicker-popper{
     &:hover{
         background:#f8f8f8;
     }
+}
+.calpointer{
+    display: inline-block;
+    cursor: pointer;
+    padding: 5px 10px;
 }

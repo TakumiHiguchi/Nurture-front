@@ -56,7 +56,7 @@ export default class xyWindow extends Component{
     
     render(){
         const bl1 = this.props.value.y + 300 > this.state.size.height;
-        const bl2 = this.props.value.x + 410 > this.state.size.width;
+        const bl2 = this.props.value.x + 450 > this.state.size.width;
         let xyWindowMain = {};
         if(bl1 && bl2){
             xyWindowMain = {

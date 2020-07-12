@@ -731,6 +731,7 @@ class Body extends Component {
                             scheduleData = {this.props.scheduleDatas}
                             element={this.props.element}
                             select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}
+                            task={this.props.task} exam={this.props.exam} change_schedules={this.props.change_schedules}
                         />
                     </div>
                 </main>
