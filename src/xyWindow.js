@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import './xyWindow.scss'
 export default class xyWindow extends Component{
@@ -139,8 +141,6 @@ export default class xyWindow extends Component{
         for(let i = 0;i<value.csBefore.length;i++){
              csBeforeArray[parseInt(value.csBefore[i]["before_position"] % 6)] = value.csBefore
         }
-        console.log("後");
-        console.log(csArray);
         //表示する授業を作り、授業の変更を反映する
         let insSchedule = [];
         if(schflag[date] !== void 0){
@@ -196,7 +196,12 @@ export default class xyWindow extends Component{
                    <div className={this.props.value.window ? "xyw xyWindow" : "xyw_de xyWindow"} onClick={() => this.xyWindowClose()}>
                    </div>
                    <div style={xyWindowMain} className={this.props.value.window ? "xyw-inner xyWindowWrap" : "xyw_de-inner xyWindowWrap"}>
-                        <div className="windowDate">{value.year}年{value.month}月{value.date}日</div>
+                        <div className="flex-jus-between xywindowTitleBox">
+                            <div className="windowDate">{value.year}年{value.month}月{value.date}日</div>
+                            <div className="windowIcons">
+                                <FontAwesomeIcon icon={faTimes} style={pmcr}/>
+                            </div>
+                        </div>
                         <div className="flex xypageIndex">{index}</div>
                         <div className="xyWindowInner">
                             {(value.exam.length !== void 0 && this.state.page == 0) &&(
@@ -242,4 +247,10 @@ export default class xyWindow extends Component{
                );
         
     }
+}
+
+const pmcr = {
+    fontSize:"1em",
+    color:"rgb(170, 170, 170)",
+    cursor: "pointer"
 }

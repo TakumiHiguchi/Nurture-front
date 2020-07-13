@@ -154,6 +154,15 @@ div.fa-dateline{
     padding:0px 10px 5px 10px;
     border-bottom:1px dashed #f0f0f0;
     margin-bottom:6px;
+    .title{
+        white-space: nowrap;
+        overflow-x: scroll;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display:none;
+        }
+    }
 }
 //週表示task等メイン部分
 .weekTaskBox,.weekExamBox,.weekMoreBox{
@@ -189,4 +198,15 @@ div.fa-dateline{
     &:hover{
         background:#f0f0f0;
     }
+}
+
+.weekCSMark{
+    display:inline-block;
+    background:#00aced;
+    color:white;
+    border-radius:5px;
+    padding:0px 10px;
+    font-size:0.8em;
+    margin-left:10px;
+    line-height:20px;
 }

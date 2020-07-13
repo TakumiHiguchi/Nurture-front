@@ -14,8 +14,37 @@
     box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 8px;
     padding:5px;
     border-radius:10px;
-    .windowDate{
-        padding:5px;
+    .xywindowTitleBox{
+        padding:5px 10px;
+        .windowDate{
+            line-height:1.8em;
+        }
+        .windowIcons{
+            .brandIcons{
+                padding:0 10px 0 0;
+                .twitter{
+                    margin:0 0 0 2px;
+                }
+                .line,.twitter{
+                    height:1.8em;
+                    width:1.8em;
+                    border-radius:50%;
+                    cursor: pointer;
+                    &:hover{
+                        background:#f8f8f8;
+                    }
+                }
+            }
+            .close,.plus{
+                height:1.8em;
+                width:1.8em;
+                border-radius:50%;
+                cursor: pointer;
+                &:hover{
+                    background:#f8f8f8;
+                }
+            }
+        }
     }
 }
 .xyWindowInner{
@@ -26,6 +55,50 @@
     scrollbar-width: none;
     &::-webkit-scrollbar {
         display:none;
+    }
+}
+.xyWindowTaskInner{
+    height:206px;
+    margin:5px 0px;
+    padding:0 10px;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display:none;
+    }
+    .mainCont{
+        ol{
+            padding:0 0 0 30px;
+        }
+        ul{
+            padding:0 0 0 20px;
+        }
+    }
+}
+.windowTasktitle{
+    margin:2px 0px;
+    padding:0 10px;
+    .labelBox{
+        width:40px;
+        font-size:0.8em;
+        line-height:23px;
+        margin:2px 7px 2px 0;
+        color:white;
+        padding:0 5px;
+        border-radius:5px;
+        text-align:center;
+    }
+    .title{
+        width:calc(100% - 57px);
+        font-size:1.1em;
+        white-space: nowrap;
+        overflow-x: scroll;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display:none;
+        }
     }
 }
 .xyw{

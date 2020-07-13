@@ -24,6 +24,7 @@ import './toppage.scss';
 import './Popup.scss';
 
 import XYWindow from './xyWindow'
+import XYTaskWindow from './xyTaskWindow'
 import ResultWindow from './ResultWindow'
 import Popup from './Popup'
 import SettingPage from './SettingPage'
@@ -226,6 +227,7 @@ class Nurture extends Component {
             user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1, created_at:""},
             popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
             xyWindow:{window:false,x:0,y:0,year:0,month:0,date:0,semesterNom:0,task:{},exam:{},changeSchedule:{},csBefore:{}},
+        xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{},dataPosition:0},
             select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDate()},
             selectPopup:0,
             regesterIds:[],
@@ -241,7 +243,6 @@ class Nurture extends Component {
             change_schedules_before:{}
         }
     }
-    //api叩く部分
 
 
     getScheduleData(val,position){
@@ -537,7 +538,19 @@ class Nurture extends Component {
         ins.date = date;
         ins.semesterNom = semesterNom;
         this.setState({xyWindow:ins})
-        
+    }
+    showTaskWindow(x,y,year,month,date,position,showData,dataPosition){
+        let ins = this.state.xyTaskWindow;
+        ins.window = !ins.window;
+        ins.x = x;
+        ins.y = y;
+        ins.position = position;
+        ins.showData = showData;
+        ins.dataPosition = dataPosition;
+        ins.year = year;
+        ins.month = month;
+        ins.date = date;
+        this.setState({xyTaskWindow:ins})
     }
     
     changeSelect(type,amount){
@@ -659,6 +672,8 @@ class Nurture extends Component {
         return(
                <div>
                     <XYWindow value={this.state.xyWindow} action={(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)} scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}/>
+                    <XYTaskWindow value={this.state.xyTaskWindow} action={(x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(x,y,year,month,date,position,showData,dataPosition)}/>
+               
                     <ResultWindow value={this.state.rWindow} action={(a,b,c) => this.rWindow(a,this.state.rWindow.type,this.state.rWindow.mes)}/>
                     <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
@@ -671,7 +686,8 @@ class Nurture extends Component {
                             action = {{popupshow: () => this.PopupMenu(),
                                 popupEdit: (ce) => this.PopupCCedit(ce),
                                 changeSelect: (type,amount) => this.changeSelect(type,amount),
-                                showWindow:(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)
+                                showWindow:(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
+                                showTaskWindow:(x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(x,y,year,month,date,position,showData,dataPosition)
                             }}
                             select = {this.state.select}
                             task ={this.state.task}
@@ -727,11 +743,12 @@ class Body extends Component {
                     <DateBox type={"week"} action={(type,amount) => this.props.action.changeSelect(type,amount)} select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}/>
                     <div className="flex-jus-between fa-scedule">
                         <TimeBox />
-                        <WeekCalender action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce) }}
+                        <WeekCalender action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce),showTaskWindow:(x,y,year,month,date,position,showData,dataPosition) => this.props.action.showTaskWindow(x,y,year,month,date,position,showData,dataPosition)}}
                             scheduleData = {this.props.scheduleDatas}
                             element={this.props.element}
                             select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}
                             task={this.props.task} exam={this.props.exam} change_schedules={this.props.change_schedules}
+                            change_schedules = {this.props.change_schedules}
                         />
                     </div>
                 </main>

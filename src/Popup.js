@@ -330,7 +330,7 @@ const AddTask = (props) => {
                     </div>
                     <div className="pcePopup-item adTaskbody">
                         <input type="text" placeholder="タスク名を入力（必須）" className="removeCss formInput task-input" onChange={e => props.handleOnChange("taskTitle",e)} value={props.value.taskTitle}/>
-                        <div className=""><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender action={(date) => props.handleOnChange("taskDate",date)} key={"dscal0"}/></div>
+                        <div className="flex"><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender action={(date) => props.handleOnChange("taskDate",date)} key={"dscal0"}/></div>
                         <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)} key={"page1DDM"}/>
                         </div>
                     </div>
@@ -358,7 +358,7 @@ const AddTask = (props) => {
                     </div>
                     <div className="pcePopup-item adTaskbody">
                         <DDMschedule type={2} data={props.datas.schedules} fLabel={"試験がある授業を選択"} action={(val) => props.handleOnChange("examTitle",val.title)} key={"DDMschedule1"}/>
-                        <div className="">
+                        <div className="flex">
                             <FontAwesomeIcon icon={faClock} style={clock} />
                             <div className="calpointer"><Calender action={(date) => props.handleOnChange("examDate",date)} key={"dscal1"}/></div>
                             <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)} key={"page2DDM"}/>
