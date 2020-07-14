@@ -23,8 +23,9 @@ import './sidebar.scss';
 import './toppage.scss';
 import './Popup.scss';
 
-import XYWindow from './xyWindow'
-import XYTaskWindow from './xyTaskWindow'
+import Window from './window/window'
+
+
 import ResultWindow from './ResultWindow'
 import Popup from './Popup'
 import SettingPage from './SettingPage'
@@ -226,8 +227,6 @@ class Nurture extends Component {
             rWindow:{isRWindow:0,type:0,mes:""},
             user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1, created_at:""},
             popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
-            xyWindow:{window:false,x:0,y:0,year:0,month:0,date:0,semesterNom:0,task:{},exam:{},changeSchedule:{},csBefore:{}},
-        xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{},dataPosition:0},
             select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDate()},
             selectPopup:0,
             regesterIds:[],
@@ -240,7 +239,9 @@ class Nurture extends Component {
             task:{},
             exam:{},
             change_schedules_after:{},
-            change_schedules_before:{}
+            change_schedules_before:{},
+            xyWindow:{window:false,x:0,y:0,year:0,month:0,date:0,semesterNom:0,task:{},exam:{},changeSchedule:{},csBefore:{}},
+            xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{},dataPosition:0}
         }
     }
 
@@ -671,8 +672,14 @@ class Nurture extends Component {
                 
         return(
                <div>
-                    <XYWindow value={this.state.xyWindow} action={(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)} scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}/>
-                    <XYTaskWindow value={this.state.xyTaskWindow} action={(x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(x,y,year,month,date,position,showData,dataPosition)}/>
+                    <Window
+                        value={{xyWindow: this.state.xyWindow,xyTaskWindow: this.state.xyTaskWindow}}
+                        scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}
+                        action={{xyWindow: (x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
+                                xyTaskWindow:(x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(x,y,year,month,date,position,showData,dataPosition)
+                                }}
+                    />
+                    
                
                     <ResultWindow value={this.state.rWindow} action={(a,b,c) => this.rWindow(a,this.state.rWindow.type,this.state.rWindow.mes)}/>
                     <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
