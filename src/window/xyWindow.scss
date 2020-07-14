@@ -14,28 +14,30 @@
     box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 8px;
     padding:5px;
     border-radius:10px;
-    .xywindowTitleBox{
-        padding:5px 10px;
-        .windowDate{
-            line-height:1.8em;
-        }
-        .windowIcons{
-            .brandIcons{
-                padding:0 10px 0 0;
-                .twitter{
-                    margin:0 0 0 2px;
-                }
-                .line,.twitter{
-                    height:1.8em;
-                    width:1.8em;
-                    border-radius:50%;
-                    cursor: pointer;
-                    &:hover{
-                        background:#f8f8f8;
-                    }
-                }
+    z-index:99999;
+}
+.TaskListWindowWrap{
+    width:200px;
+    max-height:300px;
+    position:absolute;
+    background:white;
+    z-index:99999;
+    box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 8px;
+    padding:5px;
+    border-radius:10px;
+}
+.xywindowTitleBox{
+    padding:5px 10px;
+    .windowDate{
+        line-height:1.8em;
+    }
+    .windowIcons{
+        .brandIcons{
+            padding:0 10px 0 0;
+            .twitter{
+                margin:0 0 0 2px;
             }
-            .close,.plus{
+            .line,.twitter{
                 height:1.8em;
                 width:1.8em;
                 border-radius:50%;
@@ -45,12 +47,24 @@
                 }
             }
         }
+        .close,.plus{
+            height:1.8em;
+            width:1.8em;
+            border-radius:50%;
+            &:hover{
+                background:#f8f8f8;
+            }
+        }
     }
+}
+.weekTaskBoxWrap{cursor: pointer;
+    max-height:251px;
+    width:100%;
 }
 .xyWindowInner{
     height:206px;
     margin:10px 0px;
-    overflow-x: scroll;
+    overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
     &::-webkit-scrollbar {
@@ -61,7 +75,7 @@
     height:206px;
     margin:5px 0px;
     padding:0 10px;
-    overflow-x: scroll;
+    overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
     &::-webkit-scrollbar {

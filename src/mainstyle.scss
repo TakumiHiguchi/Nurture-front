@@ -77,3 +77,11 @@ input.formInput{
     border-radius:5px;
     border:1px solid #e8e8e8;
 }
+.scroll-y{
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display:none;
+    }
+}

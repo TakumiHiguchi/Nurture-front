@@ -47,8 +47,7 @@ export default class WeekCalender extends Component{
                              )
                             }
                             key={"weekLine"+index}
-                            action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce),showTaskWindow:(x,y,year,month,date,position,showData,dataPosition) => this.props.action.showTaskWindow(x,y,year,month,date,position,showData,dataPosition) }}
-                            element={{caCount: this.props.element.caCount[index],semesterDate: semeD}}
+                            action = {this.props.action}
                             task={this.props.task} exam={this.props.exam} change_schedules={this.props.change_schedules}
                             date={{year:selectYear,month:selectMonth,day:startDay+index}}
                             change_schedules = {this.props.change_schedules}
@@ -172,7 +171,7 @@ const WeekLine = (props) => {
                                 {examData[index].map((eData,i) =>
                                         <>
                                             {(i < (4 - sCount[index]))&&
-                                            <div className="weekExamBox" onClick={((e) => props.action.showTaskWindow(e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,examData[index],i)) }>{eData.title}</div>
+                                            <div className="weekExamBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,examData[index],i)) }>{eData.title}</div>
                                             }
                                         </>
                                 )}
@@ -183,14 +182,14 @@ const WeekLine = (props) => {
                                 {taskData[index].map((tData,i) =>
                                         <>
                                             {(i < (4 - sCount[index] - eCount[index]))&&
-                                                <div className="weekTaskBox" onClick={((e) => props.action.showTaskWindow(e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,taskData[index],i))}>{tData.title}</div>
+                                                <div className="weekTaskBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,taskData[index],i))}>{tData.title}</div>
                                             }
                                         </>
                                 )}
                             </div>
                         }
                         {tCount[index] + eCount[index] > (4 - sCount[index]) &&
-                            <div className="weekMoreBox">他{tCount[index] + eCount[index] - (4 - sCount[index])}件</div>
+                            <div className="weekMoreBox" onClick={(e) => props.action.showMoreTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,taskData[index])}>他{tCount[index] + eCount[index] - (4 - sCount[index])}件</div>
                         }
                     </div>
                 </div>

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-
+import onClickOutside from 'react-onclickoutside'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
 import { faTimes,faPlus,faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { faLine,faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 import './xyWindow.scss'
-export default class xyTaskWindow extends Component{
+class xyTaskWindow extends Component{
     constructor(props){
         super(props);
         this.state={
@@ -16,8 +16,9 @@ export default class xyTaskWindow extends Component{
             }
         }
     }
-    xyWindowClose(){
-        this.props.action(0,0,0,0,0,0,{},0);
+    //画面外をクリックした時の挙動
+    handleClickOutside() {
+        this.props.action(false,0,0,0,0,0,0,{},0);
     }
     //画面の大きさを取得
     componentWillMount () {
@@ -78,8 +79,6 @@ export default class xyTaskWindow extends Component{
         
         return(
                <div className="no-select">
-                   <div className={this.props.value.window ? "xyw xyWindow" : "xyw_de xyWindow"} onClick={() => this.xyWindowClose()}>
-                   </div>
                    <div style={xyWindowMain} className={this.props.value.window ? "xyw-inner xyWindowWrap" : "xyw_de-inner xyWindowWrap"}>
                         <div className="flex-jus-between xywindowTitleBox">
                             <div className="windowDate">{value.year}年{value.month}月{value.date}日{value.position + 1}時限</div>
@@ -108,6 +107,9 @@ export default class xyTaskWindow extends Component{
         
     }
 }
+
+export default onClickOutside(xyTaskWindow)
+
 
 const labRed = {
     background:'#EF454A'

@@ -172,6 +172,7 @@ div.fa-dateline{
     margin-bottom:2px;
     font-size:0.8em;
     border-radius:5px;
+    cursor: pointer;
     white-space: nowrap;
     overflow-x: scroll;
     -ms-overflow-style: none;
@@ -183,6 +184,7 @@ div.fa-dateline{
 .weekTaskBox{
     background:#00aced;
     color:white;
+    
     &:hover{
         text-decoration:underline;
     }

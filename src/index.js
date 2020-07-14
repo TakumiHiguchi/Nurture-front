@@ -241,7 +241,8 @@ class Nurture extends Component {
             change_schedules_after:{},
             change_schedules_before:{},
             xyWindow:{window:false,x:0,y:0,year:0,month:0,date:0,semesterNom:0,task:{},exam:{},changeSchedule:{},csBefore:{}},
-            xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{},dataPosition:0}
+            xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{},dataPosition:0},
+            moreTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{}}
         }
     }
 
@@ -540,9 +541,9 @@ class Nurture extends Component {
         ins.semesterNom = semesterNom;
         this.setState({xyWindow:ins})
     }
-    showTaskWindow(x,y,year,month,date,position,showData,dataPosition){
+    showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition){
         let ins = this.state.xyTaskWindow;
-        ins.window = !ins.window;
+        ins.window = bl;
         ins.x = x;
         ins.y = y;
         ins.position = position;
@@ -552,6 +553,18 @@ class Nurture extends Component {
         ins.month = month;
         ins.date = date;
         this.setState({xyTaskWindow:ins})
+    }
+    showMoreTaskWindow(bl,x,y,year,month,date,position,showData){
+        let ins = this.state.moreTaskWindow;
+        ins.window = bl;
+        ins.x = x;
+        ins.y = y;
+        ins.position = position;
+        ins.showData = showData;
+        ins.year = year;
+        ins.month = month;
+        ins.date = date;
+        this.setState({moreTaskWindow:ins})
     }
     
     changeSelect(type,amount){
@@ -673,10 +686,11 @@ class Nurture extends Component {
         return(
                <div>
                     <Window
-                        value={{xyWindow: this.state.xyWindow,xyTaskWindow: this.state.xyTaskWindow}}
+                        value={{xyWindow: this.state.xyWindow,xyTaskWindow: this.state.xyTaskWindow,moreTaskWindow:this.state.moreTaskWindow}}
                         scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}
                         action={{xyWindow: (x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
-                                xyTaskWindow:(x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(x,y,year,month,date,position,showData,dataPosition)
+                                xyTaskWindow:(bl,x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition),
+                                moreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData)
                                 }}
                     />
                     
@@ -694,7 +708,8 @@ class Nurture extends Component {
                                 popupEdit: (ce) => this.PopupCCedit(ce),
                                 changeSelect: (type,amount) => this.changeSelect(type,amount),
                                 showWindow:(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
-                                showTaskWindow:(x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(x,y,year,month,date,position,showData,dataPosition)
+                                showTaskWindow:(bl,x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition),
+                                showMoreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData)
                             }}
                             select = {this.state.select}
                             task ={this.state.task}
@@ -750,7 +765,7 @@ class Body extends Component {
                     <DateBox type={"week"} action={(type,amount) => this.props.action.changeSelect(type,amount)} select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}/>
                     <div className="flex-jus-between fa-scedule">
                         <TimeBox />
-                        <WeekCalender action = {{popupshow: () => this.props.action.popupshow(),popupEdit: (ce) => this.props.action.popupEdit(ce),showTaskWindow:(x,y,year,month,date,position,showData,dataPosition) => this.props.action.showTaskWindow(x,y,year,month,date,position,showData,dataPosition)}}
+                        <WeekCalender action = {this.props.action}
                             scheduleData = {this.props.scheduleDatas}
                             element={this.props.element}
                             select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}
