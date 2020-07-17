@@ -37,7 +37,9 @@ import DateBox from './DateBox'
 import * as serviceWorker from './serviceWorker';
 
 //APIを叩く関数のインポート
+import user_schedule_index from './API/user_schedule/index'
 import user_schedule_destroy from './API/user_schedule/destory'
+
 
 const ENDPOINT = 'http://localhost:3020'
 //const ENDPOINT = 'https://nurture-api.herokuapp.com'
@@ -648,10 +650,22 @@ class Nurture extends Component {
     //ユーザーのスケジュールAPIを叩く部分
     user_schedule(type,id){
         const user = this.state.user;
-        this.rWindow(true,0,"");
+        let ins;
+                
+        if(type == "destory")this.rWindow(true,0,"");
+        
         switch(type){
+            case "index" :
+                ins = user_schedule_index(ENDPOINT, user.key, user.session);//外部関数
+                ins.then(res => {
+                    this.setState({caDatas:res.schedules});
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
             case "destory" :
-                let ins = user_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins = user_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
                 ins.then(res => {
                     this.rWindow(true,res.r1.status,res.r1.mes);
                     if(res.r2 != null){
@@ -659,6 +673,8 @@ class Nurture extends Component {
                     }else{
                         this.rWindow(true,2,'取得に失敗しました');
                     }
+                    //ウィンドウを全て閉じる
+                    this.closeAllWindow()
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -667,9 +683,12 @@ class Nurture extends Component {
         }
     }
                                
+    //すべてのwindowを閉じる
     closeAllWindow(){
-        //すべてのwindowを閉じる
-        
+        this.showWindow(false,0,0,0,0,0,0,{},{},{},{});
+        this.showTaskWindow(false,0,0,0,0,0,0,{},0);
+        this.showMoreTaskWindow(false,0,0,0,0,0,0,{});
+        this.showScheduleWindow(false,0,0,0,0,0,0,{});
     }
                                
     render(){
