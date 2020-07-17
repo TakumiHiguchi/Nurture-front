@@ -175,7 +175,7 @@ export default class SemesterCalender extends Component {
                     
                     
                     insMainCon.push(
-                                    <div className={ i % 2 == 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"} onClick={bool5 && ((e) => this.props.action.showWindow(e.pageX,e.pageY,year,i,ix+1+aFirstDay[i-1],semesterNom,task,exam,changeSchedule,csBefore)) } key={i + "/" + ix+1+aFirstDay[i-1], + "semesdb"}>
+                                    <div className={ i % 2 == 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"} onClick={bool5 && ((e) => this.props.action.showWindow(true,e.pageX,e.pageY,year,i,ix+1+aFirstDay[i-1],semesterNom,task,exam,changeSchedule,csBefore)) } key={i + "/" + ix+1+aFirstDay[i-1], + "semesdb"}>
                                          <div className="semestar-month-date flex-jus-center">
                                             <div className={(!bool1 && !bool2) && "dateStyles"}>{ix+1 + aFirstDay[i-1]}</div>
                                          </div>

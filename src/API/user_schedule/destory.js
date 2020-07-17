@@ -5,8 +5,7 @@ import user_schedule_index from './index'
 
 export default async function destory(endpoint, key, session, schedule_id, grade){
     const r1 = await api(endpoint, key, session, schedule_id, grade);//スケジュールを消す
-    const r2 = await user_schedule_index(endpoint, key, session);//スケジュールを再読み込み
-    return {r1,r2}
+    return r1
 }
 
 async function api(endpoint, key, session, schedule_id, grade){

@@ -38,8 +38,11 @@ import * as serviceWorker from './serviceWorker';
 
 //APIを叩く関数のインポート
 import user_schedule_index from './API/user_schedule/index'
+import user_schedule_create from './API/user_schedule/create'
 import user_schedule_destroy from './API/user_schedule/destory'
 
+import task_index from './API/task/index'
+import task_destroy from './API/task/destory'
 
 const ENDPOINT = 'http://localhost:3020'
 //const ENDPOINT = 'https://nurture-api.herokuapp.com'
@@ -221,23 +224,6 @@ class Nurture extends Component {
                 console.log('通信に失敗しました');
             });
     }
-    loadUserSchedule(key ,session){
-        //ユーザーのスケジュールを取得する部分
-        axios.get(ENDPOINT + '/api/v1/loadUserDetail?key='+ key +'&session='+ session)
-            .then(response => {
-                console.log(response.data.schedules);
-                console.log(response.data.mes);
-                console.log(key);
-                console.log(session);
-                this.setState({caDatas:response.data.schedules})
-                
-            })
-            .catch(() => {
-                console.log('通信に失敗しました');
-            });
-        
-        
-    }
     setExam(value){
         this.rWindow(true,0,"");
         
@@ -286,26 +272,13 @@ class Nurture extends Component {
         })
         .then(response => {
             this.rWindow(true,1,"タスクを保存しました");
-            this.loadTask();
+            this.task("index",0);
         })
         .catch(() => {
             this.rWindow(true,2,'通信に失敗しました');
         });
     }
-    loadTask(){
-        //タスクを取得
-        const session = this.state.user.session;
-        const key = this.state.user.key;
-        axios.get(ENDPOINT + '/api/v1/task?key=' + key + '&session=' + session)
-        .then(response => {
-            console.log(response.data.tasks);
-            this.setState({task:response.data.tasks})
-        })
-        .catch(() => {
-            console.log('通信に失敗しました');
-        });
-    }
-    
+
     setChangeSchedule(value){
         this.rWindow(true,0,"");
         
@@ -415,8 +388,8 @@ class Nurture extends Component {
                 }
                 
                 
-                this.loadUserSchedule(user.data.userKey ,user.data.session);
-                this.loadTask();
+                this.user_schedule("index",0)
+                this.task("index",0);
                 this.loadExam();
                 this.loadChangeSchedule();
                 
@@ -589,7 +562,6 @@ class Nurture extends Component {
                            regesterElements: this.state.regesterElements.concat(regesarray)
                           });
         }
-        
     }
                               
     regesSemesterDate(date,position){
@@ -599,60 +571,13 @@ class Nurture extends Component {
         this.setState({semesterPeriod:insDate});
         this.setSemesterDate(insDate[position - 1][0],insDate[position - 1][1],insDate[position - 1][2],insDate[position - 1][3],position)
     }
-    Regester() {
-        var regesArray = this.state.caDatas;
-        var grade = this.state.user.grade - 1;//更新する学年
-            
-        for (let i = 0; i < this.state.regesterElements.length; i++) {
-            let element = this.state.regesterElements[i]
-            let w = Math.floor(element.position / 6)
-            let d = (element.position % 6)
-            
-            if(element.semester == "前学期"){var semester = 0}else{ var semester = 1}
-                                 
-            
-                this.rWindow(true,0,"");
-                axios.post(ENDPOINT + '/api/v1/setUserSchedule', {
-                               title: element.title,
-                               teacher: element.teacher,
-                               semester: element.semester,
-                               position: element.position,
-                               grade: element.grade,
-                               key: this.state.user.key,
-                               session: this.state.user.session,
-                               user_grade: this.state.user.grade
-                           })
-                .then(response => {
-                    if(response.data.status == "SUCCESS"){
-                        regesArray[grade][semester][w][d] = element
-                        this.setState({
-                            caDatas: regesArray,
-                            regesterIds: [],
-                            regesterElements: []
-                        });
-                        this.rWindow(true,1,"授業を登録しました。");
-                    }else{
-                        this.rWindow(true,2,response.data.mes);
-                        this.setState({
-                            regesterIds: [],
-                            regesterElements: []
-                        });
-                    }
-                })
-                .catch(() => {
-                    this.rWindow(true,2,"通信に失敗しました。");
-                });
-            
-        }
-        this.PopupMenu()
-    }
                                
     //ユーザーのスケジュールAPIを叩く部分
     user_schedule(type,id){
         const user = this.state.user;
         let ins;
                 
-        if(type == "destory")this.rWindow(true,0,"");
+        if(type == "destory" || type == "create")this.rWindow(true,0,"");
         
         switch(type){
             case "index" :
@@ -664,15 +589,32 @@ class Nurture extends Component {
                     this.rWindow(true,2,'通信に失敗しました');
                 });
                 break;
+            case "create" :
+                ins = user_schedule_create(ENDPOINT, user.key, user.session, this.state.regesterElements, user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.r1.status,res.r1.mes);
+                    this.setState({
+                        regesterIds: [],
+                        regesterElements: []
+                    });
+                    //スケジュールの更新
+                    this.setState({caDatas:res.r2.schedules});
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                    this.setState({
+                        regesterIds: [],
+                        regesterElements: []
+                    });
+                });
+                this.PopupToggle("regester")
+                break;
             case "destory" :
                 ins = user_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
                 ins.then(res => {
-                    this.rWindow(true,res.r1.status,res.r1.mes);
-                    if(res.r2 != null){
-                        this.setState({caDatas:res.r2.schedules})
-                    }else{
-                        this.rWindow(true,2,'取得に失敗しました');
-                    }
+                    this.rWindow(true,res.status,res.mes);
+                    //スケジュールを再読み込み
+                    this.user_schedule("index",0);
                     //ウィンドウを全て閉じる
                     this.closeAllWindow()
                 })
@@ -682,7 +624,40 @@ class Nurture extends Component {
                 break;
         }
     }
-                               
+    
+    //タスクAPIを叩く部分
+    task(type,id){
+        const user = this.state.user;
+        let ins;
+                
+        if(type == "destory" || type == "create")this.rWindow(true,0,"");
+        
+        switch(type){
+            case "index" :
+                ins = task_index(ENDPOINT, user.key, user.session);//外部関数
+                ins.then(res => {
+                    this.setState({task:res.tasks});
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "destory" :
+                ins = task_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //タスクを再読み込み
+                    this.task("index",0);
+                    //ウィンドウを全て閉じる
+                    this.closeAllWindow()
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+        }
+    }
+                              
     //すべてのwindowを閉じる
     closeAllWindow(){
         this.showWindow(false,0,0,0,0,0,0,{},{},{},{});
@@ -703,7 +678,7 @@ class Nurture extends Component {
                                 moreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
                                 xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule)
                                 }}
-                                apiFunction={{user_schedule_destory: (id) => this.user_schedule("destory",id)}}
+                        apiFunction={{user_schedule_destory: (id) => this.user_schedule("destory",id), task_destroy: (id) => this.task("destory",id)}}
                     />
                     
                
@@ -746,7 +721,7 @@ class Nurture extends Component {
                         <Popup type={4} status={this.state.popup.regester}
                                    action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
                                               addregesterId: (cd, array) => this.RegesterId(cd, array),
-                                              regester: () => this.Regester(),
+                                              regester: () => this.user_schedule("create",0),
                                               getSchedule: (val,position) => this.getScheduleData(val,position)
                                             }}
                                    sceduleDatas = {{APIresult: this.state.schedules, regesterIds: this.state.regesterIds, regesterElements: this.state.regesterElements}}/>
@@ -799,7 +774,7 @@ class Body extends Component {
                    <SemesterCalender data={{year:this.props.select.year,month:this.props.select.month}}
                         scheduleData = {this.props.scheduleDatas} element={this.props.element}
                         task={this.props.task} exam={this.props.exam} change_schedules ={this.props.change_schedules}
-                        action={{showWindow:(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.props.action.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)}}
+                        action={{showWindow:(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.props.action.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)}}
                    />
                    </div>
                 </main>
