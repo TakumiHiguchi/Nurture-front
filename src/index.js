@@ -36,6 +36,9 @@ import DDMbodyChange from './DDMbodyChange'
 import DateBox from './DateBox'
 import * as serviceWorker from './serviceWorker';
 
+//APIを叩く関数のインポート
+import schedule_destroy from './API/schedule/destory'
+
 const ENDPOINT = 'http://localhost:3020'
 //const ENDPOINT = 'https://nurture-api.herokuapp.com'
 
@@ -642,6 +645,19 @@ class Nurture extends Component {
         }
         this.PopupMenu()
     }
+    schedule(type,id){
+        const user = this.state.user
+        let ins = {};
+        switch(type){
+            case "destory" :ins = schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);break;
+        }
+                 
+                console.log(ins)
+                console.log("a")
+        this.loadUserSchedule(user.key ,user.session);
+                
+    }
+                               
     render(){
                 
         return(
@@ -654,6 +670,7 @@ class Nurture extends Component {
                                 moreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
                                 xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule)
                                 }}
+                                apiFunction={{schedule_destory: (id) => this.schedule("destory",id)}}
                     />
                     
                
