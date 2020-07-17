@@ -81,7 +81,7 @@ class xyScheduleWindow extends Component{
                                 <div className="brandIcons flex">
                                     <div className="line flex-jus-center"><FontAwesomeIcon icon={faLine} style={lineIcon}/></div>
                                     <div className="twitter flex-jus-center"><FontAwesomeIcon icon={faTwitter} style={twitterIcon}/></div>
-                                    <div className="twitter flex-jus-center" onClick={() => this.props.apiFunction.schedule_destory(value.showSchedule.id)}><FontAwesomeIcon icon={faTrashAlt} style={pmcl}/></div>
+                                    <div className="twitter flex-jus-center" onClick={() => this.props.apiFunction.user_schedule_destory(value.showSchedule.id)}><FontAwesomeIcon icon={faTrashAlt} style={pmcl}/></div>
                                 </div>
                                 <div className="plus flex-jus-center"><FontAwesomeIcon icon={faPlus} style={pmcr}/></div>
                             </div>

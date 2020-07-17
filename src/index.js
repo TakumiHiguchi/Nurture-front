@@ -37,7 +37,7 @@ import DateBox from './DateBox'
 import * as serviceWorker from './serviceWorker';
 
 //APIを叩く関数のインポート
-import schedule_destroy from './API/schedule/destory'
+import user_schedule_destroy from './API/user_schedule/destory'
 
 const ENDPOINT = 'http://localhost:3020'
 //const ENDPOINT = 'https://nurture-api.herokuapp.com'
@@ -645,13 +645,13 @@ class Nurture extends Component {
         this.PopupMenu()
     }
                                
-    //スケジュールAPIを叩く部分
-    schedule(type,id){
+    //ユーザーのスケジュールAPIを叩く部分
+    user_schedule(type,id){
         const user = this.state.user;
         this.rWindow(true,0,"");
         switch(type){
             case "destory" :
-                let ins = schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                let ins = user_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
                 ins.then(res => {
                     this.rWindow(true,res.r1.status,res.r1.mes);
                     if(res.r2 != null){
@@ -684,7 +684,7 @@ class Nurture extends Component {
                                 moreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
                                 xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule)
                                 }}
-                                apiFunction={{schedule_destory: (id) => this.schedule("destory",id)}}
+                                apiFunction={{user_schedule_destory: (id) => this.user_schedule("destory",id)}}
                     />
                     
                
