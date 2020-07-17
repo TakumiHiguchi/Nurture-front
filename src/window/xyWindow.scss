@@ -281,4 +281,22 @@
     }
 }
 
-
+.scWindowWrap{
+    padding:10px 0;
+    .ScheduleWindowls{
+        .scWindowlsLabel{
+            width:64px;
+            padding-right:10px;
+            margin-right:10px;
+            border-right:1px solid #f0f0f0;
+        }
+        .scWindowls-input{
+            width:100%;
+            font-size:1em;
+            color:#494949;
+        }
+        .scWindowlsData{
+            width:calc(100% - 85px);
+        }
+    }
+}

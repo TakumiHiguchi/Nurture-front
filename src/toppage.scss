@@ -51,7 +51,7 @@
     height:100%;
 }
 .fa-sceduleLine{
-    width:calc(100% / 7);
+    width:calc(calc(100% - 7px) / 7);
     border-left:1px solid #f0f0f0;
     
 }

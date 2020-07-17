@@ -139,9 +139,9 @@ const WeekLine = (props) => {
            <div className="fa-sceduleLine">
               {props.daySchedule.map((data,index) =>
                 <div className="flex-jus-center fa-class-sceduleContainer" key={"ds" + data +index }>
-                    <div className="fa-class-scedule" onClick={data === 0 && tCount[index] <= 0 && eCount[index] <= 0 ? () => props.action.popupshow() : null}>
+                    <div className="fa-class-scedule" onClick={data === 0 && tCount[index] <= 0 && eCount[index] <= 0 && csArray[index] === void 0 ? () => props.action.popupshow() : null}>
                         {data !== 0 ?
-                            <div className="weekScheduleBox" onClick={() => props.action.popupEdit(data.position)}>
+                            <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data)}>
                                   {csBeforeArray[index] !== void 0 ?
                                       <>
                                           <div className="title"><s>{data.title}</s></div>
@@ -156,13 +156,11 @@ const WeekLine = (props) => {
                             </div>
                         :
                         <>
-                          {csArray[index] !== void 0 ?
-                              <div className="weekScheduleBox">
+                          {csArray[index] !== void 0 &&
+                              <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,csArray[index])}>
                                   <div className="title">{csArray[index].title}</div>
                                   <div className="classroom flex">107教室<div className="weekCSMark">授業変更</div></div>
                               </div>
-                              :
-                              null
                           }
                         </>
                         }

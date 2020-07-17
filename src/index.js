@@ -157,57 +157,7 @@ class PopupClassManual extends Component{
                )
     }
 }
-const PopupClassEdit = (props) => {
-    const dayString=["月","火","水","木","金","土","日"]
-    const {caDatas, caCount} = props.element
-    return(
-           <div className={props.isPopup.editSchedule ? 'popup popup_effect' : 'popup popup_effect_de'} >
-               <div className="popup_wrap" onClick={() => props.action.popupshow(caDatas.position) }></div>
-                <div className="pceWhir no-select">
-                    <h2 className="add_scedule">{props.element.title}</h2>
-                    <div className="pcePopup-item">
-                        <div><span className="t-index">授業コード</span> {caDatas.CoNum}</div>
-                        <div><span className="t-index">担当教員</span> {caDatas.teacher}</div>
-                        <div><span className="t-index">学期</span> {caDatas.semester}・{dayString[Math.floor(caDatas.position / 6)]}曜 {caDatas.position % 6 + 1}講時</div>
-                        <div><span className="t-index">学年</span> {caDatas.grade}学年</div>
-                        <div><span className="t-index">必修等</span> {caDatas.status}</div>
-                        <div><span className="t-index">教室</span> <input type="text" placeholder="クリックして教室を登録" className="removeCss pcePopup-input"/></div>
-                    </div>
-                    <h3 className="fa-Attendance-h3">出欠管理</h3>
-                    <div className="pcePopup-item flex-jus-center">
-                        <div className="counter">
-                            <div className="flex-jus-center">出席回数</div>
-                            <div className="fa-counter-lap flex-jus-between">
-                                <FontAwesomeIcon style={pmIcons} icon={faPlusCircle} onClick={() => props.action.count(0, 1, caDatas.position)}/>
-                                <div>{caCount[0]}</div>
-                                <FontAwesomeIcon style={pmIcons} icon={faMinusCircle} onClick={() => props.action.count(0, -1, caDatas.position)}/>
-                            </div>
-                        </div>
-                        <div className="counter">
-                            <div className="flex-jus-center">遅刻回数</div>
-                            <div className="fa-counter-lap flex-jus-between">
-                                <FontAwesomeIcon style={pmIcons} icon={faPlusCircle} onClick={() => props.action.count(1, 1, caDatas.position)}/>
-                                <div>{caCount[1]}</div>
-                                <FontAwesomeIcon style={pmIcons} icon={faMinusCircle} onClick={() => props.action.count(1, -1, caDatas.position)}/>
-                            </div>
-                        </div>
-                        <div className="counter">
-                            <div className="flex-jus-center">欠席回数</div>
-                            <div className="fa-counter-lap flex-jus-between">
-                                <FontAwesomeIcon style={pmIcons} icon={faPlusCircle} onClick={() => props.action.count(2, 1, caDatas.position)}/>
-                                <div>{caCount[2]}</div>
-                                <FontAwesomeIcon style={pmIcons} icon={faMinusCircle} onClick={() => props.action.count(2, -1, caDatas.position)}/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="sns-shere flex">
-                        <a href=""><FontAwesomeIcon style={twitterIcon} icon={faTwitter} /></a>
-                        <a href=""><FontAwesomeIcon style={lineIcon} icon={faLine} /></a>
-                    </div>
-                </div>
-           </div>
-           )
-}
+
 
                                                                                       
         
@@ -226,7 +176,7 @@ class Nurture extends Component {
             page:"week",
             rWindow:{isRWindow:0,type:0,mes:""},
             user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1, created_at:""},
-            popup:{regester:false, editSchedule:false, manual: false, addTask:false, setting:false, login:true},
+            popup:{regester:false, manual: false, addTask:false, setting:false, login:true},
             select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDate()},
             selectPopup:0,
             regesterIds:[],
@@ -242,7 +192,8 @@ class Nurture extends Component {
             change_schedules_before:{},
             xyWindow:{window:false,x:0,y:0,year:0,month:0,date:0,semesterNom:0,task:{},exam:{},changeSchedule:{},csBefore:{}},
             xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{},dataPosition:0},
-            moreTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{}}
+            moreTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{}},
+            xyScheduleWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showSchedule:{}}
         }
     }
 
@@ -496,9 +447,6 @@ class Nurture extends Component {
     PopupMenu() {
         this.setState({popup: {regester: !this.state.popup.regester}});
     }
-    PopupCCedit(ce) {
-        this.setState({popup: {editSchedule: !this.state.popup.editSchedule},selectPopup:ce});
-    }
     PopupManual() {
         this.setState({popup: {manual: !this.state.popup.manual}});
     }
@@ -566,6 +514,19 @@ class Nurture extends Component {
         ins.date = date;
         this.setState({moreTaskWindow:ins})
     }
+    showScheduleWindow(bl,x,y,year,month,date,position,showSchedule){
+        let ins = this.state.xyScheduleWindow;
+        ins.window = bl;
+        ins.x = x;
+        ins.y = y;
+        ins.position = position;
+        ins.showSchedule = showSchedule;
+        ins.year = year;
+        ins.month = month;
+        ins.date = date;
+        this.setState({xyScheduleWindow:ins})
+    }
+    
     
     changeSelect(type,amount){
         
@@ -686,11 +647,12 @@ class Nurture extends Component {
         return(
                <div>
                     <Window
-                        value={{xyWindow: this.state.xyWindow,xyTaskWindow: this.state.xyTaskWindow,moreTaskWindow:this.state.moreTaskWindow}}
+                        value={{xyWindow: this.state.xyWindow,xyTaskWindow: this.state.xyTaskWindow,moreTaskWindow:this.state.moreTaskWindow,xyScheduleWindow:this.state.xyScheduleWindow}}
                         scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}
                         action={{xyWindow: (x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
                                 xyTaskWindow:(bl,x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition),
-                                moreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData)
+                                moreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
+                                xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule)
                                 }}
                     />
                     
@@ -709,22 +671,15 @@ class Nurture extends Component {
                                 changeSelect: (type,amount) => this.changeSelect(type,amount),
                                 showWindow:(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
                                 showTaskWindow:(bl,x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition),
-                                showMoreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData)
+                                showMoreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
+                                xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule)
                             }}
                             select = {this.state.select}
                             task ={this.state.task}
                             exam ={this.state.exam}
                             change_schedules ={{after:this.state.change_schedules_after,before:this.state.change_schedules_before}}
                         />
-                        <PopupClassEdit isPopup = {this.state.popup}
-                                   action = {{
-                                            popupshow: (ce) => this.PopupCCedit(ce),
-                                            count: (typeNo, count, position) => this.AttendanceCount(typeNo, count, position)
-                                            }}
-                                   element = {{caDatas: this.state.caDatas[this.state.user.grade - 1][0][Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6],
-                                              caCount: this.state.caCount[Math.floor(this.state.selectPopup / 6)][this.state.selectPopup % 6]
-                                            }}
-                        />
+                        
                         <PopupClassManual isPopup = {this.state.popup}
                                     action = {{
                                             popupshow: () => this.PopupManual()
