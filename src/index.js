@@ -44,6 +44,9 @@ import user_schedule_destroy from './API/user_schedule/destory'
 import task_index from './API/task/index'
 import task_destroy from './API/task/destory'
 
+import exam_index from './API/exam/index'
+import exam_destroy from './API/exam/destory'
+
 const ENDPOINT = 'http://localhost:3020'
 //const ENDPOINT = 'https://nurture-api.herokuapp.com'
 
@@ -238,25 +241,13 @@ class Nurture extends Component {
         })
         .then(response => {
             this.rWindow(true,1,response.data.mes);
-            this.loadExam();//変更
+            this.exam("index",0);//変更
         })
         .catch(() => {
             this.rWindow(true,2,'通信に失敗しました');
         });
     }
-    loadExam(){
-        //タスクを取得
-        const session = this.state.user.session;
-        const key = this.state.user.key;
-        axios.get(ENDPOINT + '/api/v1/exam?key=' + key + '&session=' + session)
-        .then(response => {
-            console.log(response.data.exams);
-            this.setState({exam:response.data.exams})
-        })
-        .catch(() => {
-            console.log('通信に失敗しました');
-        });
-    }
+
     
     setTask(value){
         this.rWindow(true,0,"");
@@ -390,7 +381,7 @@ class Nurture extends Component {
                 
                 this.user_schedule("index",0)
                 this.task("index",0);
-                this.loadExam();
+                this.exam("index",0);
                 this.loadChangeSchedule();
                 
             })
@@ -658,6 +649,39 @@ class Nurture extends Component {
         }
     }
                               
+    //試験APIを叩く部分
+    exam(type,id){
+        const user = this.state.user;
+        let ins;
+                
+        if(type == "destory" || type == "create")this.rWindow(true,0,"");
+        
+        switch(type){
+            case "index" :
+                ins = exam_index(ENDPOINT, user.key, user.session);//外部関数
+                ins.then(res => {
+                    this.setState({exam:res.exams});
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "destory" :
+                ins = exam_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //タスクを再読み込み
+                    this.exam("index",0);
+                    //ウィンドウを全て閉じる
+                    this.closeAllWindow()
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+        }
+    }
+                              
     //すべてのwindowを閉じる
     closeAllWindow(){
         this.showWindow(false,0,0,0,0,0,0,{},{},{},{});
@@ -678,7 +702,10 @@ class Nurture extends Component {
                                 moreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
                                 xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule)
                                 }}
-                        apiFunction={{user_schedule_destory: (id) => this.user_schedule("destory",id), task_destroy: (id) => this.task("destory",id)}}
+                        apiFunction={{user_schedule_destory: (id) => this.user_schedule("destory",id),
+                                      task_destroy: (id) => this.task("destory",id),
+                                      exam_destroy: (id) => this.exam("destory",id)
+                                    }}
                     />
                     
                

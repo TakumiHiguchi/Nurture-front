@@ -68,13 +68,11 @@ class xyTaskWindow extends Component{
         }
         
         
-        //positionを生成
-        let date = new Date(value.year,value.month - 1,value.date).getDay();
-        if(date === 0)date = 7;
-        date -= 1
-        
-    
-
+        //apiを叩く関数
+        const taskAPIfunction = () => this.props.apiFunction.task_destroy(value.showData[value.dataPosition].id);
+        const examAPIfunction = () => this.props.apiFunction.exam_destroy(value.showData[value.dataPosition].id);
+        let apiDis = false;
+        if(value.showData[value.dataPosition] != void 0) apiDis = value.showData[value.dataPosition].label == "試験";
         
         
         return(
@@ -86,7 +84,7 @@ class xyTaskWindow extends Component{
                                 <div className="brandIcons flex">
                                     <div className="line flex-jus-center"><FontAwesomeIcon icon={faLine} style={lineIcon}/></div>
                                     <div className="twitter flex-jus-center"><FontAwesomeIcon icon={faTwitter} style={twitterIcon}/></div>
-                                    <div className="twitter flex-jus-center" onClick={() => this.props.apiFunction.task_destroy(value.showData[value.dataPosition].id)}><FontAwesomeIcon icon={faTrashAlt} style={pmcl}/></div>
+                                    <div className="twitter flex-jus-center" onClick={apiDis ? examAPIfunction : taskAPIfunction}><FontAwesomeIcon icon={faTrashAlt} style={pmcl}/></div>
                                 </div>
                                 <div className="plus flex-jus-center"><FontAwesomeIcon icon={faPlus} style={pmcr}/></div>
                             </div>

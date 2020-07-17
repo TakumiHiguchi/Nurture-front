@@ -95,7 +95,7 @@ class xyScheduleWindow extends Component{
                                     <div className="flex ScheduleWindowls"><div className="scWindowlsLabel">担当教員</div><div >{value.showSchedule.teacher}</div></div>
                                     <div className="flex ScheduleWindowls"><div className="scWindowlsLabel">授業番号</div><div className="scWindowlsData">{value.showSchedule.CoNum}</div></div>
                                     <div className="flex ScheduleWindowls"><div className="scWindowlsLabel">学期</div><div className="scWindowlsData">{value.showSchedule.semester}</div></div>
-                                    <div className="flex ScheduleWindowls"><div className="scWindowlsLabel">開講時間</div><div className="scWindowlsData">{dayString[parseInt(value.showSchedule.position / 6)]}曜日{value.showSchedule.position % 6}時限目</div></div>
+                                    <div className="flex ScheduleWindowls"><div className="scWindowlsLabel">開講時間</div><div className="scWindowlsData">{dayString[parseInt(value.showSchedule.position / 6)]}曜日{value.showSchedule.position % 6 + 1}時限目</div></div>
                                     <div className="flex ScheduleWindowls"><div className="scWindowlsLabel">学年</div><div className="scWindowlsData">{value.showSchedule.grade}学年</div></div>
                                     <div className="flex ScheduleWindowls"><div className="scWindowlsLabel">分類</div><div className="scWindowlsData">{value.showSchedule.status}</div></div>
                                     <div className="flex ScheduleWindowls"><div className="scWindowlsLabel">教室</div><div className="scWindowlsData"><input type="text" placeholder="クリックして教室を登録" className="removeCss scWindowls-input"/></div></div>
