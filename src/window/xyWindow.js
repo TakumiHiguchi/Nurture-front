@@ -18,7 +18,7 @@ export default class xyWindow extends Component{
         }
     }
     xyWindowClose(){
-        this.props.action(0,0,0,0,0,0,{},{},{},{});
+        this.props.action(false,0,0,0,0,0,0,{},{},{},{});
         //詳細表示のフラグを初期化
         this.setState({page:-1,taskOpenFlag:-1,examOpenFlag:-1});
     }

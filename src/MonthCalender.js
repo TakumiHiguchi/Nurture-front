@@ -173,7 +173,7 @@ export default class MonthLine extends Component {
             }
             
             itemsFir.push(
-                <div className="month-dataBox" onClick={bool5 && ((e) => this.props.action.showWindow(e.pageX,e.pageY,year,mon,i,semesterNom,task,exam,changeSchedule,csBefore)) } key={i + "mdb"}>
+                <div className="month-dataBox" onClick={bool5 && ((e) => this.props.action.showWindow(true,e.pageX,e.pageY,year,mon,i,semesterNom,task,exam,changeSchedule,csBefore)) } key={i + "mdb"}>
                     <div className="">
                          <div className={now.getDate() == i && mon == (now.getMonth() + 1) && year == now.getFullYear() ? "month-date flex-jus-center month-select" : "month-date flex-jus-center"}>
                              {i}

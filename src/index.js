@@ -355,7 +355,6 @@ class Nurture extends Component {
             var ins = this.state.user
             ins.grade = select
             this.setState({user:ins});
-            console.log(response.data.mes);
             this.rWindow(true,1,"学年を変更しました");
         })
         .catch(() => {
@@ -477,9 +476,9 @@ class Nurture extends Component {
         this.setState({rWindow:ins});
     }
     
-    showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore){
+    showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore){
         let ins = this.state.xyWindow;
-        ins.window = !ins.window;
+        ins.window = bl;
         ins.x = x;
         ins.y = y;
         ins.task = task;
@@ -645,17 +644,32 @@ class Nurture extends Component {
         }
         this.PopupMenu()
     }
+                               
+    //スケジュールAPIを叩く部分
     schedule(type,id){
-        const user = this.state.user
-        let ins = {};
+        const user = this.state.user;
+        this.rWindow(true,0,"");
         switch(type){
-            case "destory" :ins = schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);break;
+            case "destory" :
+                let ins = schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.r1.status,res.r1.mes);
+                    if(res.r2 != null){
+                        this.setState({caDatas:res.r2.schedules})
+                    }else{
+                        this.rWindow(true,2,'取得に失敗しました');
+                    }
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
         }
-                 
-                console.log(ins)
-                console.log("a")
-        this.loadUserSchedule(user.key ,user.session);
-                
+    }
+                               
+    closeAllWindow(){
+        //すべてのwindowを閉じる
+        
     }
                                
     render(){
@@ -665,7 +679,7 @@ class Nurture extends Component {
                     <Window
                         value={{xyWindow: this.state.xyWindow,xyTaskWindow: this.state.xyTaskWindow,moreTaskWindow:this.state.moreTaskWindow,xyScheduleWindow:this.state.xyScheduleWindow}}
                         scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}
-                        action={{xyWindow: (x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
+                        action={{xyWindow: (bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
                                 xyTaskWindow:(bl,x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition),
                                 moreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
                                 xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule)
@@ -686,7 +700,7 @@ class Nurture extends Component {
                             action = {{popupshow: () => this.PopupMenu(),
                                 popupEdit: (ce) => this.PopupCCedit(ce),
                                 changeSelect: (type,amount) => this.changeSelect(type,amount),
-                                showWindow:(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
+                                showWindow:(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
                                 showTaskWindow:(bl,x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition),
                                 showMoreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
                                 xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule)
@@ -752,7 +766,7 @@ class Body extends Component {
                 <main className="fa-mainContainer">
                    <DateBox type={"month"} action={(type,amount) => this.props.action.changeSelect(type,amount)} data={{year:this.props.select.year,month:this.props.select.month}}/>
                    <div className="fa-scedule">
-                   <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} scheduleData = {this.props.scheduleDatas} element={this.props.element} task={this.props.task} exam={this.props.exam} change_schedules ={this.props.change_schedules} action={{showWindow:(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.props.action.showWindow(x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)}}/>
+                   <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} scheduleData = {this.props.scheduleDatas} element={this.props.element} task={this.props.task} exam={this.props.exam} change_schedules ={this.props.change_schedules} action={{showWindow:(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.props.action.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)}}/>
                    </div>
                 </main>
             )
