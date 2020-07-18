@@ -56,21 +56,39 @@ class xyTaskWindow extends Component{
         }
         this.props.apiFunction.task_update(d_id, dataHash ,"タスクを" + cont + "にしました");
     }
+    examAPIfunction_update(){
+        const disString = ["完了済み","未完了"]
+        let value = this.props.value;
+        let d_id = 0;
+        let dataHash = {};
+        let cont = ""
+        if(value.showData[value.dataPosition] != void 0){
+            d_id = value.showData[value.dataPosition].id;
+            dataHash = value.showData[value.dataPosition];
+            dataHash.complete = !dataHash.complete;
+        }
+        if(dataHash.complete){
+            cont = disString[0];
+        }else{
+            cont = disString[1];
+        }
+        this.props.apiFunction.exam_update(d_id, dataHash ,"試験を" + cont + "にしました");
+    }
     
     render(){
         let value = this.props.value;
         
-        const bl1 = this.props.value.y + 326 > this.state.size.height;
+        const bl1 = this.props.value.y + 332 > this.state.size.height;
         const bl2 = this.props.value.x + 450 > this.state.size.width;
         let xyWindowMain = {};
         if(bl1 && bl2){
             xyWindowMain = {
-                top:this.props.value.y - 326 + "px",
+                top:this.props.value.y - 332 + "px",
                 left:this.props.value.x - 450 + "px"
             }
         }else if(bl1 && !bl2){
             xyWindowMain = {
-                top:this.props.value.y - 326 + "px",
+                top:this.props.value.y - 332 + "px",
                 left:this.props.value.x + 40 + "px"
             }
         }else if(!bl1 && bl2){
@@ -129,14 +147,14 @@ class xyTaskWindow extends Component{
                         </div>
                         <div className="taskWindow_complete">
                             {value.showData[value.dataPosition] != void 0 && value.showData[value.dataPosition].complete ?
-                                    <div onClick={apiDis ? null : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
+                                    <div onClick={apiDis ? () => this.examAPIfunction_update() : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
                                         未完了にする
                                     </div>
                                 :
-                                    <div onClick={apiDis ? null : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
+                                    <div onClick={apiDis ? () => this.examAPIfunction_update() : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
                                         完了にする
                                     </div>
-                                }
+                            }
                         </div>
                     </div>
                 </div>

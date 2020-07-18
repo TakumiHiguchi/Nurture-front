@@ -2,14 +2,13 @@ import React from 'react';
 import axios from 'axios';
 
 
-export default async function create(endpoint, key, session, id, task, grade){
+export default async function update(endpoint, key, session, id, task, grade){
     const r1 = await api(endpoint, key, session, id, task, grade);
     return r1
 }
 
 async function api(endpoint, key, session, id, task, grade){
     try{
-        console.log(task)
         const response = await axios.patch(endpoint + '/api/v1/task?key=' + key + '&session=' + session +'&task_id=' + id +'&title=' + task.title +'&content=' + task.content +'&taskdate=' + task.date +'&position=' + task.position +'&complete=' + task.complete);
         
         if(response.data.status == "SUCCESS"){

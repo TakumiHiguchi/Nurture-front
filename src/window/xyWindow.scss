@@ -303,6 +303,8 @@
 
 .taskWindow_complete{
     text-align:right;
+    border-top:1px solid #f0f0f0;
+    padding-top:5px;
     .taskWindow_completeButton{
         display:inline-block;
         cursor:pointer;

@@ -47,6 +47,7 @@ import task_update from './API/task/update'
 import task_destroy from './API/task/destory'
 
 import exam_index from './API/exam/index'
+import exam_update from './API/exam/update'
 import exam_destroy from './API/exam/destory'
 
 const ENDPOINT = 'http://localhost:3020'
@@ -545,7 +546,7 @@ class Nurture extends Component {
     }
                                
     //ユーザーのスケジュールAPIを叩く部分
-    user_schedule(type,id){
+    user_schedule(type,id, ...args){
         const user = this.state.user;
         let ins;
                 
@@ -634,7 +635,6 @@ class Nurture extends Component {
                     }else{
                         this.rWindow(true,res.status,args[1]);
                     }
-                    console.log(args)
                     //タスクを再読み込み
                     this.task("index",0);
                 })
@@ -659,7 +659,7 @@ class Nurture extends Component {
     }
                               
     //試験APIを叩く部分
-    exam(type,id){
+    exam(type,id, ...args){
         const user = this.state.user;
         let ins;
                 
@@ -670,6 +670,21 @@ class Nurture extends Component {
                 ins = exam_index(ENDPOINT, user.key, user.session);//外部関数
                 ins.then(res => {
                     this.setState({exam:res.exams});
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "update" :
+                ins = exam_update(ENDPOINT, user.key, user.session, id, args[0], user.grade);//外部関数
+                ins.then(res => {
+                    if(args[1] === void 0){
+                        this.rWindow(true,res.status,res.mes);
+                    }else{
+                        this.rWindow(true,res.status,args[1]);
+                    }
+                    //試験を再読み込み
+                    this.exam("index",0);
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -714,7 +729,8 @@ class Nurture extends Component {
                         apiFunction={{user_schedule_destory: (id) => this.user_schedule("destory",id),
                                       task_destroy: (id) => this.task("destory",id),
                                       task_update: (id, value, mes) => this.task("update",id, value, mes),
-                                      exam_destroy: (id) => this.exam("destory",id)
+                                      exam_destroy: (id) => this.exam("destory",id),
+                                      exam_update: (id, value, mes) => this.exam("update",id, value, mes)
                                     }}
                     />
                     
