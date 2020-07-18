@@ -180,7 +180,13 @@ const WeekLine = (props) => {
                                 {taskData[index].map((tData,i) =>
                                         <>
                                             {(i < (4 - sCount[index] - eCount[index]))&&
-                                                <div className="weekTaskBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,taskData[index],i))}>{tData.title}</div>
+                                                <div className="weekTaskBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,taskData[index],i))}>
+                                                    {tData.complete ?
+                                                        <><s>{tData.title}</s>（完了済み）</>
+                                                    :
+                                                        <>{tData.title}</>
+                                                    }
+                                                </div>
                                             }
                                         </>
                                 )}

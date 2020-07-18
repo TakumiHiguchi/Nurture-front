@@ -38,21 +38,39 @@ class xyTaskWindow extends Component{
         }
         this.setState({size: wsize});
     }
+    taskAPIfunction_update(){
+        const disString = ["完了済み","未完了"]
+        let value = this.props.value;
+        let d_id = 0;
+        let dataHash = {};
+        let cont = ""
+        if(value.showData[value.dataPosition] != void 0){
+            d_id = value.showData[value.dataPosition].id;
+            dataHash = value.showData[value.dataPosition];
+            dataHash.complete = !dataHash.complete;
+        }
+        if(dataHash.complete){
+            cont = disString[0];
+        }else{
+            cont = disString[1];
+        }
+        this.props.apiFunction.task_update(d_id, dataHash ,"タスクを" + cont + "にしました");
+    }
     
     render(){
         let value = this.props.value;
         
-        const bl1 = this.props.value.y + 300 > this.state.size.height;
+        const bl1 = this.props.value.y + 326 > this.state.size.height;
         const bl2 = this.props.value.x + 450 > this.state.size.width;
         let xyWindowMain = {};
         if(bl1 && bl2){
             xyWindowMain = {
-                top:this.props.value.y - 300 + "px",
+                top:this.props.value.y - 326 + "px",
                 left:this.props.value.x - 450 + "px"
             }
         }else if(bl1 && !bl2){
             xyWindowMain = {
-                top:this.props.value.y - 300 + "px",
+                top:this.props.value.y - 326 + "px",
                 left:this.props.value.x + 40 + "px"
             }
         }else if(!bl1 && bl2){
@@ -69,11 +87,14 @@ class xyTaskWindow extends Component{
         
         
         //apiを叩く関数
-        const taskAPIfunction = () => this.props.apiFunction.task_destroy(value.showData[value.dataPosition].id);
-        const examAPIfunction = () => this.props.apiFunction.exam_destroy(value.showData[value.dataPosition].id);
+        let d_id = 0;
         let apiDis = false;
-        if(value.showData[value.dataPosition] != void 0) apiDis = value.showData[value.dataPosition].label == "試験";
-        
+        if(value.showData[value.dataPosition] != void 0){
+            d_id = value.showData[value.dataPosition].id;
+            apiDis = value.showData[value.dataPosition].label == "試験"
+        }
+        const taskAPIfunction_delete = () => this.props.apiFunction.task_destroy(d_id);
+        const examAPIfunction_delete = () => this.props.apiFunction.exam_destroy(d_id);
         
         return(
                <div className="no-select">
@@ -84,13 +105,20 @@ class xyTaskWindow extends Component{
                                 <div className="brandIcons flex">
                                     <div className="line flex-jus-center"><FontAwesomeIcon icon={faLine} style={lineIcon}/></div>
                                     <div className="twitter flex-jus-center"><FontAwesomeIcon icon={faTwitter} style={twitterIcon}/></div>
-                                    <div className="twitter flex-jus-center" onClick={apiDis ? examAPIfunction : taskAPIfunction}><FontAwesomeIcon icon={faTrashAlt} style={pmcl}/></div>
+                                    <div className="twitter flex-jus-center" onClick={apiDis ? examAPIfunction_delete : taskAPIfunction_delete}><FontAwesomeIcon icon={faTrashAlt} style={pmcl}/></div>
                                 </div>
                                 <div className="plus flex-jus-center"><FontAwesomeIcon icon={faPlus} style={pmcr}/></div>
                             </div>
                         </div>
                         {value.showData[value.dataPosition] != void 0 &&
-                            <div className="flex windowTasktitle"><div className="labelBox" style={value.showData[value.dataPosition].label == "試験" ? labRed : labBlue}>{value.showData[value.dataPosition].label}</div><div className="title">{value.showData[value.dataPosition].title}</div></div>
+                            <div className="flex windowTasktitle">
+                                <div className="labelBox" style={apiDis ? labRed : labBlue}>{value.showData[value.dataPosition].label}</div>
+                                {value.showData[value.dataPosition].complete ?
+                                    <div className="title"><s>{value.showData[value.dataPosition].title}</s>（完了済み）</div>
+                                    :
+                                    <div className="title">{value.showData[value.dataPosition].title}</div>
+                                }
+                            </div>
                         }
                         <div className="xyWindowTaskInner">
                             {value.showData[value.dataPosition] != void 0 &&
@@ -98,6 +126,17 @@ class xyTaskWindow extends Component{
                                   __html: value.showData[value.dataPosition].content
                                 }}></div>
                             }
+                        </div>
+                        <div className="taskWindow_complete">
+                            {value.showData[value.dataPosition] != void 0 && value.showData[value.dataPosition].complete ?
+                                    <div onClick={apiDis ? null : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
+                                        未完了にする
+                                    </div>
+                                :
+                                    <div onClick={apiDis ? null : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
+                                        完了にする
+                                    </div>
+                                }
                         </div>
                     </div>
                 </div>

@@ -73,7 +73,11 @@ class moreTaskWindow extends Component{
             taskBoards = value.showData.map((d,index) =>
                                             <div className="weekTaskBox"
                                             onClick={(e) => this.props.action.xyTaskWindow(true,this.props.value.x+680 < this.state.size.width ? 230 - (e.pageX - this.props.value.x) + e.pageX : (!bl2 ? this.props.value.x - 430 : this.props.value.x - 720 ),e.pageY,value.year,value.month,value.date,value.position,value.showData,index)}>
-                                                {d.title}
+                                                {d.complete ?
+                                                    <><s>{d.title}</s>（完了済み)</>
+                                                    :
+                                                    <>{d.title}</>
+                                                }
                                             </div>
                                             );
         }

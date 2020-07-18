@@ -42,6 +42,8 @@ import user_schedule_create from './API/user_schedule/create'
 import user_schedule_destroy from './API/user_schedule/destory'
 
 import task_index from './API/task/index'
+import task_create from './API/task/create'
+import task_update from './API/task/update'
 import task_destroy from './API/task/destory'
 
 import exam_index from './API/exam/index'
@@ -248,27 +250,6 @@ class Nurture extends Component {
         });
     }
 
-    
-    setTask(value){
-        this.rWindow(true,0,"");
-        
-        //タスクを生成する
-        axios.post(ENDPOINT + '/api/v1/task', {
-            key: this.state.user.key,
-            session: this.state.user.session,
-            title: value.taskTitle,
-            content:value.taskCont,
-            taskdate:value.taskDate,
-            position:value.position - 1
-        })
-        .then(response => {
-            this.rWindow(true,1,"タスクを保存しました");
-            this.task("index",0);
-        })
-        .catch(() => {
-            this.rWindow(true,2,'通信に失敗しました');
-        });
-    }
 
     setChangeSchedule(value){
         this.rWindow(true,0,"");
@@ -583,13 +564,13 @@ class Nurture extends Component {
             case "create" :
                 ins = user_schedule_create(ENDPOINT, user.key, user.session, this.state.regesterElements, user.grade);//外部関数
                 ins.then(res => {
-                    this.rWindow(true,res.r1.status,res.r1.mes);
+                    this.rWindow(true,res.status,res.mes);
                     this.setState({
                         regesterIds: [],
                         regesterElements: []
                     });
-                    //スケジュールの更新
-                    this.setState({caDatas:res.r2.schedules});
+                    //スケジュールを再読み込み
+                    this.user_schedule("index",0);
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -617,7 +598,7 @@ class Nurture extends Component {
     }
     
     //タスクAPIを叩く部分
-    task(type,id){
+    task(type, id, ...args){
         const user = this.state.user;
         let ins;
                 
@@ -628,6 +609,34 @@ class Nurture extends Component {
                 ins = task_index(ENDPOINT, user.key, user.session);//外部関数
                 ins.then(res => {
                     this.setState({task:res.tasks});
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "create" :
+                ins = task_create(ENDPOINT, user.key, user.session, args[0], user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //タスクを再読み込み
+                    this.task("index",0);
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                this.PopupToggle("addTask")
+                break;
+            case "update" :
+                ins = task_update(ENDPOINT, user.key, user.session, id, args[0], user.grade);//外部関数
+                ins.then(res => {
+                    if(args[1] === void 0){
+                        this.rWindow(true,res.status,res.mes);
+                    }else{
+                        this.rWindow(true,res.status,args[1]);
+                    }
+                    console.log(args)
+                    //タスクを再読み込み
+                    this.task("index",0);
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -670,7 +679,7 @@ class Nurture extends Component {
                 ins = exam_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
                 ins.then(res => {
                     this.rWindow(true,res.status,res.mes);
-                    //タスクを再読み込み
+                    //試験を再読み込み
                     this.exam("index",0);
                     //ウィンドウを全て閉じる
                     this.closeAllWindow()
@@ -704,6 +713,7 @@ class Nurture extends Component {
                                 }}
                         apiFunction={{user_schedule_destory: (id) => this.user_schedule("destory",id),
                                       task_destroy: (id) => this.task("destory",id),
+                                      task_update: (id, value, mes) => this.task("update",id, value, mes),
                                       exam_destroy: (id) => this.exam("destory",id)
                                     }}
                     />
@@ -740,7 +750,7 @@ class Nurture extends Component {
                                                                                      
                         />
                         
-                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.setTask(value), setExam: (value) => this.setExam(value),setChangeSchedule:(value) => this.setChangeSchedule(value)}} status={this.state.popup.addTask}
+                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.task("create",0, value), setExam: (value) => this.setExam(value),setChangeSchedule:(value) => this.setChangeSchedule(value)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas[this.state.user.grade - 1],semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
                                                                                      
                                                                                      />

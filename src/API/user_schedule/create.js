@@ -8,10 +8,14 @@ export default async function create(endpoint, key, session, regesterElements, g
         const res = await api(endpoint, key, session, data,grade);
         return res;
     }));
+    let count = result.filter((element) => { return element === false; }).length;
     let r1 = {status:1,mes:"授業を作成しました。"};
-    //スケジュールを作る
-    const r2 = await user_schedule_index(endpoint, key, session);//スケジュールを再読み込み
-    return {r1,r2}
+    if(result.includes(false)){
+        r1 = {status:2,mes:count + "件の追加に失敗しました。"};
+    }else{
+        r1 = {status:1,mes:"授業を作成しました。"};
+    }
+    return r1
 }
 
 async function api(endpoint, key, session, regesterElements, grade){
