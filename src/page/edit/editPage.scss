@@ -1,0 +1,100 @@
+div.confirmationWhir{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    width:300px;
+    height:102px;
+    background:white;
+    padding:20px;
+    margin:auto;
+    z-index:9999;
+    border-radius:10px;
+    text-align:center;
+}
+.edit-submit-y,.edit-submit-n{
+    padding:4px 20px;
+    border-radius:5px;
+    cursor:pointer;
+    margin:15px 10px 0;
+}
+.edit-submit-y{
+    background:#00aced;
+    color:white;
+}
+.edit-submit-n{
+    border:1px solid #f0f0f0;
+    color:#aaa;
+}
+
+.editContainer{
+    width:calc(100% - 40px);
+    height:calc(100vh - 91px);
+    padding:20px;
+    .leftContainer{
+        height:100%;
+        width:calc(50% - 10px);
+        .edit-input{
+            height: 50px;
+            width: calc(100% - 32px);
+            font-size: 1.2em;
+            border: 1px solid #e8e8e8;
+        }
+    }
+    .rightContainer{
+        height:100%;
+        width:calc(50% - 10px);
+        
+    }
+}
+
+.rightContainer{
+    .RichTextEditor__root___2QXK-{
+        height:100%;
+        width:100%;
+    }
+    .RichTextEditor__editor___1QqIU{
+        height:calc(100% - 53px);
+        .DraftEditor-root{
+            height:100%;
+            width:100%;
+        }
+        .public-DraftEditor-content{
+            height:calc(100% - 18px);
+            width:calc(100% - 18px);
+            overflow-y: scroll;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            &::-webkit-scrollbar {
+                display:none;
+            }
+        }
+    }
+}
+
+.datepicker{
+    padding:5px 10px;
+    cursor:pointer;
+    border-radius:5px;
+    &:hover{
+        background:#f8f8f8;
+    }
+}
+.editDateContainer{
+    padding:20px 0;
+    .clockIcon{
+        height:34px;
+    }
+}
+
+.editSubmitContainer{
+    .edit-submitButton{
+        display:inline-block;
+        background:#00aced;
+        color:white;
+        padding:6px 20px;
+        border-radius:5px;
+        cursor:pointer;
+    }
+}

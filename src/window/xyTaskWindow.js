@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import onClickOutside from 'react-onclickoutside'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
-import { faTimes,faPlus,faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTimes,faPlus,faTrashAlt,faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faLine,faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 import './xyWindow.scss'
@@ -18,7 +18,7 @@ class xyTaskWindow extends Component{
     }
     //画面外をクリックした時の挙動
     handleClickOutside() {
-        this.props.action(false,0,0,0,0,0,0,{},0);
+        this.props.action.xyTaskWindow(false,0,0,0,0,0,0,{},0);
     }
     //画面の大きさを取得
     componentWillMount () {
@@ -107,12 +107,26 @@ class xyTaskWindow extends Component{
         //apiを叩く関数
         let d_id = 0;
         let apiDis = false;
+        let editShowData = {}
         if(value.showData[value.dataPosition] != void 0){
             d_id = value.showData[value.dataPosition].id;
             apiDis = value.showData[value.dataPosition].label == "試験"
+            
+            //editの新しい配列生成
+            let insV = value.showData[value.dataPosition];
+            editShowData = {id: insV.id, complete: insV.complete, title:insV.title, content:insV.content, date:insV.date, position: insV.position};
         }
         const taskAPIfunction_delete = () => this.props.apiFunction.task_destroy(d_id);
         const examAPIfunction_delete = () => this.props.apiFunction.exam_destroy(d_id);
+        
+        let lab="";
+        if(apiDis){
+            lab = "exam";
+        }else{
+            lab = "task"
+        }
+        
+        
         
         return(
                <div className="no-select">
@@ -125,6 +139,7 @@ class xyTaskWindow extends Component{
                                     <div className="twitter flex-jus-center"><FontAwesomeIcon icon={faTwitter} style={twitterIcon}/></div>
                                     <div className="twitter flex-jus-center" onClick={apiDis ? examAPIfunction_delete : taskAPIfunction_delete}><FontAwesomeIcon icon={faTrashAlt} style={pmcl}/></div>
                                 </div>
+                                <div className="edit flex-jus-center" onClick={() => this.props.action.editPage(true, editShowData, lab)}><FontAwesomeIcon icon={faEdit} style={pmcl}/></div>
                                 <div className="plus flex-jus-center"><FontAwesomeIcon icon={faPlus} style={pmcr}/></div>
                             </div>
                         </div>

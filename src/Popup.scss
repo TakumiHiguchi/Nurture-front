@@ -4,7 +4,7 @@
     position: fixed;
     top: 0;
     width: 100%;
-    z-index:10;
+    z-index:999;
     
     .popup_wrap{
         height:100vh;
@@ -604,24 +604,25 @@ div.react-datepicker-popper{
         height:100%;
         width:100%;
     }
-}
-.RichTextEditor__editor___1QqIU{
-    height:calc(100% - 53px);
-    .DraftEditor-root{
-        height:100%;
-        width:100%;
-    }
-    .public-DraftEditor-content{
-        height:calc(100% - 18px);
-        width:calc(100% - 18px);
-        overflow-y: scroll;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-        &::-webkit-scrollbar {
-            display:none;
+    .RichTextEditor__editor___1QqIU{
+        height:calc(100% - 53px);
+        .DraftEditor-root{
+            height:100%;
+            width:100%;
+        }
+        .public-DraftEditor-content{
+            height:calc(100% - 18px);
+            width:calc(100% - 18px);
+            overflow-y: scroll;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            &::-webkit-scrollbar {
+                display:none;
+            }
         }
     }
 }
+
 .tlEDeleteButton{
     position:absolute;
     right:2px;

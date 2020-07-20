@@ -24,7 +24,7 @@ import './toppage.scss';
 import './Popup.scss';
 
 import Window from './window/window'
-
+import EditPage from './page/edit/editPage'
 
 import ResultWindow from './ResultWindow'
 import Popup from './Popup'
@@ -47,8 +47,13 @@ import task_update from './API/task/update'
 import task_destroy from './API/task/destory'
 
 import exam_index from './API/exam/index'
+import exam_create from './API/exam/create'
 import exam_update from './API/exam/update'
 import exam_destroy from './API/exam/destory'
+
+import change_schedule_index from './API/change_schedule/index'
+import change_schedule_create from './API/change_schedule/create'
+import change_schedule_destroy from './API/change_schedule/destory'
 
 const ENDPOINT = 'http://localhost:3020'
 //const ENDPOINT = 'https://nurture-api.herokuapp.com'
@@ -190,7 +195,7 @@ class Nurture extends Component {
             page:"week",
             rWindow:{isRWindow:0,type:0,mes:""},
             user:{key:"", name:"ゲスト", imageURL:"", session:"", maxAge:0, mes:"", grade:1, created_at:""},
-            popup:{regester:false, manual: false, addTask:false, setting:false, login:true},
+            popup:{regester:false, manual: false, addTask:false, setting:false, login:true, editPage:false},
             select:{year: now.getFullYear(),month: now.getMonth()+1 ,day: now.getDate()},
             selectPopup:0,
             regesterIds:[],
@@ -207,7 +212,8 @@ class Nurture extends Component {
             xyWindow:{window:false,x:0,y:0,year:0,month:0,date:0,semesterNom:0,task:{},exam:{},changeSchedule:{},csBefore:{}},
             xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{},dataPosition:0},
             moreTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{}},
-            xyScheduleWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showSchedule:{}}
+            xyScheduleWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showSchedule:{},type:""},
+            editPage:{window:false,showData:{title:''},type:""}
         }
     }
 
@@ -230,65 +236,7 @@ class Nurture extends Component {
                 console.log('通信に失敗しました');
             });
     }
-    setExam(value){
-        this.rWindow(true,0,"");
-        
-        //タスクを生成する
-        axios.post(ENDPOINT + '/api/v1/exam', {
-            key: this.state.user.key,
-            session: this.state.user.session,
-            title: value.examTitle,
-            content:value.examCont,
-            examdate:value.examDate,
-            position:value.position - 1
-        })
-        .then(response => {
-            this.rWindow(true,1,response.data.mes);
-            this.exam("index",0);//変更
-        })
-        .catch(() => {
-            this.rWindow(true,2,'通信に失敗しました');
-        });
-    }
 
-
-    setChangeSchedule(value){
-        this.rWindow(true,0,"");
-        
-        //タスクを生成する
-        axios.post(ENDPOINT + '/api/v1/change_schedule', {
-            key: this.state.user.key,
-            session: this.state.user.session,
-            selectSchedule_id: value.selectSchedule.id,
-            beforeDate:value.changeScheduleBeforeDate,
-            afterDate:value.changeScheduleAfterDate,
-            position:value.position - 1
-        })
-        .then(response => {
-            if(response.data.status == "SUCCESS"){
-                this.rWindow(true,1,"授業の変更を保存しました");
-                this.loadChangeSchedule();
-            }else{
-                this.rWindow(true,1,response.data.mes);
-            }
-        })
-        .catch(() => {
-            this.rWindow(true,2,'通信に失敗しました');
-        });
-    }
-    loadChangeSchedule(){
-        //タスクを取得
-        const session = this.state.user.session;
-        const key = this.state.user.key;
-        axios.get(ENDPOINT + '/api/v1/change_schedule?key=' + key + '&session=' + session)
-        .then(response => {
-            console.log(response.data.change_schedules_before);
-            this.setState({change_schedules_after:response.data.change_schedules_after,change_schedules_before:response.data.change_schedules_before})
-        })
-        .catch(() => {
-            console.log('通信に失敗しました');
-        });
-    }
     
     setGrade(select){
         this.rWindow(true,0,"");
@@ -364,7 +312,7 @@ class Nurture extends Component {
                 this.user_schedule("index",0)
                 this.task("index",0);
                 this.exam("index",0);
-                this.loadChangeSchedule();
+                this.change_schedule("index",0)
                 
             })
             .catch(() => {
@@ -406,8 +354,8 @@ class Nurture extends Component {
             case "addTask": this.setState({popup: {addTask: !this.state.popup.addTask}});break;
             case "setting": this.setState({popup: {setting: !this.state.popup.setting}});break;
             case "login": this.setState({popup: {login: !this.state.popup.login}});break;
+                
         }
-        
     }
     rWindow(window_bool,type,cont){
         let ins = this.state.rWindow;
@@ -464,7 +412,7 @@ class Nurture extends Component {
         ins.date = date;
         this.setState({moreTaskWindow:ins})
     }
-    showScheduleWindow(bl,x,y,year,month,date,position,showSchedule){
+    showScheduleWindow(bl,x,y,year,month,date,position,showSchedule,type){
         let ins = this.state.xyScheduleWindow;
         ins.window = bl;
         ins.x = x;
@@ -474,7 +422,26 @@ class Nurture extends Component {
         ins.year = year;
         ins.month = month;
         ins.date = date;
+        ins.type = type;
         this.setState({xyScheduleWindow:ins})
+    }
+    showEditPage(bl, showData, type){
+        let ins = this.state.editPage;
+        ins.window = bl;
+        ins.showData = showData;
+        ins.type = type;
+        this.setState({editPage:ins})
+        this.closeAllWindow();
+    }
+    editHandleOnChange(index,e){
+        let ins = this.state.editPage;
+        switch (index){
+            case "taskTitle" : ins.showData.title = e.target.value;break;
+            case "taskCont" : ins.showData.content = e;break;
+            case "taskDate" : ins.showData.date = e;break;
+            case "position" : ins.showData.position = e - 1;break;
+        }
+        this.setState({editPage:ins});
     }
     
     
@@ -550,7 +517,7 @@ class Nurture extends Component {
         const user = this.state.user;
         let ins;
                 
-        if(type == "destory" || type == "create")this.rWindow(true,0,"");
+        if(type == "destory" || type == "create" || type == "update")this.rWindow(true,0,"");
         
         switch(type){
             case "index" :
@@ -603,7 +570,7 @@ class Nurture extends Component {
         const user = this.state.user;
         let ins;
                 
-        if(type == "destory" || type == "create")this.rWindow(true,0,"");
+        if(type == "destory" || type == "create" || type == "update")this.rWindow(true,0,"");
         
         switch(type){
             case "index" :
@@ -663,7 +630,7 @@ class Nurture extends Component {
         const user = this.state.user;
         let ins;
                 
-        if(type == "destory" || type == "create")this.rWindow(true,0,"");
+        if(type == "destory" || type == "create" || type == "update")this.rWindow(true,0,"");
         
         switch(type){
             case "index" :
@@ -674,6 +641,18 @@ class Nurture extends Component {
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
                 });
+                break;
+            case "create" :
+                ins = exam_create(ENDPOINT, user.key, user.session, args[0], user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //タスクを再読み込み
+                    this.exam("index",0);
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                this.PopupToggle("addTask")
                 break;
             case "update" :
                 ins = exam_update(ENDPOINT, user.key, user.session, id, args[0], user.grade);//外部関数
@@ -705,6 +684,50 @@ class Nurture extends Component {
                 break;
         }
     }
+    //授業変更APIを叩く部分
+    change_schedule(type,id, ...args){
+        const user = this.state.user;
+        let ins;
+                
+        if(type == "destory" || type == "create" || type == "update")this.rWindow(true,0,"");
+        
+        switch(type){
+            case "index" :
+                ins = change_schedule_index(ENDPOINT, user.key, user.session);//外部関数
+                ins.then(res => {
+                    this.setState({change_schedules_after:res.change_schedules_after,change_schedules_before:res.change_schedules_before})
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "create" :
+                ins = change_schedule_create(ENDPOINT, user.key, user.session, args[0], user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //スケジュールを再読み込み
+                    this.change_schedule("index",0);
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                this.PopupToggle("addTask")
+                break;
+            case "destory" :
+                ins = change_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //スケジュールを再読み込み
+                    this.change_schedule("index",0);
+                    //ウィンドウを全て閉じる
+                    this.closeAllWindow()
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+        }
+    }
                               
     //すべてのwindowを閉じる
     closeAllWindow(){
@@ -721,19 +744,31 @@ class Nurture extends Component {
                     <Window
                         value={{xyWindow: this.state.xyWindow,xyTaskWindow: this.state.xyTaskWindow,moreTaskWindow:this.state.moreTaskWindow,xyScheduleWindow:this.state.xyScheduleWindow}}
                         scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}
-                        action={{xyWindow: (bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
+                        action={{
+                                xyWindow: (bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
                                 xyTaskWindow:(bl,x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition),
                                 moreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
-                                xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule)
+                                xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule,type) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule,type),
+                                editPage: (bl, showData, type) => this.showEditPage(bl, showData, type)
                                 }}
-                        apiFunction={{user_schedule_destory: (id) => this.user_schedule("destory",id),
-                                      task_destroy: (id) => this.task("destory",id),
-                                      task_update: (id, value, mes) => this.task("update",id, value, mes),
-                                      exam_destroy: (id) => this.exam("destory",id),
-                                      exam_update: (id, value, mes) => this.exam("update",id, value, mes)
+                        apiFunction={{
+                                    user_schedule_destory: (id) => this.user_schedule("destory",id),
+                                    task_destroy: (id) => this.task("destory",id),
+                                    task_update: (id, value, mes) => this.task("update",id, value, mes),
+                                    exam_destroy: (id) => this.exam("destory",id),
+                                    exam_update: (id, value, mes) => this.exam("update",id, value, mes),
+                                    change_schedule_destroy: (id) => this.change_schedule("destory",id),
                                     }}
                     />
-                    
+                    <EditPage
+                        action={{editPage: (bl, showData, type) => this.showEditPage(bl, showData, type)}}
+                        status={this.state.editPage}
+                        handleOnChange={(index,e) => this.editHandleOnChange(index,e)}
+                        apiFunction={{
+                            exam_update: () => this.exam("update", this.state.editPage.showData.id, this.state.editPage.showData),
+                            task_update: () => this.task("update", this.state.editPage.showData.id, this.state.editPage.showData)
+                           }}
+                    />
                
                     <ResultWindow value={this.state.rWindow} action={(a,b,c) => this.rWindow(a,this.state.rWindow.type,this.state.rWindow.mes)}/>
                     <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
@@ -750,7 +785,7 @@ class Nurture extends Component {
                                 showWindow:(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
                                 showTaskWindow:(bl,x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition),
                                 showMoreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
-                                xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule)
+                                xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule,type) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule,type)
                             }}
                             select = {this.state.select}
                             task ={this.state.task}
@@ -766,7 +801,7 @@ class Nurture extends Component {
                                                                                      
                         />
                         
-                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.task("create",0, value), setExam: (value) => this.setExam(value),setChangeSchedule:(value) => this.setChangeSchedule(value)}} status={this.state.popup.addTask}
+                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.task("create",0, value), setExam: (value) => this.exam("create",0, value),setChangeSchedule:(value) => this.change_schedule("create",0, value)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas[this.state.user.grade - 1],semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
                                                                                      
                                                                                      />

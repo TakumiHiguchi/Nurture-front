@@ -141,23 +141,33 @@ const WeekLine = (props) => {
                 <div className="flex-jus-center fa-class-sceduleContainer" key={"ds" + data +index }>
                     <div className="fa-class-scedule" onClick={data === 0 && tCount[index] <= 0 && eCount[index] <= 0 && csArray[index] === void 0 ? () => props.action.popupshow() : null}>
                         {data !== 0 ?
-                            <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data)}>
-                                  {csBeforeArray[index] !== void 0 ?
-                                      <>
-                                          <div className="title"><s>{data.title}</s></div>
-                                          <div className="classroom"><s>107教室</s></div>
-                                      </>
-                                      :
-                                      <>
-                                          <div className="title">{data.title}</div>
-                                          <div className="classroom">107教室</div>
-                                      </>
-                                  }
-                            </div>
+                            <>
+                            {csArray[index] !== void 0 ?
+                                <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,csArray[index], "change")}>
+                                    <div className="title">{csArray[index].title}</div>
+                                    <div className="classroom flex">107教室<div className="weekCSMark">授業変更</div></div>
+                                </div>
+                                :
+                                <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data , "nomal")}>
+                                      {csBeforeArray[index] !== void 0 ?
+                                          <>
+                                            <div className="title"><s>{data.title}</s></div>
+                                            <div className="classroom"><s>107教室</s></div>
+                                          </>
+                                          
+                                          :
+                                          <>
+                                              <div className="title">{data.title}</div>
+                                              <div className="classroom">107教室</div>
+                                          </>
+                                      }
+                                </div>
+                            }
+                            </>
                         :
                         <>
                           {csArray[index] !== void 0 &&
-                              <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,csArray[index])}>
+                              <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,csArray[index], "change")}>
                                   <div className="title">{csArray[index].title}</div>
                                   <div className="classroom flex">107教室<div className="weekCSMark">授業変更</div></div>
                               </div>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import onClickOutside from 'react-onclickoutside'
 
 import './ResultWindow.scss';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
@@ -10,10 +11,15 @@ const pmcr = {
     cursor: "pointer"
 }
 
-export default class ResultWindow extends Component {
+class ResultWindow extends Component {
     constructor(props){
         super(props);
     }
+    //画面外をクリックした時の挙動
+    handleClickOutside() {
+        this.props.action(false,0,"");
+    }
+    
     render(){
         let cont = ""; //表示する文字列
         let val = this.props.value.type; //表示する種類
@@ -41,13 +47,13 @@ export default class ResultWindow extends Component {
         }
         if(this.props.value.isRWindow !== 0){
             return(
-                   <div className={this.props.value.isRWindow ? 'rWindow rWinodow_effect no-select' : 'rWindow rWinodow_effect_de no-select'} onClick={() => this.props.action(false,0,"")}>
+                   <div className={this.props.value.isRWindow ? 'rWindow rWinodow_effect no-select' : 'rWindow rWinodow_effect_de no-select'} >
                         <div className="flex-jus-between rwindowInner">
                             <div className="cont flex">
                                 {icon}
                                 {cont}
                             </div>
-                            <div className="close">
+                            <div className="close" onClick={() => this.props.action(false,0,"")}>
                                 <FontAwesomeIcon icon={faTimes} style={pmcr}/>
                             </div>
                         </div>
@@ -62,3 +68,4 @@ export default class ResultWindow extends Component {
     }
     
 }
+export default onClickOutside(ResultWindow)
