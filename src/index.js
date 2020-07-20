@@ -26,6 +26,8 @@ import './Popup.scss';
 import Window from './window/window'
 import EditPage from './page/edit/editPage'
 
+import TimeContainer from './page/timeContainer'
+
 import ResultWindow from './ResultWindow'
 import Popup from './Popup'
 import SettingPage from './SettingPage'
@@ -832,7 +834,7 @@ class Body extends Component {
                 <main className="fa-mainContainer">
                     <DateBox type={"week"} action={(type,amount) => this.props.action.changeSelect(type,amount)} select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}/>
                     <div className="flex-jus-between fa-scedule">
-                        <TimeBox />
+                        <TimeContainer />
                         <WeekCalender action = {this.props.action}
                             scheduleData = {this.props.scheduleDatas}
                             element={this.props.element}

@@ -101,21 +101,26 @@ div.fa-dateline{
 .fa-class-time{
     position:relative;
     width:100%;
-    height:125px;
-    margin-bottom:10px;
-    .fab-time{
+    height:145px;
+    border-bottom:1px solid #f0f0f0;
+    .fab-time-bottom{
         position:absolute;
-        bottom:-10px;
+        bottom:5px;
         right:5px;
         font-size:0.8em;
         color:#aaa;
     }
-}
-//スケジュール休み時間部分
-.fa-BT-scedule{
-    height:10px;
-    width:100%;
-    margin-bottom:10px;
+    .fab-time-top{
+        position:absolute;
+        top:5px;
+        right:5px;
+        font-size:0.8em;
+        color:#aaa;
+    }
+    .scheduleHour{
+        font-size:1em;
+        color:#aaa;
+    }
 }
 //スケジュール授業時間部分
 .fa-class-sceduleContainer{

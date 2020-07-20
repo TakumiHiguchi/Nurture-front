@@ -542,13 +542,13 @@ div.cd {
 }
 .popup_toggle_effect{
     animation-name:leftToright01;
-    animation-duration:1s;
+    animation-duration:0.5s;
     animation-fill-mode: forwards;
     transform: scale(1);
 }
 .popup_toggle_effect_de{
     animation-name:leftTorightBack02;
-    animation-duration:1s;
+    animation-duration:0.5s;
     animation-fill-mode: forwards;
     pointer-events: none;
     transform: scale(0);
