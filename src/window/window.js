@@ -7,7 +7,7 @@ import XYScheduleWindow from './xyScheduleWindow'
 export default function Window (props){
     return (
             <>
-                <XYWindow value={props.value.xyWindow} action={props.action.xyWindow} scheduleDatas={props.scheduleDatas}/>
+                <XYWindow value={props.value.xyWindow} action={props.action.xyWindow} scheduleDatas={props.scheduleDatas} apiFunction={props.apiFunction}/>
                 <XYTaskWindow value={props.value.xyTaskWindow} action={props.action} apiFunction={props.apiFunction}/>
                 <MoreTaskWindow value={props.value.moreTaskWindow} action={{showMoreTaskWindow:props.action.moreTaskWindow,xyTaskWindow:props.action.xyTaskWindow}}/>
                 <XYScheduleWindow value={props.value.xyScheduleWindow} action={props.action.xyScheduleWindow} apiFunction={props.apiFunction}/>

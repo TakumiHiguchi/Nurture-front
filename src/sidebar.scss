@@ -1,5 +1,5 @@
 .fa-sideContainer{
-    width:287px;
+    width:237px;
     height:100%;
 }
 .buttonBox{
@@ -20,9 +20,9 @@
 //サイドバー曜日
 .timetable{
     align-items:flex-start;
-    width:100%;
-    height:calc(100% - 130px);
-    padding:5px 0 20px 0;
+    width:calc(100% - 20px);
+    height:calc(100% - 95px);
+    padding:25px 0px 20px 20px;
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -61,10 +61,6 @@
     }
 }
 
-.side-more{
-    height:54px;
-    width:calc(100% - 20px);
-    padding-left:20px;
-    border-top:1px solid #f0f0f0;
-    font-size:0.9em;
+.side-taskListWrap{
+    padding:10px 0;
 }

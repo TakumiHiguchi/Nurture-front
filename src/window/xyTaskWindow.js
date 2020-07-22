@@ -44,9 +44,9 @@ class xyTaskWindow extends Component{
         let d_id = 0;
         let dataHash = {};
         let cont = ""
-        if(value.showData[value.dataPosition] != void 0){
-            d_id = value.showData[value.dataPosition].id;
-            dataHash = value.showData[value.dataPosition];
+        if(value.showData != void 0){
+            d_id = value.showData.id;
+            dataHash = value.showData;
             dataHash.complete = !dataHash.complete;
         }
         if(dataHash.complete){
@@ -62,9 +62,9 @@ class xyTaskWindow extends Component{
         let d_id = 0;
         let dataHash = {};
         let cont = ""
-        if(value.showData[value.dataPosition] != void 0){
-            d_id = value.showData[value.dataPosition].id;
-            dataHash = value.showData[value.dataPosition];
+        if(value.showData != void 0){
+            d_id = value.showData.id;
+            dataHash = value.showData;
             dataHash.complete = !dataHash.complete;
         }
         if(dataHash.complete){
@@ -108,12 +108,12 @@ class xyTaskWindow extends Component{
         let d_id = 0;
         let apiDis = false;
         let editShowData = {}
-        if(value.showData[value.dataPosition] != void 0){
-            d_id = value.showData[value.dataPosition].id;
-            apiDis = value.showData[value.dataPosition].label == "試験"
+        if(value.showData != void 0){
+            d_id = value.showData.id;
+            apiDis = value.showData.label == "試験"
             
             //editの新しい配列生成
-            let insV = value.showData[value.dataPosition];
+            let insV = value.showData;
             editShowData = {id: insV.id, complete: insV.complete, title:insV.title, content:insV.content, date:insV.date, position: insV.position};
         }
         const taskAPIfunction_delete = () => this.props.apiFunction.task_destroy(d_id);
@@ -143,25 +143,25 @@ class xyTaskWindow extends Component{
                                 <div className="plus flex-jus-center"><FontAwesomeIcon icon={faPlus} style={pmcr}/></div>
                             </div>
                         </div>
-                        {value.showData[value.dataPosition] != void 0 &&
+                        {value.showData != void 0 &&
                             <div className="flex windowTasktitle">
-                                <div className="labelBox" style={apiDis ? labRed : labBlue}>{value.showData[value.dataPosition].label}</div>
-                                {value.showData[value.dataPosition].complete ?
-                                    <div className="title"><s>{value.showData[value.dataPosition].title}</s>（完了済み）</div>
+                                <div className="labelBox" style={apiDis ? labRed : labBlue}>{value.showData.label}</div>
+                                {value.showData.complete ?
+                                    <div className="title"><s>{value.showData.title}</s>（完了済み）</div>
                                     :
-                                    <div className="title">{value.showData[value.dataPosition].title}</div>
+                                    <div className="title">{value.showData.title}</div>
                                 }
                             </div>
                         }
                         <div className="xyWindowTaskInner">
-                            {value.showData[value.dataPosition] != void 0 &&
+                            {value.showData != void 0 &&
                                 <div className="mainCont" dangerouslySetInnerHTML={{
-                                  __html: value.showData[value.dataPosition].content
+                                  __html: value.showData.content
                                 }}></div>
                             }
                         </div>
                         <div className="taskWindow_complete">
-                            {value.showData[value.dataPosition] != void 0 && value.showData[value.dataPosition].complete ?
+                            {value.showData != void 0 && value.showData.complete ?
                                     <div onClick={apiDis ? () => this.examAPIfunction_update() : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
                                         未完了にする
                                     </div>

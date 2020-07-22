@@ -130,6 +130,72 @@
                 font-size:1.2em;
                 padding:20px 0 0;
             }
+            .newsContainer{
+                width:100%;
+                height:475px;
+                padding:20px 0 0 0;
+                //background:red;
+                .newsContainer_head{
+                    width:calc(100% - 20px);
+                    padding:0 10px;
+                    border-bottom:1px solid #e8e8e8;
+                    div{
+                        padding:6px 12px;
+                        border-radius:5px;
+                        margin-bottom:3px;
+                        cursor:pointer;
+                        &:hover{
+                            background:#f8f8f8;
+                        }
+                    }
+                    .active{
+                        background:#f8f8f8;
+                    }
+                }
+                .newsContainer_body{
+                    height:calc(100% - 40px);
+                    width:calc(100% - 20px);
+                    padding:0 10px;
+                    .newsIneer{
+                        border-bottom:1px dashed #e8e8e8;
+                        padding:10px 0;
+                        text-decoration: none;
+                        cursor:pointer;
+                        &:hover .newsTitle h3{
+                            text-decoration: underline;
+                        }
+                        .dateCircle{
+                            width:75px;
+                            height:75px;
+                            margin-right:20px;
+                            border:1px dashed #aaa;
+                            border-radius:50%;
+                            font-size:0.6em;
+                            .dateCircleInner{
+                                text-align:center;
+                                div{
+                                    color:#aaa;
+                                }
+                            }
+                        }
+                        .newsTitle{
+                            width:calc(100% - 95px);
+                            h3{
+                                font-size:1.1em;
+                            }
+                            a{
+                                color:#aaa;
+                                font-size:0.9em;
+                                padding:5px 0 0 0;
+                                text-decoration: none;
+                                &:hover{
+                                    text-decoration: underline;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     .pceWhir{
@@ -320,7 +386,6 @@ input.adSheduleInput{
 .manual-schedule-sleB{
     width:calc(100% - 60px);
     padding:10px 30px;
-    margin:0 0 20px 0;
     .swal2-select{
         width:150px;
         margin:0 10px;

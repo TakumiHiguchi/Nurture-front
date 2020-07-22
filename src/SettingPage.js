@@ -10,7 +10,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";//矢印アイ�
 
 import { GoogleLogout,GoogleLogin } from 'react-google-login'; //googleログインのログアウト
 
-import DDMsettingGrade from './DDMsettingGrade'
+import DDMsettingGrade from './dropdownMenu/DDMsettingGrade'
 
 
 const FASiconsstyle = {

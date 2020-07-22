@@ -164,6 +164,9 @@
     position: relative;
     font-weight:bold;
     padding:5px 0 5px calc(1.3em + 5px);
+    s{
+        color:#aaa;
+    }
     &:before{
         position: absolute;
         top:50%;
@@ -184,6 +187,9 @@
     position: relative;
     font-weight:bold;
     padding:5px 0 5px calc(1.3em + 5px);
+    s{
+        color:#aaa;
+    }
     &:before{
         position: absolute;
         top:50%;

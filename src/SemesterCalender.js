@@ -46,7 +46,7 @@ export default class SemesterCalender extends Component {
         const fOf = [];
         for (let i = 0; i < firstYoubi - 1; i++) {
             fOf.push(
-                     <div className="semestar-month-dataBox">
+                     <div className="semestar-month-dataBox" key={i+"fofContainer"}>
                           <div className="semestar-month-date flex-jus-center">
                           </div>
                           <div className="semestar-month-dateBody">
@@ -175,9 +175,9 @@ export default class SemesterCalender extends Component {
                     
                     
                     insMainCon.push(
-                                    <div className={ i % 2 == 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"} onClick={bool5 && ((e) => this.props.action.showWindow(true,e.pageX,e.pageY,year,i,ix+1+aFirstDay[i-1],semesterNom,task,exam,changeSchedule,csBefore)) } key={i + "/" + ix+1+aFirstDay[i-1], + "semesdb"}>
+                                    <div className={ i % 2 == 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"} onClick={bool5 ? (e) => this.props.action.showWindow(true,e.pageX,e.pageY,year,i,ix+1+aFirstDay[i-1],semesterNom,task,exam,changeSchedule,csBefore) : undefined} key={i + "/" + ix+1+aFirstDay[i-1] + "semesdb"}>
                                          <div className="semestar-month-date flex-jus-center">
-                                            <div className={(!bool1 && !bool2) && "dateStyles"}>{ix+1 + aFirstDay[i-1]}</div>
+                                            <div className={(!bool1 && !bool2) ? "dateStyles" : undefined}>{ix+1 + aFirstDay[i-1]}</div>
                                          </div>
                                          <div className="semestar-month-dateBody">
                                              {bool1 ?
@@ -288,9 +288,9 @@ export default class SemesterCalender extends Component {
                     }
                     
                     insSubCon.push(
-                                   <div className={ i % 2 != 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"} onClick={bool5 && ((e) => this.props.action.showWindow(e.pageX,e.pageY,year,i+1,ix+1,semesterNom,task,exam,changeSchedule,csBefore)) } key={i+1 + "/" + ix+1, + "semesdb"}>
+                                   <div className={ i % 2 != 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"} onClick={bool5 ? (e) => this.props.action.showWindow(e.pageX,e.pageY,year,i+1,ix+1,semesterNom,task,exam,changeSchedule,csBefore) : undefined} key={i+1 + "/" + ix+1 + "sub-semesdb"}>
                                         <div className="semestar-month-date flex-jus-center">
-                                            <div className={(!bool1 && !bool2) && "dateStyles"}>{ix+1}</div>
+                                   <div className={(!bool1 && !bool2) ? "dateStyles" : undefined}>{ix+1}</div>
                                         </div>
                                         <div className="semestar-month-dateBody">
                                            {bool1 ?
@@ -330,7 +330,7 @@ export default class SemesterCalender extends Component {
                                    )
                 }
                 consSemes.push(
-                                <div className="flex fr-mix">
+                                <div className="flex fr-mix" key={i*(k+1)+"calContainer"}>
                                     <div className="showMonth flex-jus-center">{i}月</div>
                                     <div className="showdate flex">
                                         {i != 1 ? null : fOf}
@@ -341,7 +341,7 @@ export default class SemesterCalender extends Component {
               )
             }
             itemsFir.push(
-                          <div className="semestarCalenderBox">
+                          <div className="semestarCalenderBox" key={"No."+k+"mainContainer"}>
                             {consSemes}
                           </div>
                           )

@@ -183,14 +183,13 @@ export default class Popup extends Component {
                    )
         }else if(this.props.type == 3){
             return(
-                   <Login user={this.props.user} isPopup={this.props.status} action={{sec: (type) => this.sec(type) ,userSignin: (user,sns) => this.props.action.userSignin(user,sns) ,logout: () => this.props.action.logout()}}/>
+                   <Login user={this.props.user} isPopup={this.props.status} action={{sec: (type) => this.sec(type) ,userSignin: (user,sns) => this.props.action.userSignin(user,sns) ,logout: () => this.props.action.logout()}} news={this.props.news}/>
                    
                    )
         }else if(this.props.type == 4){
             return(
                    <PopupClassRegester isPopup={this.props.status}
-                                       action={{popupshow: () => this.props.action.popupshow(),
-                                               popupshowMnual: () => this.props.action.popupshowMnual(),
+                                       action={{popupshow: (val) => this.props.action.PopupToggle(val),
                                                addregesterId:(cd, array) => this.props.action.addregesterId(cd, array),
                                                regester: () => this.props.action.regester(),
                                                getSchedule: (val,position) => this.props.action.getSchedule(val,position)
@@ -211,6 +210,9 @@ class UserDetail extends Component {
         }
     }
     render(){
+        if(this.props.news[0]){
+            console.log(this.props.news);
+        }
         return(
                <div className={this.props.isPopup ? 'popup popup_toggle_effect' : 'popup popup_toggle_effect_de'} >
                     <div className="popup_wrap" onClick={() => this.props.action(1) }></div>
@@ -272,7 +274,27 @@ class UserDetail extends Component {
                         </div>
                        <div class="newsBox">
                            <h2 className="flex-jus-center">{this.props.user.mes}</h2>
-                           
+                           <div className="newsContainer">
+                               <div className="newsContainer_head flex">
+                                   <div>日本大学</div>
+                                   <div>N:urture</div>
+                               </div>
+                               <div className="newsContainer_body scroll-y">
+                                   {this.props.news.map((data) =>
+                                    <a href={data.link} className="newsIneer flex">
+                                            <div className="dateCircle flex-jus-center">
+                                                <div className="dateCircleInner">
+                                                    <div>{data.date}</div>
+                                                </div>
+                                            </div>
+                                            <div className="newsTitle">
+                                                <h3>{data.title}</h3>
+                                                <a href={data.base_link}>{data.base_title}</a>
+                                            </div>
+                                    </a>
+                                   )}
+                               </div>
+                           </div>
                        </div>
                     </div>
                 </div>
@@ -285,7 +307,7 @@ class UserDetail extends Component {
 const Login = (props) => {
     if(props.user.session.length > 0){
         return(
-               <UserDetail isPopup={props.isPopup} action={() => props.action.sec(0)} user={props.user} logout={() => props.action.logout()}/>
+               <UserDetail isPopup={props.isPopup} action={() => props.action.sec(0)} user={props.user} logout={() => props.action.logout()} news={props.news}/>
                
         )
     }else{
@@ -447,7 +469,7 @@ class PopupClassRegester extends Component{
         const {APIresult, regesterIds, regesterElements} = this.props.sceduleDatas;
         return(
                <div className={this.props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
-               <div className="popup_wrap" onClick={() => this.props.action.popupshow() }></div>
+               <div className="popup_wrap" onClick={() => this.props.action.popupshow("regester") }></div>
                     <div className="whir no-select">
                         <h2 className="add_scedule">授業の追加</h2>
                         <input type="text" placeholder="授業名や科目番号で検索" className="removeCss searchInput adSheduleInput"
@@ -497,7 +519,7 @@ class PopupClassRegester extends Component{
                             </div>
                             <div className="submitBox flex-jus-center">
                                                                                       
-                            <div className="btn-submit-sub fa-scedule-submit" onClick={() => this.props.action.popupshowMnual()}>手動で授業を追加</div>
+                            <div className="btn-submit-sub fa-scedule-submit" onClick={() => this.props.action.popupshow("manual")}>手動で授業を追加</div>
                             <div className="btn-submit fa-scedule-submit" onClick={() => this.props.action.regester()}>選択した授業を追加</div>
                             </div>
                         </div>

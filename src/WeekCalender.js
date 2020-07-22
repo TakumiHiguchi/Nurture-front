@@ -139,7 +139,7 @@ const WeekLine = (props) => {
            <div className="fa-sceduleLine">
               {props.daySchedule.map((data,index) =>
                 <div className="flex-jus-center fa-class-sceduleContainer" key={"ds" + data +index }>
-                    <div className="fa-class-scedule" onClick={data === 0 && tCount[index] <= 0 && eCount[index] <= 0 && csArray[index] === void 0 ? () => props.action.popupshow() : null}>
+                    <div className="fa-class-scedule">
                         {data !== 0 ?
                             <>
                             {csArray[index] !== void 0 ?
@@ -179,7 +179,7 @@ const WeekLine = (props) => {
                                 {examData[index].map((eData,i) =>
                                         <>
                                             {(i < (4 - sCount[index]))&&
-                                            <div className="weekExamBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,examData[index],i)) }>
+                                            <div className="weekExamBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,examData[index][i])) }>
                                                 {eData.complete ?
                                                     <><s>{eData.title}</s>（完了済み）</>
                                                 :
@@ -196,7 +196,7 @@ const WeekLine = (props) => {
                                 {taskData[index].map((tData,i) =>
                                         <>
                                             {(i < (4 - sCount[index] - eCount[index]))&&
-                                                <div className="weekTaskBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,taskData[index],i))}>
+                                                <div className="weekTaskBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,taskData[index][i]))}>
                                                     {tData.complete ?
                                                         <><s>{tData.title}</s>（完了済み）</>
                                                     :

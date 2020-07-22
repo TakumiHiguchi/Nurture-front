@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import onClickOutside from 'react-onclickoutside'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes,faPlus,faTrashAlt,faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faLine,faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 import './xyWindow.scss'
-export default class xyWindow extends Component{
+class xyWindow extends Component{
     constructor(props){
         super(props);
         this.state={
@@ -17,7 +19,7 @@ export default class xyWindow extends Component{
             }
         }
     }
-    xyWindowClose(){
+    handleClickOutside() {
         this.props.action(false,0,0,0,0,0,0,{},{},{},{});
         //詳細表示のフラグを初期化
         this.setState({page:-1,taskOpenFlag:-1,examOpenFlag:-1});
@@ -54,6 +56,43 @@ export default class xyWindow extends Component{
             height: height
         }
         this.setState({size: wsize});
+    }
+    
+    taskAPIfunction_update(task){
+        const disString = ["完了済み","未完了"]
+        let value = this.props.value;
+        let d_id = 0;
+        let dataHash = {};
+        let cont = ""
+        if(task != void 0){
+            d_id = task.id;
+            dataHash = task;
+            dataHash.complete = !dataHash.complete;
+        }
+        if(dataHash.complete){
+            cont = disString[0];
+        }else{
+            cont = disString[1];
+        }
+        this.props.apiFunction.task_update(d_id, dataHash ,"タスクを" + cont + "にしました");
+    }
+    examAPIfunction_update(exam){
+        const disString = ["完了済み","未完了"]
+        let value = this.props.value;
+        let d_id = 0;
+        let dataHash = {};
+        let cont = ""
+        if(exam != void 0){
+            d_id = exam.id;
+            dataHash = exam;
+            dataHash.complete = !dataHash.complete;
+        }
+        if(dataHash.complete){
+            cont = disString[0];
+        }else{
+            cont = disString[1];
+        }
+        this.props.apiFunction.exam_update(d_id, dataHash ,"試験を" + cont + "にしました");
     }
     
     render(){
@@ -193,13 +232,15 @@ export default class xyWindow extends Component{
         
         return(
                <div className="no-select">
-                   <div className={this.props.value.window ? "xyw xyWindow" : "xyw_de xyWindow"} onClick={() => this.xyWindowClose()}>
-                   </div>
                    <div style={xyWindowMain} className={this.props.value.window ? "xyw-inner xyWindowWrap" : "xyw_de-inner xyWindowWrap"}>
                         <div className="flex-jus-between xywindowTitleBox">
                             <div className="windowDate">{value.year}年{value.month}月{value.date}日</div>
-                            <div className="windowIcons">
-                                <FontAwesomeIcon icon={faTimes} style={pmcr}/>
+                            <div className="windowIcons flex">
+                                <div className="brandIcons flex">
+                                    <div className="line flex-jus-center"><FontAwesomeIcon icon={faLine} style={lineIcon}/></div>
+                                    <div className="twitter flex-jus-center"><FontAwesomeIcon icon={faTwitter} style={twitterIcon}/></div>
+                                </div>
+                                <div className="plus flex-jus-center"><FontAwesomeIcon icon={faPlus} style={pmcr}/></div>
                             </div>
                         </div>
                         <div className="flex xypageIndex">{index}</div>
@@ -208,12 +249,25 @@ export default class xyWindow extends Component{
                                     <div className="taskListWrap">
                                         {[...Array(value.exam.length)].map((_,index) =>
                                             <div className="taskList" key={"examWindow" + index}>
-                                                <div className="elp" onClick={() => this.handleExam(index)} key={"examTitle" + index}>{value.exam[index].position + 1}限: {value.exam[index].title}</div>
+                                                <div className="elp" onClick={() => this.handleExam(index)} key={"examTitle" + index}>{value.exam[index].position + 1}限:
+                                                    {value.exam[index].complete ?
+                                                        <><s>{value.exam[index].title}</s>（完了済み）</>
+                                                    :
+                                                        <>{value.exam[index].title}</>
+                                                    }
+                                                                           
+                                                </div>
                                                 <div className={this.state.examOpenFlag === index ? "xyTaskEf xyTaskContant" : "xyTaskEf_de xyTaskContant"}>
                                                     <div className="mainCont" dangerouslySetInnerHTML={{
                                                       __html: value.exam[index].content
                                                     }}></div>
-                                                    <div className="completeBtn">完了にする</div>
+                                                    <div className="completeBtn" onClick={() => this.examAPIfunction_update(value.exam[index])}>
+                                                        {value.exam[index].complete ?
+                                                            <>未完了にする</>
+                                                        :
+                                                            <>完了にする</>
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}
@@ -223,12 +277,24 @@ export default class xyWindow extends Component{
                                     <div className="taskListWrap">
                                         {[...Array(value.task.length)].map((_,index) =>
                                             <div className="taskList" key={"taskWindow" + index}>
-                                                <div className="tlp" onClick={() => this.handleTask(index)} key={"taskTitle" + index}>{value.task[index].title}</div>
+                                                <div className="tlp" onClick={() => this.handleTask(index)} key={"taskTitle" + index}>
+                                                    {value.task[index].complete ?
+                                                        <><s>{value.task[index].title}</s>（完了済み）</>
+                                                    :
+                                                        <>{value.task[index].title}</>
+                                                    }
+                                                </div>
                                                 <div className={this.state.taskOpenFlag === index ? "xyTaskEf xyTaskContant" : "xyTaskEf_de xyTaskContant"}>
                                                     <div className="mainCont" dangerouslySetInnerHTML={{
                                                       __html: value.task[index].content
                                                     }}></div>
-                                                    <div className="completeBtn">完了にする</div>
+                                                    <div className="completeBtn" onClick={() => this.taskAPIfunction_update(value.task[index])}>
+                                                        {value.task[index].complete ?
+                                                            <>未完了にする</>
+                                                        :
+                                                            <>完了にする</>
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}
@@ -249,8 +315,29 @@ export default class xyWindow extends Component{
     }
 }
 
+const labRed = {
+    background:'#EF454A'
+}
+const labBlue = {
+    background:'#00aced'
+}
 const pmcr = {
-    fontSize:"1em",
-    color:"rgb(170, 170, 170)",
+    fontSize:"1.2em",
+    color:"rgb(170, 170, 170)"
+}
+const pmcl = {
+    fontSize:"1.1em",
+    color:"rgb(170, 170, 170)"
+}
+const twitterIcon = {
+    fontSize:"1.2em",
+    color:"#00aced",
     cursor: "pointer"
 }
+const lineIcon = {
+    fontSize:"1.2em",
+    color:"#00B900",
+    cursor: "pointer"
+}
+
+export default onClickOutside(xyWindow)

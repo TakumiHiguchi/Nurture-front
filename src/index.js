@@ -19,26 +19,29 @@ import { faCog } from "@fortawesome/free-solid-svg-icons";//設定
 //cssのインポート
 import './header.scss';
 import './mainstyle.scss';
-import './sidebar.scss';
 import './toppage.scss';
 import './Popup.scss';
 
+import Popup from './popup/popup'
 import Window from './window/window'
 import EditPage from './page/edit/editPage'
 
 import TimeContainer from './page/timeContainer'
 
 import ResultWindow from './ResultWindow'
-import Popup from './Popup'
+import Popup1 from './Popup'
 import SettingPage from './SettingPage'
 import WeekCalender from './WeekCalender'
 import MonthCalender from './MonthCalender'
 import SemesterCalender from './SemesterCalender'
 import DDMbodyChange from './DDMbodyChange'
 import DateBox from './DateBox'
+import Sidebar from './Sidebar'
 import * as serviceWorker from './serviceWorker';
 
 //APIを叩く関数のインポート
+import news_index from './API/news/index'
+
 import user_schedule_index from './API/user_schedule/index'
 import user_schedule_create from './API/user_schedule/create'
 import user_schedule_destroy from './API/user_schedule/destory'
@@ -57,8 +60,8 @@ import change_schedule_index from './API/change_schedule/index'
 import change_schedule_create from './API/change_schedule/create'
 import change_schedule_destroy from './API/change_schedule/destory'
 
-const ENDPOINT = 'http://localhost:3020'
-//const ENDPOINT = 'https://nurture-api.herokuapp.com'
+//const ENDPOINT = 'http://localhost:3020'
+const ENDPOINT = 'https://nurture-api.herokuapp.com'
 
 //css
 const pmIcons = {
@@ -99,11 +102,7 @@ const lineIcon = {
 
 
 
-const TimeBox = () => {
-    return(
-           <div className="fa-timeline"><div className="fa-BT-time"><div className="fab-time">9:00</div></div><div className="fa-class-time"><div className="fab-time">10:30</div></div><div className="fa-BT-time"><div className="fab-time">10:40</div></div><div className="fa-class-time"><div className="fab-time">12:10</div></div><div className="fa-BT-time"><div className="fab-time">13:00</div></div><div className="fa-class-time"><div className="fab-time">14:30</div></div><div className="fa-BT-time"><div className="fab-time">14:40</div></div><div className="fa-class-time"><div className="fab-time">16:10</div></div><div className="fa-BT-time"><div className="fab-time">16:20</div></div><div className="fa-class-time"><div className="fab-time">17:50</div></div><div className="fa-BT-time"><div className="fab-time">18:00</div></div><div className="fa-class-time"><div className="fab-time">19:30</div></div><div className="fa-BT-time"></div></div>
-    )
-}
+
 const Header = (props) => {
     return(
            <header className="fa-header flex-jus-between no-select">
@@ -209,10 +208,11 @@ class Nurture extends Component {
             semesterPeriod:insSP,
             task:{},
             exam:{},
+            news:[],
             change_schedules_after:{},
             change_schedules_before:{},
             xyWindow:{window:false,x:0,y:0,year:0,month:0,date:0,semesterNom:0,task:{},exam:{},changeSchedule:{},csBefore:{}},
-            xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{},dataPosition:0},
+            xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{}},
             moreTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{}},
             xyScheduleWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showSchedule:{},type:""},
             editPage:{window:false,showData:{title:''},type:""}
@@ -311,10 +311,11 @@ class Nurture extends Component {
                 }
                 
                 
-                this.user_schedule("index",0)
+                this.user_schedule("index",0);
                 this.task("index",0);
                 this.exam("index",0);
-                this.change_schedule("index",0)
+                this.change_schedule("index",0);
+                this.news("index")
                 
             })
             .catch(() => {
@@ -344,19 +345,14 @@ class Nurture extends Component {
         this.setState({popup: {login: true,setting:false}});
     }
     
-    PopupMenu() {
-        this.setState({popup: {regester: !this.state.popup.regester}});
-    }
-    PopupManual() {
-        this.setState({popup: {manual: !this.state.popup.manual}});
-    }
+
     PopupToggle(type){
         switch (type){
             case "regester": this.setState({popup: {regester: !this.state.popup.regester}});this.getScheduleData("","");break;
             case "addTask": this.setState({popup: {addTask: !this.state.popup.addTask}});break;
             case "setting": this.setState({popup: {setting: !this.state.popup.setting}});break;
             case "login": this.setState({popup: {login: !this.state.popup.login}});break;
-                
+            case "manual": this.setState({popup: {manual: !this.state.popup.manual}});break;
         }
     }
     rWindow(window_bool,type,cont){
@@ -389,14 +385,13 @@ class Nurture extends Component {
         ins.semesterNom = semesterNom;
         this.setState({xyWindow:ins})
     }
-    showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition){
+    showTaskWindow(bl,x,y,year,month,date,position,showData){
         let ins = this.state.xyTaskWindow;
         ins.window = bl;
         ins.x = x;
         ins.y = y;
         ins.position = position;
         ins.showData = showData;
-        ins.dataPosition = dataPosition;
         ins.year = year;
         ins.month = month;
         ins.date = date;
@@ -448,7 +443,6 @@ class Nurture extends Component {
     
     
     changeSelect(type,amount){
-        
         if(type == "today"){
             const now = new Date();
             this.setState({select:{year:now.getFullYear(),month:now.getMonth()+1,day:now.getDate()}});
@@ -578,7 +572,11 @@ class Nurture extends Component {
             case "index" :
                 ins = task_index(ENDPOINT, user.key, user.session);//外部関数
                 ins.then(res => {
-                    this.setState({task:res.tasks});
+                    if(res){
+                        this.setState({task:res.tasks});
+                    }else{
+                        this.rWindow(true,2,'セッション切れです');
+                    }
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -638,7 +636,11 @@ class Nurture extends Component {
             case "index" :
                 ins = exam_index(ENDPOINT, user.key, user.session);//外部関数
                 ins.then(res => {
-                    this.setState({exam:res.exams});
+                    if(res){
+                        this.setState({exam:res.exams});
+                    }else{
+                        this.rWindow(true,2,'セッション切れです');
+                    }
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -730,6 +732,27 @@ class Nurture extends Component {
                 break;
         }
     }
+
+    //newsAPIを叩く部分
+    news(type){
+        let ins;
+           
+        switch(type){
+            case "index" :
+                ins = news_index(ENDPOINT);//外部関数
+                ins.then(res => {
+                    if(res){
+                        this.setState({news:res.NUnews});
+                    }else{
+                        this.rWindow(true,2,'newsデータがありません');
+                    }
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+        }
+    }
                               
     //すべてのwindowを閉じる
     closeAllWindow(){
@@ -748,7 +771,7 @@ class Nurture extends Component {
                         scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}
                         action={{
                                 xyWindow: (bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
-                                xyTaskWindow:(bl,x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition),
+                                xyTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showTaskWindow(bl,x,y,year,month,date,position,showData),
                                 moreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
                                 xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule,type) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule,type),
                                 editPage: (bl, showData, type) => this.showEditPage(bl, showData, type)
@@ -771,21 +794,26 @@ class Nurture extends Component {
                             task_update: () => this.task("update", this.state.editPage.showData.id, this.state.editPage.showData)
                            }}
                     />
+                    <Popup status={this.state.popup}
+                        action={{PopupToggle:(mode) => this.PopupToggle(mode)}}
+                    />
                
                     <ResultWindow value={this.state.rWindow} action={(a,b,c) => this.rWindow(a,this.state.rWindow.type,this.state.rWindow.mes)}/>
                     <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">
                         
-                        <Sidebar scheduleDatas = {this.state.caDatas[this.state.user.grade - 1][0]} action = {{popupshow: () => this.PopupMenu(), popupEdit: (ce) => this.PopupCCedit(ce), PopupToggle: (ce) => this.PopupToggle(ce)}}/>
+                        <Sidebar task ={this.state.task} exam ={this.state.exam}
+                            action={{PopupToggle:(mode) => this.PopupToggle(mode),
+                                showTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showTaskWindow(bl,x,y,year,month,date,position,showData)
+                            }}/>
                         <Body pageData={this.state.page}
                             scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}
                             element={{caCount: this.state.caCount,semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
-                            action = {{popupshow: () => this.PopupMenu(),
-                                popupEdit: (ce) => this.PopupCCedit(ce),
+                            action = {{
                                 changeSelect: (type,amount) => this.changeSelect(type,amount),
                                 showWindow:(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
-                                showTaskWindow:(bl,x,y,year,month,date,position,showData,dataPosition) => this.showTaskWindow(bl,x,y,year,month,date,position,showData,dataPosition),
+                                showTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showTaskWindow(bl,x,y,year,month,date,position,showData),
                                 showMoreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
                                 xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule,type) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule,type)
                             }}
@@ -795,21 +823,17 @@ class Nurture extends Component {
                             change_schedules ={{after:this.state.change_schedules_after,before:this.state.change_schedules_before}}
                         />
                         
-                        <PopupClassManual isPopup = {this.state.popup}
-                                    action = {{
-                                            popupshow: () => this.PopupManual()
-                                            }}
-                                                                    
-                                                                                     
-                        />
                         
-                        <Popup type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.task("create",0, value), setExam: (value) => this.exam("create",0, value),setChangeSchedule:(value) => this.change_schedule("create",0, value)}} status={this.state.popup.addTask}
+                        <Popup1 type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.task("create",0, value), setExam: (value) => this.exam("create",0, value),setChangeSchedule:(value) => this.change_schedule("create",0, value)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas[this.state.user.grade - 1],semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
                                                                                      
                                                                                      />
-                        <Popup type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}/>
-                        <Popup type={4} status={this.state.popup.regester}
-                                   action = {{popupshow: () => this.PopupMenu(),popupshowMnual: () => this.PopupManual(),
+                        <Popup1 type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}
+                            news={this.state.news}
+                        />
+                        <Popup1 type={4} status={this.state.popup.regester}
+                                   action = {{
+                                              PopupToggle: (ce) => this.PopupToggle(ce),
                                               addregesterId: (cd, array) => this.RegesterId(cd, array),
                                               regester: () => this.user_schedule("create",0),
                                               getSchedule: (val,position) => this.getScheduleData(val,position)
@@ -878,39 +902,6 @@ class Body extends Component {
 
     
 
-const Sidebar = (props) => {
-    const dayString=["月","火","水","木","金","土","日"]
-    return(
-        <aside className="fa-sideContainer">
-           <div className="buttonBox" onClick={() => props.action.PopupToggle("addTask")}>
-                <div>
-                    <FontAwesomeIcon icon={faPlus} /> 予定を追加
-                </div>
-           </div>
-           <div className="timetable">
-               {props.scheduleDatas.map((d, i) =>
-                    <div className="weekdays-lap" key={"sidebar" + i}>
-                        <div className="weekdays">{dayString[i]+"曜日"}</div>
-                        {d.map((data, index) =>
-                            <div key={"sidebar"+ index + i}>
-                                {data == 0 ?
-                                    <div className="fa-schedule-side" onClick={() => props.action.popupshow() } ><div className="ss-headline">{index+1}講時</div><div className="ss-title">授業なし</div><div className="cszt">クリックして授業を追加</div></div>:
-                                    <div className="fa-schedule-side" onClick={() => props.action.popupEdit(data.position)} ><div className="ss-headline">{index+1}講時</div><div className="ss-title">{data.title}</div><div className="cszt">{data.teacher}</div></div>
-                                }
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
-           <div className="side-more flex-align-center">
-                <div>
-                    <div>TakumiHiguchi</div>
-                    <a href="https://github.com/TakumiHiguchi"><FontAwesomeIcon style={githubIcon} icon={faGithub} />github</a>
-                </div>
-           </div>
-        </aside>
-    )
-}
 
 
 

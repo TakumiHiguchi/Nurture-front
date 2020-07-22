@@ -1,0 +1,59 @@
+.dropMenuElement{
+    padding: 7px 10px 7px 10px;
+    &:hover{
+        background:#f8f8f8;
+    }
+}
+.dropMenu{
+    position: absolute;
+    top: 38px;
+    left: -40px;
+    width: 200px;
+    
+    padding:10px 0;
+    z-index: 1;
+    cursor: pointer;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 8px;
+    background-position: initial initial;
+    background-repeat: initial initial;
+}
+.dropMenuSchedule{
+    position: absolute;
+    top: 60px;
+    left: 0px;
+    max-width: 300px;
+    max-height:400px;
+    padding:10px 0;
+    z-index: 1;
+    cursor: pointer;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 8px;
+    background-position: initial initial;
+    background-repeat: initial initial;
+    
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display:none;
+    }
+}
+.dropMenuGrade{
+    position: absolute;
+    top: 50px;
+    left: 0px;
+    width: 200px;
+    padding:10px 0;
+    z-index: 1;
+    cursor: pointer;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 8px;
+    background-position: initial initial;
+    background-repeat: initial initial;
+}
+
+.DDMsemeIndex{
+    padding: 7px 10px 7px 10px;
+    color:#aaa;
+}
