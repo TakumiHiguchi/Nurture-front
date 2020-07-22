@@ -42,6 +42,9 @@ import * as serviceWorker from './serviceWorker';
 //APIを叩く関数のインポート
 import news_index from './API/news/index'
 
+import schedule_index from './API/schedule/index'
+import schedule_create from './API/schedule/create'
+
 import user_schedule_index from './API/user_schedule/index'
 import user_schedule_create from './API/user_schedule/create'
 import user_schedule_destroy from './API/user_schedule/destory'
@@ -60,8 +63,8 @@ import change_schedule_index from './API/change_schedule/index'
 import change_schedule_create from './API/change_schedule/create'
 import change_schedule_destroy from './API/change_schedule/destory'
 
-//const ENDPOINT = 'http://localhost:3020'
-const ENDPOINT = 'https://nurture-api.herokuapp.com'
+const ENDPOINT = 'http://localhost:3020'
+//const ENDPOINT = 'https://nurture-api.herokuapp.com'
 
 //css
 const pmIcons = {
@@ -219,26 +222,6 @@ class Nurture extends Component {
         }
     }
 
-
-    getScheduleData(val,position){
-        //スケジュール取得APIを叩く部分
-        let eq = "";
-        if(position > 0){
-            let eq = (position - 1).toString();
-        }else{
-            let eq = "";
-        }
-        
-        axios.get(ENDPOINT + '/api/v1/schedule?q=' + val + '&p=' + eq)
-            .then(response => {
-                var scheduleDatas = response.data.schedules
-                this.setState({schedules:scheduleDatas})
-            })
-            .catch(() => {
-                console.log('通信に失敗しました');
-            });
-    }
-
     
     setGrade(select){
         this.rWindow(true,0,"");
@@ -348,7 +331,7 @@ class Nurture extends Component {
 
     PopupToggle(type){
         switch (type){
-            case "regester": this.setState({popup: {regester: !this.state.popup.regester}});this.getScheduleData("","");break;
+            case "regester": this.setState({popup: {regester: !this.state.popup.regester}});this.schedule("index","");break;
             case "addTask": this.setState({popup: {addTask: !this.state.popup.addTask}});break;
             case "setting": this.setState({popup: {setting: !this.state.popup.setting}});break;
             case "login": this.setState({popup: {login: !this.state.popup.login}});break;
@@ -506,6 +489,37 @@ class Nurture extends Component {
         insDate[position - 1] = date;
         this.setState({semesterPeriod:insDate});
         this.setSemesterDate(insDate[position - 1][0],insDate[position - 1][1],insDate[position - 1][2],insDate[position - 1][3],position)
+    }
+    //ユーザーのスケジュールAPIを叩く部分
+    schedule(type, ...args){
+        const user = this.state.user;
+        let ins;
+                
+        if(type == "create" || type == "update")this.rWindow(true,0,"");
+
+        switch(type){
+            case "index" :
+                ins = schedule_index(ENDPOINT, args[0]);//外部関数
+                ins.then(res => {
+                    this.setState({schedules:res.schedules});
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "create" :
+                ins = schedule_create(ENDPOINT, user.key, user.session, args[0], user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //スケジュールを再読み込み
+                    this.user_schedule("index",0);
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                this.PopupToggle("manual")
+                break;
+        }
     }
                                
     //ユーザーのスケジュールAPIを叩く部分
@@ -796,6 +810,9 @@ class Nurture extends Component {
                     />
                     <Popup status={this.state.popup}
                         action={{PopupToggle:(mode) => this.PopupToggle(mode)}}
+                        apiFunction={{
+                            schedule_create: (schedule) => this.schedule("create",schedule)
+                        }}
                     />
                
                     <ResultWindow value={this.state.rWindow} action={(a,b,c) => this.rWindow(a,this.state.rWindow.type,this.state.rWindow.mes)}/>
@@ -836,7 +853,7 @@ class Nurture extends Component {
                                               PopupToggle: (ce) => this.PopupToggle(ce),
                                               addregesterId: (cd, array) => this.RegesterId(cd, array),
                                               regester: () => this.user_schedule("create",0),
-                                              getSchedule: (val,position) => this.getScheduleData(val,position)
+                                              getSchedule: (val,position) => this.schedule("index",val,position)
                                             }}
                                    sceduleDatas = {{APIresult: this.state.schedules, regesterIds: this.state.regesterIds, regesterElements: this.state.regesterElements}}/>
                     </div>

@@ -25,7 +25,9 @@ class ResultWindow extends Component {
         let val = this.props.value.type; //表示する種類
         let icon = []
         switch(val){
-            case 0: cont = "保存しています...";
+            case 0: 
+            cont = "保存しています...";
+            if(this.props.value.mes != "")cont = this.props.value.mes;
                         icon.push(<div class="sk-fading-circle" key={"top"}>
                                       <div class="sk-circle1 sk-circle"></div>
                                       <div class="sk-circle2 sk-circle"></div>

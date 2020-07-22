@@ -7,6 +7,7 @@ export default function popup (props){
                 <ScheduleManual 
                     isPopup={props.status.manual}
                     action={props.action}
+                    apiFunction={props.apiFunction}
                 />
             </>
             );

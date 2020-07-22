@@ -157,7 +157,7 @@ export default class Popup extends Component {
             case "examTitle" : ins.examTitle = e;break;
             case "changeScheduleBeforeDate" : ins.changeScheduleBeforeDate = e;break;
             case "changeScheduleAfterDate" : ins.changeScheduleAfterDate = e;break;
-            case "selectSchedule" : ins.selectSchedule = e;console.log(e);break;
+            case "selectSchedule" : ins.selectSchedule = e;break;
         }
         this.setState({value:ins});
     }
@@ -210,9 +210,6 @@ class UserDetail extends Component {
         }
     }
     render(){
-        if(this.props.news[0]){
-            console.log(this.props.news);
-        }
         return(
                <div className={this.props.isPopup ? 'popup popup_toggle_effect' : 'popup popup_toggle_effect_de'} >
                     <div className="popup_wrap" onClick={() => this.props.action(1) }></div>

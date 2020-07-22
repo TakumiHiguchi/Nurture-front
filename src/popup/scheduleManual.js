@@ -26,7 +26,7 @@ export default class ScheduleManual extends Component{
     constructor(props){
         super(props);
         this.state={
-            schedule:{title:"", teacher:"", number:"", position:1, grade:1, semester:"", day:""}
+            schedule:{title:"", teacher:"", number:"", status:"", position:1, grade:1, semester:"", day:""}
         }
     }
     handleOnChange(index,val){
@@ -35,12 +35,29 @@ export default class ScheduleManual extends Component{
             case "title" : ins.title = val.target.value;break;
             case "teacher" : ins.teacher = val.target.value;break;
             case "number" : ins.number = val.target.value;break;
+            case "status" : ins.status = val.target.value;break;
             case "position" : ins.position = val;break;
             case "grade" : ins.grade = val;break;
             case "semester" : ins.semester = val;break;
             case "day" : ins.day = val;break;
         }
         this.setState({schedule:ins});
+    }
+
+    register(){
+        let ins = this.state.schedule;
+        const dayInt = {"月曜日":0, "火曜日":1, "水曜日":2, "木曜日":3, "金曜日":4, "土曜日":5, "日曜日":6}
+        const insSchedule={
+            title: ins.title,
+            number:ins.number,
+            teacher:ins.teacher,
+            position:(ins.position - 1) + dayInt[ins.day]*6,
+            grade:ins.grade,
+            semester:ins.semester,
+            status:ins.status
+        }
+        this.props.apiFunction.schedule_create(insSchedule);
+        this.props.action.PopupToggle("manual");
     }
 
     render(){
@@ -52,6 +69,7 @@ export default class ScheduleManual extends Component{
                     <input type="text" onChange={e => this.handleOnChange("title",e)} value={this.state.schedule.title} placeholder="授業名を入力（必須）" className="removeCss formInput adSheduleInput"/>
                     <input type="text" onChange={e => this.handleOnChange("teacher",e)} value={this.state.schedule.teacher} placeholder="教師名を入力（必須）" className="removeCss formInput adSheduleInput"/>
                     <input type="text" onChange={e => this.handleOnChange("number",e)} value={this.state.schedule.number} placeholder="科目番号を入力" className="removeCss formInput adSheduleInput"/>
+                    <input type="text" onChange={e => this.handleOnChange("status",e)} value={this.state.schedule.status} placeholder="必修等を入力" className="removeCss formInput adSheduleInput"/>
                     <div className="manual-schedule-sleB flex-align-center"><div style={{paddingRight:"20px"}}>開講学年を選択</div><DDMsettingGrade element={this.state.schedule.grade} action={(val) => this.handleOnChange("grade",val)} key={"SMpop1DDM1"}/></div>
                     
                     <div className="manual-schedule-sleB">
@@ -63,7 +81,7 @@ export default class ScheduleManual extends Component{
                     <div className="infBox">
                         <div className="submitBox flex-jus-center">
                             <div className="btn-submit-sub fa-scedule-submit" onClick={() => this.props.action.PopupToggle("manual")}>キャンセル</div>
-                            <div className="btn-submit fa-scedule-submit">授業を追加</div>
+                            <div className="btn-submit fa-scedule-submit" onClick={() => this.register()}>授業を追加</div>
                         </div>
                     </div>
                 </div>
