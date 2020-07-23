@@ -40,6 +40,8 @@ import Sidebar from './Sidebar'
 import * as serviceWorker from './serviceWorker';
 
 //APIを叩く関数のインポート
+import calendar_index from './API/calendar/index'
+
 import news_index from './API/news/index'
 
 import schedule_index from './API/schedule/index'
@@ -218,11 +220,41 @@ class Nurture extends Component {
             xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{}},
             moreTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{}},
             xyScheduleWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showSchedule:{},type:""},
-            editPage:{window:false,showData:{title:''},type:""}
+            editPage:{window:false,showData:{title:''},type:""},
+            calendar:[],
+            selectCalendarNumber:[]
         }
     }
 
+    //newsAPIを叩く部分
+    calendar(type){
+        const user = this.state.user;
+        let ins;
+           
+        switch(type){
+            case "index" :
+                ins = calendar_index(ENDPOINT, user.key, user.session);//外部関数
+                ins.then(res => {
+                    if(res){
+                        this.setState({calendar:res})
+                    }else{
+                        this.rWindow(true,2,'newsデータがありません');
+                    }
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            
+        }
+    }
     
+    /*
+
+    ここまで修正済み
+
+
+    */
     setGrade(select){
         this.rWindow(true,0,"");
         //学年を設定する
@@ -282,7 +314,10 @@ class Nurture extends Component {
                                     created_at:user.data.created_at
                 }});
                 
+                this.calendar("index");
+                this.news("index")
                 //学期期間の取得部分
+                /*
                 let insDate = this.state.semesterPeriod;
                 
                 for(var i = 0;i < response.data.semesterPeriod.length;i++){
@@ -298,8 +333,8 @@ class Nurture extends Component {
                 this.task("index",0);
                 this.exam("index",0);
                 this.change_schedule("index",0);
-                this.news("index")
                 
+                */
             })
             .catch(() => {
                 console.log('通信に失敗しました');
