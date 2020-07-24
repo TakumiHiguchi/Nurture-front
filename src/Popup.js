@@ -121,7 +121,7 @@ export default class Popup extends Component {
     }
     setTask(){
         let value = this.state.value
-        this.props.action.setTask(value);
+        this.props.action.setTask(value,1);
         this.props.action.PopupToggle("addTask");
         
         //初期化

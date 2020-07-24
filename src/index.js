@@ -296,6 +296,70 @@ class Nurture extends Component {
             this.rWindow(true,2,'通信に失敗しました');
         });
     }
+
+    //タスクAPIを叩く部分
+    task(type, id, cal_id, ...args){
+        const user = this.state.user;
+        let ins;
+                
+        if(type == "destory" || type == "create" || type == "update")this.rWindow(true,0,"");
+        
+        switch(type){
+            case "index" :
+                ins = task_index(ENDPOINT, user.key, user.session);//外部関数
+                ins.then(res => {
+                    if(res){
+                        this.setState({task:res.tasks});
+                    }else{
+                        this.rWindow(true,2,'セッション切れです');
+                    }
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "create" :
+                ins = task_create(ENDPOINT, user.key, user.session, args[0], user.grade, cal_id);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //タスクを再読み込み
+                    //this.task("index",0);
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                this.PopupToggle("addTask")
+                break;
+            case "update" :
+                ins = task_update(ENDPOINT, user.key, user.session, id, args[0], user.grade);//外部関数
+                ins.then(res => {
+                    if(args[1] === void 0){
+                        this.rWindow(true,res.status,res.mes);
+                    }else{
+                        this.rWindow(true,res.status,args[1]);
+                    }
+                    //タスクを再読み込み
+                    this.task("index",0);
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "destory" :
+                ins = task_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //タスクを再読み込み
+                    this.task("index",0);
+                    //ウィンドウを全て閉じる
+                    this.closeAllWindow()
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+        }
+    }
     
     /*
 
@@ -615,69 +679,7 @@ class Nurture extends Component {
         }
     }
     
-    //タスクAPIを叩く部分
-    task(type, id, ...args){
-        const user = this.state.user;
-        let ins;
-                
-        if(type == "destory" || type == "create" || type == "update")this.rWindow(true,0,"");
-        
-        switch(type){
-            case "index" :
-                ins = task_index(ENDPOINT, user.key, user.session);//外部関数
-                ins.then(res => {
-                    if(res){
-                        this.setState({task:res.tasks});
-                    }else{
-                        this.rWindow(true,2,'セッション切れです');
-                    }
-                })
-                .catch(() => {
-                    this.rWindow(true,2,'通信に失敗しました');
-                });
-                break;
-            case "create" :
-                ins = task_create(ENDPOINT, user.key, user.session, args[0], user.grade);//外部関数
-                ins.then(res => {
-                    this.rWindow(true,res.status,res.mes);
-                    //タスクを再読み込み
-                    this.task("index",0);
-                })
-                .catch(() => {
-                    this.rWindow(true,2,'通信に失敗しました');
-                });
-                this.PopupToggle("addTask")
-                break;
-            case "update" :
-                ins = task_update(ENDPOINT, user.key, user.session, id, args[0], user.grade);//外部関数
-                ins.then(res => {
-                    if(args[1] === void 0){
-                        this.rWindow(true,res.status,res.mes);
-                    }else{
-                        this.rWindow(true,res.status,args[1]);
-                    }
-                    //タスクを再読み込み
-                    this.task("index",0);
-                })
-                .catch(() => {
-                    this.rWindow(true,2,'通信に失敗しました');
-                });
-                break;
-            case "destory" :
-                ins = task_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
-                ins.then(res => {
-                    this.rWindow(true,res.status,res.mes);
-                    //タスクを再読み込み
-                    this.task("index",0);
-                    //ウィンドウを全て閉じる
-                    this.closeAllWindow()
-                })
-                .catch(() => {
-                    this.rWindow(true,2,'通信に失敗しました');
-                });
-                break;
-        }
-    }
+    
                               
     //試験APIを叩く部分
     exam(type,id, ...args){
@@ -884,7 +886,7 @@ class Nurture extends Component {
                         />
                         
                         
-                        <Popup1 type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value) => this.task("create",0, value), setExam: (value) => this.exam("create",0, value),setChangeSchedule:(value) => this.change_schedule("create",0, value)}} status={this.state.popup.addTask}
+                        <Popup1 type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value, cal_id) => this.task("create",0, cal_id, value), setExam: (value) => this.exam("create",0, value),setChangeSchedule:(value) => this.change_schedule("create",0, value)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas[this.state.user.grade - 1],semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
                                                                                      
                                                                                      />
