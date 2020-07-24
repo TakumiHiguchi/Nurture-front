@@ -30,7 +30,7 @@ import TimeContainer from './page/timeContainer'
 
 import ResultWindow from './ResultWindow'
 import Popup1 from './Popup'
-import SettingPage from './SettingPage'
+import SettingPage from './page/setting/SettingPage'
 import WeekCalender from './WeekCalender'
 import MonthCalender from './MonthCalender'
 import SemesterCalender from './SemesterCalender'
@@ -236,7 +236,7 @@ class Nurture extends Component {
                 ins = calendar_index(ENDPOINT, user.key, user.session);//外部関数
                 ins.then(res => {
                     if(res){
-                        this.setState({calendar:res})
+                        this.setState({calendar:res.calendars})
                     }else{
                         this.rWindow(true,2,'newsデータがありません');
                     }
@@ -248,13 +248,8 @@ class Nurture extends Component {
             
         }
     }
-    
-    /*
 
-    ここまで修正済み
-
-
-    */
+    //学年を保存するAPIを叩く部分
     setGrade(select){
         this.rWindow(true,0,"");
         //学年を設定する
@@ -274,11 +269,18 @@ class Nurture extends Component {
             this.rWindow(true,2,'通信に失敗しました');
         });
     }
-    
-    setSemesterDate(date1,date2,date3,date4,grade){
+
+    //学期期間の登録関数
+    regesSemesterDate(cal, date, position){
+        let insDate = cal.semesterPeriod
+        insDate[position - 1] = date;
+        this.setSemesterDate(cal.id, insDate[position - 1].fhSemester1, insDate[position - 1].fhSemester2, insDate[position - 1].lateSemester1, insDate[position - 1].lateSemester2, position)
+    }
+    setSemesterDate(calId, date1, date2, date3, date4, grade){
         this.rWindow(true,0,"");
         //学年ごとの期間を設定する
         axios.post(ENDPOINT + '/api/v1/setSemesterDate', {
+            calendarId:calId,
             date1:date1,
             date2:date2,
             date3:date3,
@@ -294,6 +296,15 @@ class Nurture extends Component {
             this.rWindow(true,2,'通信に失敗しました');
         });
     }
+    
+    /*
+
+    ここまで修正済み
+
+
+    */
+    
+    
     
     userSignin(user,sns){
         //ユーザーのログイン等処理APIを叩く部分
@@ -518,13 +529,7 @@ class Nurture extends Component {
         }
     }
                               
-    regesSemesterDate(date,position){
-        //学期期間の登録関数
-        let insDate = this.state.semesterPeriod;
-        insDate[position - 1] = date;
-        this.setState({semesterPeriod:insDate});
-        this.setSemesterDate(insDate[position - 1][0],insDate[position - 1][1],insDate[position - 1][2],insDate[position - 1][3],position)
-    }
+    
     //ユーザーのスケジュールAPIを叩く部分
     schedule(type, ...args){
         const user = this.state.user;
@@ -851,7 +856,10 @@ class Nurture extends Component {
                     />
                
                     <ResultWindow value={this.state.rWindow} action={(a,b,c) => this.rWindow(a,this.state.rWindow.type,this.state.rWindow.mes)}/>
-                    <SettingPage regesSemesterDate = {(date,position) => this.regesSemesterDate(date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}/>
+                    <SettingPage 
+                        regesSemesterDate = {(cal,date,position) => this.regesSemesterDate(cal,date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}
+                        calendar = {this.state.calendar}
+                    />
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">
                         

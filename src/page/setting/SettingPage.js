@@ -1,0 +1,71 @@
+import React, { Component,useState } from 'react';
+
+import './setting.scss';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";//矢印アイコン
+
+import Sidebar from './SettingSidebar'
+import Body from './SettingBody'
+
+
+const FASiconsstyle = {
+    arrowLeft:{
+        fontSize:"1em"
+    },
+    clock :{
+        fontSize:"1.1em",
+        margin:"0 5 0 0"
+    },
+    clock_lp :{
+        fontSize:"1.1em",
+        margin:"0 15 0 0"
+    }
+}
+
+export default class SettingPage extends Component {
+    constructor(props){
+        super(props);
+        this.state={
+            page: 1,
+            calPage:1,
+        }
+    }
+    
+    changePage(index,page){
+        switch(index){
+            case "page" :
+                this.setState({page:page});break;
+            case "cal" :
+                this.setState({calPage:page});break;
+            
+        }
+        
+    }
+    
+    render(){
+        
+        return(
+               <div className={this.props.status ? 'popup popup_effect' : 'popup popup_effect_de'} >
+                <div className="settingWhir no-select">
+                    <h2 className="setting_h2 flex-align-center" >
+                        <div className="backButtonBlock flex-jus-center" onClick={() => this.props.action.PopupToggle("setting") }>
+                            <FontAwesomeIcon icon={faArrowLeft} style={FASiconsstyle.arrowLeft} />
+                        </div>
+                        設定
+                    </h2>
+                    <div className="flex">
+                        <Sidebar action={(index,page) => this.changePage(index,page)} page={this.state} calendar={this.props.calendar}/>
+                        <Body element={{user:this.props.element.user,semesterDate: this.props.element.semesterDate,page:this.state.page}}
+                            action={{setGrade: (select) => this.props.action.setGrade(select),
+                                    logout:() => this.props.action.logout()
+                                    }}
+                            regesSemesterDate = {(cal,date,position) => this.props.regesSemesterDate(cal,date,position)}
+                            calendar={this.props.calendar}
+                            page={this.state}
+                        />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}

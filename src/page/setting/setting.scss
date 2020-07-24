@@ -167,3 +167,44 @@ section.settingBody{
 h2.alp{
    margin-bottom:20px;
 }
+
+
+//サイドバー
+.calListBox_open{
+    overflow:hidden;
+    animation-name:topTobottom1;
+    animation-duration:0.3s;
+    animation-fill-mode: forwards;
+}
+.calListBox_close{
+    overflow:hidden;
+    animation-name:bottomTotop;
+    animation-duration:0.3s;
+    animation-fill-mode: forwards;
+}
+@keyframes topTobottom1 {
+    0% {
+        max-height:0px;
+    }
+    100%{
+        max-height:300px;
+    }
+}
+@keyframes bottomTotop {
+    0% {
+        max-height:300px;
+    }
+    100%{
+        max-height:0px;
+    }
+}
+
+.sidebarCalendarBox{
+    cursor:pointer;
+    border-radius:0 10000px 10000px 0;
+    -webkit-transition: background-color 100ms linear;
+    transition: background-color 100ms linear;
+    &:hover{
+        background:#f8f8f8;
+    }
+}
