@@ -3,9 +3,9 @@ import axios from 'axios';
 
 import user_schedule_index from './index'
 
-export default async function create(endpoint, key, session, regesterElements, grade){
+export default async function create(endpoint, key, session, regesterElements, grade, cal_id){
     const result = await Promise.all(regesterElements.map(async (data) =>{
-        const res = await api(endpoint, key, session, data,grade);
+        const res = await api(endpoint, key, session, data,grade, cal_id);
         return res;
     }));
     let count = result.filter((element) => { return element === false; }).length;
@@ -18,13 +18,14 @@ export default async function create(endpoint, key, session, regesterElements, g
     return r1
 }
 
-async function api(endpoint, key, session, regesterElements, grade){
+async function api(endpoint, key, session, regesterElements, grade, cal_id){
     try{
         const response = await axios.post(endpoint + '/api/v1/setUserSchedule', {
             title: regesterElements.title,
             teacher: regesterElements.teacher,
             semester: regesterElements.semester,
             position: regesterElements.position,
+            calendarId: cal_id,
             grade: regesterElements.grade,
             key: key,
             session: session,

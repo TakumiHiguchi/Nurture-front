@@ -132,7 +132,7 @@ export default class Popup extends Component {
     
     setExam(){
         let value = this.state.value
-        this.props.action.setExam(value);
+        this.props.action.setExam(value, value.calendarArray.id);
         this.props.action.PopupToggle("addTask");
         
         this.setState({value:value});
@@ -193,7 +193,7 @@ export default class Popup extends Component {
                    <PopupClassRegester isPopup={this.props.status}
                                        action={{popupshow: (val) => this.props.action.PopupToggle(val),
                                                addregesterId:(cd, array) => this.props.action.addregesterId(cd, array),
-                                               regester: () => this.props.action.regester(),
+                                               regester: (cal_id) => this.props.action.regester(cal_id),
                                                getSchedule: (val,position) => this.props.action.getSchedule(val,position)
                                                }}
                                        sceduleDatas = {{APIresult: this.props.sceduleDatas.APIresult, regesterIds: this.props.sceduleDatas.regesterIds, regesterElements: this.props.sceduleDatas.regesterElements}}/>
@@ -524,7 +524,7 @@ class PopupClassRegester extends Component{
                             <div className="submitBox flex-jus-center">
                                                                                       
                             <div className="btn-submit-sub fa-scedule-submit" onClick={() => this.props.action.popupshow("manual")}>手動で授業を追加</div>
-                            <div className="btn-submit fa-scedule-submit" onClick={() => this.props.action.regester()}>選択した授業を追加</div>
+                            <div className="btn-submit fa-scedule-submit" onClick={() => this.props.action.regester(1)}>選択した授業を追加</div>
                             </div>
                         </div>
                     </div>
