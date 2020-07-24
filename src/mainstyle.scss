@@ -85,3 +85,12 @@ input.formInput{
         display:none;
     }
 }
+.scroll-x{
+    white-space: nowrap;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display:none;
+    }
+}

@@ -222,33 +222,22 @@ class Nurture extends Component {
             xyScheduleWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showSchedule:{},type:""},
             editPage:{window:false,showData:{title:''},type:""},
             calendar:[],
-            selectCalendarNumber:[]
+            selectCalendarNumber:[0]
         }
     }
-
-    //newsAPIを叩く部分
-    calendar(type){
-        const user = this.state.user;
-        let ins;
-           
-        switch(type){
-            case "index" :
-                ins = calendar_index(ENDPOINT, user.key, user.session);//外部関数
-                ins.then(res => {
-                    if(res){
-                        this.setState({calendar:res.calendars})
-                    }else{
-                        this.rWindow(true,2,'newsデータがありません');
-                    }
-                })
-                .catch(() => {
-                    this.rWindow(true,2,'通信に失敗しました');
-                });
-                break;
-            
+    //カレンダーの選択を変更
+    changeSelectCalendar(index){
+        const ins = this.state.selectCalendarNumber;
+        let newArray = [];
+        if(ins.indexOf(index) === -1){
+            ins.push(index);
+            newArray = ins;
+        }else{
+            newArray = ins.filter(n => n !== index);
         }
-    }
+        this.setState({selectCalendarNumber:newArray});
 
+    }
     //学年を保存するAPIを叩く部分
     setGrade(select){
         this.rWindow(true,0,"");
@@ -297,6 +286,29 @@ class Nurture extends Component {
         });
     }
 
+    //カレンダーAPIを叩く部分
+    calendar(type){
+        const user = this.state.user;
+        let ins;
+           
+        switch(type){
+            case "index" :
+                ins = calendar_index(ENDPOINT, user.key, user.session);//外部関数
+                ins.then(res => {
+                    if(res){
+                        this.setState({calendar:res.calendars})
+                    }else{
+                        this.rWindow(true,2,'カレンダーデータがありません');
+                    }
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            
+        }
+    }
+
     //タスクAPIを叩く部分
     task(type, id, cal_id, ...args){
         const user = this.state.user;
@@ -306,6 +318,7 @@ class Nurture extends Component {
         
         switch(type){
             case "index" :
+                //未対応
                 ins = task_index(ENDPOINT, user.key, user.session);//外部関数
                 ins.then(res => {
                     if(res){
@@ -323,7 +336,7 @@ class Nurture extends Component {
                 ins.then(res => {
                     this.rWindow(true,res.status,res.mes);
                     //タスクを再読み込み
-                    //this.task("index",0);
+                    this.calendar("index");
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -339,18 +352,18 @@ class Nurture extends Component {
                         this.rWindow(true,res.status,args[1]);
                     }
                     //タスクを再読み込み
-                    this.task("index",0);
+                    this.calendar("index");
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
                 });
                 break;
             case "destory" :
-                ins = task_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins = task_destroy(ENDPOINT, user.key, user.session, id, user.grade, cal_id);//外部関数
                 ins.then(res => {
                     this.rWindow(true,res.status,res.mes);
                     //タスクを再読み込み
-                    this.task("index",0);
+                    this.calendar("index");
                     //ウィンドウを全て閉じる
                     this.closeAllWindow()
                 })
@@ -834,8 +847,8 @@ class Nurture extends Component {
                                 }}
                         apiFunction={{
                                     user_schedule_destory: (id) => this.user_schedule("destory",id),
-                                    task_destroy: (id) => this.task("destory",id),
-                                    task_update: (id, value, mes) => this.task("update",id, value, mes),
+                                    task_destroy: (id,cal_id) => this.task("destory",id,cal_id),
+                                    task_update: (id, value, mes) => this.task("update",id, 0, value, mes),
                                     exam_destroy: (id) => this.exam("destory",id),
                                     exam_update: (id, value, mes) => this.exam("update",id, value, mes),
                                     change_schedule_destroy: (id) => this.change_schedule("destory",id),
@@ -847,7 +860,7 @@ class Nurture extends Component {
                         handleOnChange={(index,e) => this.editHandleOnChange(index,e)}
                         apiFunction={{
                             exam_update: () => this.exam("update", this.state.editPage.showData.id, this.state.editPage.showData),
-                            task_update: () => this.task("update", this.state.editPage.showData.id, this.state.editPage.showData)
+                            task_update: () => this.task("update", this.state.editPage.showData.id, 0, this.state.editPage.showData)
                            }}
                     />
                     <Popup status={this.state.popup}
@@ -865,7 +878,8 @@ class Nurture extends Component {
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">
                         
-                        <Sidebar task ={this.state.task} exam ={this.state.exam}
+                        <Sidebar calendar={this.state.calendar} selectCalendarNumber={this.state.selectCalendarNumber} exam={this.state.exam}
+                            changeSelectCalendar={(index) => this.changeSelectCalendar(index)}
                             action={{PopupToggle:(mode) => this.PopupToggle(mode),
                                 showTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showTaskWindow(bl,x,y,year,month,date,position,showData)
                             }}/>
@@ -883,13 +897,15 @@ class Nurture extends Component {
                             task ={this.state.task}
                             exam ={this.state.exam}
                             change_schedules ={{after:this.state.change_schedules_after,before:this.state.change_schedules_before}}
+                            calendar={this.state.calendar}
+                            selectCalendarNumber={this.state.selectCalendarNumber}
                         />
                         
                         
                         <Popup1 type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value, cal_id) => this.task("create",0, cal_id, value), setExam: (value) => this.exam("create",0, value),setChangeSchedule:(value) => this.change_schedule("create",0, value)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas[this.state.user.grade - 1],semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
-                                                                                     
-                                                                                     />
+                                        calendar={this.state.calendar}                                                            
+                        />
                         <Popup1 type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}
                             news={this.state.news}
                         />
@@ -927,6 +943,8 @@ class Body extends Component {
                             select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}
                             task={this.props.task} exam={this.props.exam} change_schedules={this.props.change_schedules}
                             change_schedules = {this.props.change_schedules}
+                            calendar={this.props.calendar}
+                            selectCalendarNumber={this.props.selectCalendarNumber}
                         />
                     </div>
                 </main>

@@ -9,7 +9,7 @@ export default async function update(endpoint, key, session, id, task, grade){
 
 async function api(endpoint, key, session, id, task, grade){
     try{
-        const response = await axios.patch(endpoint + '/api/v1/task?key=' + key + '&session=' + session +'&task_id=' + id +'&title=' + task.title +'&content=' + task.content +'&taskdate=' + task.date +'&position=' + task.position +'&complete=' + task.complete);
+        const response = await axios.patch(endpoint + '/api/v1/task?calendarId=' + task.calendarId + '&key=' + key + '&session=' + session +'&task_id=' + id +'&title=' + task.title +'&content=' + task.content +'&taskdate=' + task.date +'&position=' + task.position +'&complete=' + task.complete);
         
         if(response.data.status == "SUCCESS"){
             return {status:1,mes:response.data.mes};

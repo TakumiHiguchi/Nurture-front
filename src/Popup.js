@@ -19,8 +19,8 @@ import { faUsers } from "@fortawesome/free-solid-svg-icons";//ユーザー
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";//リンク
 import { faSignOutAlt,faBook } from "@fortawesome/free-solid-svg-icons";//サインアウト
 
-
 import DDMschedule from './DDMschedule'
+import DDMcalendar from './dropdownMenu/DDMcalendar'
 import DDMposition from './DDMposition'
 import GoogleAuthentication from './GoogleAuthentication'
 import DDMsearchPosition from './DDMsearchPosition'
@@ -102,7 +102,7 @@ export default class Popup extends Component {
         this.state={
             taskPpage:0,
             selectDate: new Date(),
-            value:{taskTitle:"",taskCont:"",taskDate:d,position:1,examTitle:"",examCont:"",examDate:d,selectSchedule:{},changeScheduleBeforeDate:"",changeScheduleAfterDate:""}
+            value:{calendarArray:{id:0, name:"クリックしてカレンダーを選択"},taskTitle:"",taskCont:"",taskDate:d,position:1,examTitle:"",examCont:"",examDate:d,selectSchedule:{},changeScheduleBeforeDate:"",changeScheduleAfterDate:""}
         }
     }
     changePage(no){
@@ -121,7 +121,7 @@ export default class Popup extends Component {
     }
     setTask(){
         let value = this.state.value
-        this.props.action.setTask(value,1);
+        this.props.action.setTask(value, value.calendarArray.id);
         this.props.action.PopupToggle("addTask");
         
         //初期化
@@ -158,6 +158,7 @@ export default class Popup extends Component {
             case "changeScheduleBeforeDate" : ins.changeScheduleBeforeDate = e;break;
             case "changeScheduleAfterDate" : ins.changeScheduleAfterDate = e;break;
             case "selectSchedule" : ins.selectSchedule = e;break;
+            case "calendar" : ins.calendarArray = {id:e.id, name:e.name};break;
         }
         this.setState({value:ins});
     }
@@ -174,6 +175,7 @@ export default class Popup extends Component {
                             datas={this.props.datas}
                             value={this.state.value}
                             selectSchedule={this.state.value.selectSchedule}
+                            calendar={this.props.calendar}
                             />
                    
                    )
@@ -346,8 +348,13 @@ const AddTask = (props) => {
                     </div>
                     <div className="pcePopup-item adTaskbody">
                         <input type="text" placeholder="タスク名を入力（必須）" className="removeCss formInput task-input" onChange={e => props.handleOnChange("taskTitle",e)} value={props.value.taskTitle}/>
-                        <div><FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender action={(date) => props.handleOnChange("taskDate",date)} key={"dscal0"}/></div>
-                        <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)} key={"page1DDM"}/>
+                        <div>
+                            <FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender action={(date) => props.handleOnChange("taskDate",date)} key={"dscal0"}/></div>
+                            <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)} key={"page1DDM"}/>
+                        </div>
+                        <div>
+                            <FontAwesomeIcon icon={faCalendarAlt} style={clock} />
+                            <DDMcalendar element={props.value.calendarArray.name} data={props.calendar} action={(val) => props.handleOnChange("calendar",val)} key={"page1DDMcalendar"}/>
                         </div>
                     </div>
                     
