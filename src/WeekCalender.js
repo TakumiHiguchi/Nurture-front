@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { faCommentsDollar } from '@fortawesome/free-solid-svg-icons';
 
 export default class WeekCalender extends Component{
     constructor(props){
@@ -51,8 +52,11 @@ export default class WeekCalender extends Component{
                             task={this.props.task} exam={this.props.exam} change_schedules={this.props.change_schedules}
                             date={{year:selectYear,month:selectMonth,day:startDay+index}}
                             change_schedules = {this.props.change_schedules}
+
                             calendar={this.props.calendar}
                             selectCalendarNumber={this.props.selectCalendarNumber}
+                            user = {this.props.user}
+                            index = {index}
                        />
                        
                    )}
@@ -66,10 +70,21 @@ const WeekLine = (props) => {
     let day = props.date.day;
     const selectCalendarNumber = props.selectCalendarNumber;
     const calendar = props.calendar;
-    let taskData = [[],[],[],[],[],[]]
+    let taskData = [[],[],[],[],[],[]];
+    let examData = [[],[],[],[],[],[]];
+    let ScheduleData = [0,0,0,0,0,0];
     let tCount = new Array(6).fill(0);
     let eCount = new Array(6).fill(0);
     let sCount = new Array(6).fill(0);
+
+    const parDate = (target) =>{
+        var dateSeme = target.split('/');
+        let stDate = new Date();
+        if(dateSeme.length == 3){
+            stDate = new Date(dateSeme[0],dateSeme[1] - 1,dateSeme[2]);
+        }
+        return stDate
+    }
     
     //カレンダーの選択個数分ループしてタスクを成形する
     if(calendar.length > 0){
@@ -91,29 +106,108 @@ const WeekLine = (props) => {
             }
         }
     }
-    
+    //カレンダーの選択個数分ループしてexamを成形する
+    if(calendar.length > 0){
+        for(var i = 0; i < selectCalendarNumber.length; i++){
+            let count = 0;
+            //日付のexamを取り出す処理
+            let exams = calendar[selectCalendarNumber[i]].exams;
+            let insexam = [];
+            if(exams[year] !== void 0 && exams[year][mon] !== void 0){
+                if(exams[year][mon][day] !== void 0){
+                    count = exams[year][mon][day].length;
+                    insexam = exams[year][mon][day] ;
+                }
+            }
+            //exam成形
+            for(let iv=0;iv<count;iv++){
+                eCount[parseInt(insexam[iv].position)]++;
+                examData[parseInt(insexam[iv].position)].push(insexam[iv]);
+            }
+        }
+    }
+    //カレンダーの選択個数分ループしてスケジュールを成形する
+    if(calendar.length > 0){
+        for(var i = 0; i < selectCalendarNumber.length; i++){
+            let count = 0;
+            //schedule取り出す処理
+            let schedules = calendar[selectCalendarNumber[i]].schedules;
+            let semesterPeriod = calendar[selectCalendarNumber[i]].semesterPeriod[props.user.grade - 1];
+            let insSchedules = [];
+            const bl1 = parDate(semesterPeriod.fhSemester1) <= parDate(year + "/" + mon + "/" + day);
+            const bl2 = parDate(semesterPeriod.fhSemester2) >= parDate(year + "/" + mon + "/" + day);
+            const bl3 = parDate(semesterPeriod.lateSemester1) <= parDate(year + "/" + mon + "/" + day);
+            const bl4 = parDate(semesterPeriod.lateSemester2) >= parDate(year + "/" + mon + "/" + day);
+
+            if(schedules[props.user.grade] !== void 0){
+                insSchedules = schedules[props.user.grade - 1];
+                if(bl1 && bl2){
+                    for(var ix = 0; ix < 6; ix++){
+                        if(ScheduleData[ix] === 0){
+                            ScheduleData[ix] = insSchedules[0][props.index][ix];
+                        }
+                    }
+                }else if(bl3 && bl4){
+                    for(var ix = 0; ix < 6; ix++){
+                        if(ScheduleData[ix] === 0){
+                            ScheduleData[ix] = insSchedules[1][props.index][ix];
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     
     
        return(
             <div className="fa-sceduleLine">
-                {props.daySchedule.map((data,index) =>
+                {ScheduleData.map((data,index) =>
                     <div className="flex-jus-center fa-class-sceduleContainer" key={"ds" + data +index }>
                         <div className="fa-class-scedule">
+                            {data !== 0 ?
+                                <>
+                                    <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data , "nomal")}>
+                                        <div className="title">{data.title}</div>
+                                        <div className="classroom">107教室</div>
+                                    </div>
+                                </>
+                            :
+                                <>
+                                    
+                                </>
+                            }
+                            {eCount[index] > 0 &&
+                                <div className="taskListWrap">
+                                    {examData[index].map((eData,i) =>
+                                        <>
+                                            {(i < (4 - sCount[index] - eCount[index]))&&
+                                                <div className="weekExamBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,examData[index][i]))}>
+                                                    {eData.complete ?
+                                                        <><s>{eData.title}</s>（完了済み）</>
+                                                    :
+                                                        <>{eData.title}</>
+                                                    }
+                                                </div>
+                                            }
+                                        </>
+                                    )}
+                                </div>
+                            }
                             {tCount[index] > 0 &&
                                 <div className="taskListWrap">
                                     {taskData[index].map((tData,i) =>
-                                            <>
-                                                {(i < (4 - sCount[index] - eCount[index]))&&
-                                                    <div className="weekTaskBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,taskData[index][i]))}>
-                                                        {tData.complete ?
-                                                            <><s>{tData.title}</s>（完了済み）</>
-                                                        :
-                                                            <>{tData.title}</>
-                                                        }
-                                                    </div>
-                                                }
-                                            </>
+                                        <>
+                                            {(i < (4 - sCount[index] - eCount[index]))&&
+                                                <div className="weekTaskBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,taskData[index][i]))}>
+                                                    {tData.complete ?
+                                                        <><s>{tData.title}</s>（完了済み）</>
+                                                    :
+                                                        <>{tData.title}</>
+                                                    }
+                                                </div>
+                                            }
+                                        </>
                                     )}
                                 </div>
                             }

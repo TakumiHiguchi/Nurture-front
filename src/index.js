@@ -297,8 +297,9 @@ class Nurture extends Component {
                 ins.then(res => {
                     if(res){
                         this.setState({calendar:res.calendars})
+                        console.log(this.state.calendar)
                     }else{
-                        this.rWindow(true,2,'カレンダーデータがありません');
+                        this.rWindow(true,2,'セッション切れです');
                     }
                 })
                 .catch(() => {
@@ -397,7 +398,7 @@ class Nurture extends Component {
                 ins.then(res => {
                     this.rWindow(true,res.status,res.mes);
                     //スケジュールを再読み込み
-                    this.user_schedule("index",0);
+                    this.calendar("index");
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -434,7 +435,7 @@ class Nurture extends Component {
                         regesterElements: []
                     });
                     //スケジュールを再読み込み
-                    //this.calendar("index");
+                    this.calendar("index");
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -446,11 +447,11 @@ class Nurture extends Component {
                 this.PopupToggle("regester")
                 break;
             case "destory" :
-                ins = user_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins = user_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade, cal_id);//外部関数
                 ins.then(res => {
                     this.rWindow(true,res.status,res.mes);
                     //スケジュールを再読み込み
-                    this.user_schedule("index",0);
+                    this.calendar("index");
                     //ウィンドウを全て閉じる
                     this.closeAllWindow()
                 })
@@ -461,22 +462,14 @@ class Nurture extends Component {
         }
     }
     
-    
-    /*
-
-    ここまで修正済み
-
-
-    */
-    //試験APIを叩く部分
     exam(type, id, cal_id, ...args){
         const user = this.state.user;
         let ins;
-                
         if(type == "destory" || type == "create" || type == "update")this.rWindow(true,0,"");
         
         switch(type){
             case "index" :
+                //未対応
                 ins = exam_index(ENDPOINT, user.key, user.session);//外部関数
                 ins.then(res => {
                     if(res){
@@ -510,18 +503,18 @@ class Nurture extends Component {
                         this.rWindow(true,res.status,args[1]);
                     }
                     //試験を再読み込み
-                    this.exam("index",0);
+                    this.calendar("index");
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
                 });
                 break;
             case "destory" :
-                ins = exam_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins = exam_destroy(ENDPOINT, user.key, user.session, id, user.grade, cal_id);//外部関数
                 ins.then(res => {
                     this.rWindow(true,res.status,res.mes);
                     //試験を再読み込み
-                    this.exam("index",0);
+                    this.calendar("index");
                     //ウィンドウを全て閉じる
                     this.closeAllWindow()
                 })
@@ -531,6 +524,60 @@ class Nurture extends Component {
                 break;
         }
     }
+    //授業変更APIを叩く部分
+    change_schedule(type,id, ...args){
+        const user = this.state.user;
+        let ins;
+                
+        if(type == "destory" || type == "create" || type == "update")this.rWindow(true,0,"");
+        
+        switch(type){
+            case "index" :
+                //未対応
+                ins = change_schedule_index(ENDPOINT, user.key, user.session);//外部関数
+                ins.then(res => {
+                    this.setState({change_schedules_after:res.change_schedules_after,change_schedules_before:res.change_schedules_before})
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "create" :
+                ins = change_schedule_create(ENDPOINT, user.key, user.session, args[0], user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //スケジュールを再読み込み
+                    //this.calendar("index");
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                this.PopupToggle("addTask")
+                break;
+            case "destory" :
+                ins = change_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //スケジュールを再読み込み
+                    this.change_schedule("index",0);
+                    //ウィンドウを全て閉じる
+                    this.closeAllWindow()
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+        }
+    }
+
+    /*
+
+    ここまで修正済み
+
+
+    */
+    //試験APIを叩く部分
+    
     
     
     userSignin(user,sns){
@@ -554,6 +601,7 @@ class Nurture extends Component {
                 
                 this.calendar("index");
                 this.news("index")
+                
                 //学期期間の取得部分
                 /*
                 let insDate = this.state.semesterPeriod;
@@ -760,50 +808,7 @@ class Nurture extends Component {
     
                               
     
-    //授業変更APIを叩く部分
-    change_schedule(type,id, ...args){
-        const user = this.state.user;
-        let ins;
-                
-        if(type == "destory" || type == "create" || type == "update")this.rWindow(true,0,"");
-        
-        switch(type){
-            case "index" :
-                ins = change_schedule_index(ENDPOINT, user.key, user.session);//外部関数
-                ins.then(res => {
-                    this.setState({change_schedules_after:res.change_schedules_after,change_schedules_before:res.change_schedules_before})
-                })
-                .catch(() => {
-                    this.rWindow(true,2,'通信に失敗しました');
-                });
-                break;
-            case "create" :
-                ins = change_schedule_create(ENDPOINT, user.key, user.session, args[0], user.grade);//外部関数
-                ins.then(res => {
-                    this.rWindow(true,res.status,res.mes);
-                    //スケジュールを再読み込み
-                    this.change_schedule("index",0);
-                })
-                .catch(() => {
-                    this.rWindow(true,2,'通信に失敗しました');
-                });
-                this.PopupToggle("addTask")
-                break;
-            case "destory" :
-                ins = change_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
-                ins.then(res => {
-                    this.rWindow(true,res.status,res.mes);
-                    //スケジュールを再読み込み
-                    this.change_schedule("index",0);
-                    //ウィンドウを全て閉じる
-                    this.closeAllWindow()
-                })
-                .catch(() => {
-                    this.rWindow(true,2,'通信に失敗しました');
-                });
-                break;
-        }
-    }
+    
 
     //newsAPIを叩く部分
     news(type){
@@ -849,11 +854,11 @@ class Nurture extends Component {
                                 editPage: (bl, showData, type) => this.showEditPage(bl, showData, type)
                                 }}
                         apiFunction={{
-                                    user_schedule_destory: (id) => this.user_schedule("destory",id),
+                                    user_schedule_destory: (id,cal_id) => this.user_schedule("destory", id, cal_id),
                                     task_destroy: (id,cal_id) => this.task("destory",id,cal_id),
                                     task_update: (id, value, mes) => this.task("update",id, 0, value, mes),
-                                    exam_destroy: (id) => this.exam("destory",id),
-                                    exam_update: (id, value, mes) => this.exam("update",id, value, mes),
+                                    exam_destroy: (id,cal_id) => this.exam("destory",id, cal_id),
+                                    exam_update: (id, value, mes) => this.exam("update",id, 0, value, mes),
                                     change_schedule_destroy: (id) => this.change_schedule("destory",id),
                                     }}
                     />
@@ -862,12 +867,20 @@ class Nurture extends Component {
                         status={this.state.editPage}
                         handleOnChange={(index,e) => this.editHandleOnChange(index,e)}
                         apiFunction={{
-                            exam_update: () => this.exam("update", this.state.editPage.showData.id, this.state.editPage.showData),
+                            exam_update: () => this.exam("update", this.state.editPage.showData.id, 0, this.state.editPage.showData),
                             task_update: () => this.task("update", this.state.editPage.showData.id, 0, this.state.editPage.showData)
                            }}
                     />
-                    <Popup status={this.state.popup}
-                        action={{PopupToggle:(mode) => this.PopupToggle(mode)}}
+                    <Popup 
+                        status={this.state.popup}
+                        calendar={this.state.calendar}
+                        sceduleDatas = {{APIresult: this.state.schedules, regesterIds: this.state.regesterIds, regesterElements: this.state.regesterElements}}
+                        action={{
+                            PopupToggle:(mode) => this.PopupToggle(mode),
+                            addregesterId: (cd, array) => this.RegesterId(cd, array),
+                            regester: (cal_id) => this.user_schedule("create",0,cal_id),
+                            getSchedule: (val,position) => this.schedule("index",val,position)
+                        }}
                         apiFunction={{
                             schedule_create: (schedule) => this.schedule("create",schedule)
                         }}
@@ -902,24 +915,19 @@ class Nurture extends Component {
                             change_schedules ={{after:this.state.change_schedules_after,before:this.state.change_schedules_before}}
                             calendar={this.state.calendar}
                             selectCalendarNumber={this.state.selectCalendarNumber}
+                            user = {this.state.user}
                         />
                         
                         
                         <Popup1 type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value, cal_id) => this.task("create",0, cal_id, value), setExam: (value, cal_id) => this.exam("create",0, cal_id, value),setChangeSchedule:(value) => this.change_schedule("create",0, value)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas[this.state.user.grade - 1],semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
-                                        calendar={this.state.calendar}                                                            
+                                        calendar={this.state.calendar}
+                                        user = {this.state.user}                                                   
                         />
                         <Popup1 type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}
                             news={this.state.news}
                         />
-                        <Popup1 type={4} status={this.state.popup.regester}
-                                   action = {{
-                                              PopupToggle: (ce) => this.PopupToggle(ce),
-                                              addregesterId: (cd, array) => this.RegesterId(cd, array),
-                                              regester: (cal_id) => this.user_schedule("create",0,cal_id),
-                                              getSchedule: (val,position) => this.schedule("index",val,position)
-                                            }}
-                                   sceduleDatas = {{APIresult: this.state.schedules, regesterIds: this.state.regesterIds, regesterElements: this.state.regesterElements}}/>
+                        
                     </div>
                </div>
                                                                                      
@@ -941,13 +949,12 @@ class Body extends Component {
                     <div className="flex-jus-between fa-scedule">
                         <TimeContainer />
                         <WeekCalender action = {this.props.action}
-                            scheduleData = {this.props.scheduleDatas}
                             element={this.props.element}
                             select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}}
-                            task={this.props.task} exam={this.props.exam} change_schedules={this.props.change_schedules}
-                            change_schedules = {this.props.change_schedules}
+
                             calendar={this.props.calendar}
                             selectCalendarNumber={this.props.selectCalendarNumber}
+                            user = {this.props.user}
                         />
                     </div>
                 </main>

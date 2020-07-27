@@ -111,13 +111,12 @@ class xyTaskWindow extends Component{
         if(value.showData != void 0){
             d_id = value.showData.id;
             apiDis = value.showData.label == "試験"
-            
             //editの新しい配列生成
             let insV = value.showData;
             editShowData = {calendarId: insV.calendarId, id: insV.id, complete: insV.complete, title:insV.title, content:insV.content, date:insV.date, position: insV.position};
         }
         const taskAPIfunction_delete = () => this.props.apiFunction.task_destroy(d_id, value.showData.calendarId);
-        const examAPIfunction_delete = () => this.props.apiFunction.exam_destroy(d_id);
+        const examAPIfunction_delete = () => this.props.apiFunction.exam_destroy(d_id, value.showData.calendarId);
         
         let lab="";
         if(apiDis){

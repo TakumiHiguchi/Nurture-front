@@ -22,21 +22,28 @@
     position: absolute;
     top: 60px;
     left: 0px;
-    max-width: 300px;
+    width:300px;
     max-height:400px;
-    padding:10px 0;
+    padding:0 10px 10px 10px;
     z-index: 1;
     cursor: pointer;
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 8px;
     background-position: initial initial;
     background-repeat: initial initial;
-    
-    overflow-y: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-        display:none;
+    .index{
+        font-size:0.8em;
+        padding:10px 0 5px 0;
+        margin-bottom:5px;
+        color:#aaa;
+        border-bottom:1px solid #f0f0f0;
+    }
+    .element{
+        padding: 7px 10px 7px 10px;
+        border-radius:10px;
+        &:hover{
+            background:#f8f8f8;
+        }
     }
 }
 .dropMenuGrade{
@@ -57,3 +64,15 @@
     padding: 7px 10px 7px 10px;
     color:#aaa;
 }
+
+.ddmButton{
+    cursor:pointer;
+    color:#aaa;
+    padding:5px 10px;
+    border-radius:10px;
+    &:hover{
+        background:#f8f8f8;
+    }
+}
+
+//スケジュールドロップダウン

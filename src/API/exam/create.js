@@ -2,16 +2,17 @@ import React from 'react';
 import axios from 'axios';
 
 
-export default async function create(endpoint, key, session, exam, grade){
-    const r1 = await api(endpoint, key, session, exam, grade);
+export default async function create(endpoint, key, session, exam, grade, cal_id){
+    const r1 = await api(endpoint, key, session, exam, grade, cal_id);
     return r1
 }
 
-async function api(endpoint, key, session, exam, grade){
+async function api(endpoint, key, session, exam, grade, cal_id){
     try{
         const response = await axios.post(endpoint + '/api/v1/exam', {
             key: key,
             session: session,
+            calendarId: cal_id,
             title: exam.examTitle,
             content:exam.examCont,
             examdate:exam.examDate,

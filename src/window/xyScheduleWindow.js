@@ -97,9 +97,9 @@ class xyScheduleWindow extends Component{
                                     <div className="twitter flex-jus-center"><FontAwesomeIcon icon={faTwitter} style={twitterIcon}/></div>
                                     <div className="twitter flex-jus-center"
                                         onClick={changeBl1 ?
-                                                () => this.props.apiFunction.change_schedule_destroy(value.showSchedule.id)
+                                                () => this.props.apiFunction.change_schedule_destroy(value.showSchedule.scheduleId)
                                                 :
-                                                () => this.props.apiFunction.user_schedule_destory(value.showSchedule.id)
+                                                () => this.props.apiFunction.user_schedule_destory(value.showSchedule.scheduleId, value.showSchedule.calendarId)
                                                 }
                                     >
                                         <FontAwesomeIcon icon={faTrashAlt} style={pmcl}/>

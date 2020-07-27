@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import onClickOutside from 'react-onclickoutside'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";//下矢印
-import './dropdown.scss'
+import './dropdownMenu/dropdown.scss'
 
 const pmArrow = {
     fontSize:"1em",

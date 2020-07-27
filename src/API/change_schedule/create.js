@@ -13,7 +13,8 @@ async function api(endpoint, key, session, change, grade){
         const response = await axios.post(endpoint + '/api/v1/change_schedule', {
             key:key,
             session: session,
-            selectSchedule_id: change.selectSchedule.id,
+            calendarId:change.calendarArray.id,
+            selectSchedule_id: change.selectSchedule.scheduleId,
             beforeDate:change.changeScheduleBeforeDate,
             afterDate:change.changeScheduleAfterDate,
             position:change.position - 1

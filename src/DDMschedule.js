@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import onClickOutside from 'react-onclickoutside'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";//下矢印
-
-import './dropdown.scss'
+import './dropdownMenu/dropdown.scss'
 
 const pmArrow = {
     fontSize:"1em",
@@ -12,99 +11,83 @@ const pmArrow = {
     margin:"0 0 0 10px"
 }
 
-class DDMscheduleSelect extends Component{
-    constructor(props) {
-       super(props)
-       this.state = {
-         listOpen: false,
-            nLp:this.props.fLabel
-       }
-     }
-    
-     toggleList() {
-       this.setState(prevState => ({
-         listOpen: !prevState.listOpen,
-       }))
-     }
-    handleClickOutside() {
-       this.setState({
-         listOpen: false
-       })
-     }
-    handleClickMenu(val) {
-      this.setState({
-      nLp:val.title,
-        listOpen: false
-      })
-        this.props.action(val);
+class DDMschedule extends Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+      listOpen: false,
     }
-    
-     render() {
-         const { listOpen } = this.state
-         const dayString=["月","火","水","木","金","土","日"];
-         const semesterString=["前学期","後学期"];
-       let item = [];
-        for(var k=0;k<2;k++){
-            item.push(<div className="DDMsemeIndex" key={"semesIndex"+k}>{semesterString[k]}</div>)
-           for(var i=0;i<7;i++){
-               this.props.data[k][i].forEach(data =>{
-                                        if(data !=0){
-                                            item.push(
-                                                      <div className="dropMenuElement" onClick={() => this.handleClickMenu(data)} key={data.title + data.position}>{data.title} ({dayString[Math.floor(data.position / 6)]}曜 {data.position % 6 + 1}講時)</div>
-                                            )
-                                        }
-                                    })
-           }
-         }
-         if(item.length == 0){
-            item.push(<div className="dropMenuElement" key={"no"}>授業がありません</div>);
-         }
-       return (
-         <div style={styles.DDMss}>
-           <div onClick={this.toggleList.bind(this)} style={styles.DDMssmb} className="flex-jus-center">
-               {this.state.nLp}<FontAwesomeIcon style={pmArrow} icon={faCaretDown}/>
-           </div>
-           {listOpen && (
-             <div className="dropMenuSchedule">
-                         {item}
-             </div>
-           )}
-         </div>
-       )
-     }
-    
+  }
+  toggleList() {
+    this.setState(prevState => ({
+      listOpen: !prevState.listOpen,
+    }))
+  }
+  handleClickMenu(val,id,index) {
+    this.props.action(val,id,index);
+    this.setState({
+      listOpen: false
+    })
+  }
+  handleClickOutside() {
+    this.setState({
+      listOpen: false
+    })
+  }
+  render() {
+    const { listOpen } = this.state;
+    const dayString=["月","火","水","木","金","土","日"];
+    const semesterString=["前学期","後学期"];
+    let item = [];
+    this.props.data.map((data,index) => {
+      item.push(
+        <div className="index" key={data.name + data.key + "DDMscheduleIndex"}>{data.name}</div>
+      );
+      data.schedules.map((d) => {
+        d[this.props.user.grade - 1].map((dx) => {
+          dx.map((dy) => {
+            if(dy !== 0)item.push(<div className="element" key={data.name + dy.title + "DDMscheduleElement"} onClick={() => this.handleClickMenu(dy, data.id, index)}>{dy.title}</div>);
+          });
+        });
+      });
+    });
+    return (
+      <div style={styles.dropDown}>
+        <div onClick={this.toggleList.bind(this)} className="flex-jus-center ddmButton">
+          {this.props.label == "" || this.props.label == void 0 ? this.props.fLabel : this.props.label}<FontAwesomeIcon style={pmArrow} icon={faCaretDown}/>
+        </div>
+        {listOpen && (
+          <div className="dropMenuSchedule scroll-y">
+            {item}
+          </div>
+        )}
+      </div>
+    )
+  }
 }
+
+
 const styles = {
     DDMss:{
          position: 'relative',
-        padding:'10px 0',
-        zIndex:99999
-
+        padding:'10px 0'
     },
-             DDMssmb:{
-               padding:'5px 0',
-            height: '26px',
-            cursor: 'pointer',
-            border: '1px solid #aaa',
-            borderRadius: '5px',
-            color:'#aaa'
-             },
+    DDMssmb:{
+        padding:'5px 0',
+        height: '26px',
+        cursor: 'pointer',
+        border: '1px solid #aaa',
+        borderRadius: '5px',
+        color:'#aaa'
+    },
     dropDown:{
         position: 'relative',
-        margin:'0px 10px',
-        display:'inline-block'
+        display:'inline-block',
+        zIndex:'1000'
     },
-  menuButton: {
-    height: '26px',
-    cursor: 'pointer',
-    border: '1px solid #aaa',
-    borderRadius: '5px',
-    padding:'0 10px 0 10px',
-    color:'#aaa'
-  },
-  lastMenuContent: {
-    padding: '3px 5px',
-  },
+    lastMenuContent: {
+      padding: '3px 5px',
+    },
 }
  
-export default onClickOutside(DDMscheduleSelect)
+export default onClickOutside(DDMschedule)

@@ -102,7 +102,7 @@ export default class Popup extends Component {
         this.state={
             taskPpage:0,
             selectDate: new Date(),
-            value:{calendarArray:{id:0, name:"クリックしてカレンダーを選択"},taskTitle:"",taskCont:"",taskDate:d,position:1,examTitle:"",examCont:"",examDate:d,selectSchedule:{},changeScheduleBeforeDate:"",changeScheduleAfterDate:""}
+            value:{calendarArray:{id:0, name:"クリックしてカレンダーを選択"},calPosition:0,taskTitle:"",taskCont:"",taskDate:d,position:1,examTitle:"",examCont:"",examDate:d,selectSchedule:{},changeScheduleBeforeDate:"",changeScheduleAfterDate:d}
         }
     }
     changePage(no){
@@ -132,6 +132,7 @@ export default class Popup extends Component {
     
     setExam(){
         let value = this.state.value
+        
         this.props.action.setExam(value, value.calendarArray.id);
         this.props.action.PopupToggle("addTask");
         
@@ -144,9 +145,9 @@ export default class Popup extends Component {
         this.props.action.PopupToggle("addTask");
         
     }
-    handleOnChange(index,e){
-        let ins = this.state.value
-        
+    handleOnChange(index, e, ...args){
+        let ins = this.state.value;
+
         switch (index){
             case "taskTitle" : ins.taskTitle = e.target.value;break;
             case "taskCont" : ins.taskCont = e;break;
@@ -154,10 +155,10 @@ export default class Popup extends Component {
             case "position" : ins.position = e;break;
             case "examCont" : ins.examCont = e;break;
             case "examDate" : ins.examDate = e;break;
-            case "examTitle" : ins.examTitle = e;break;
+            case "examTitle" : ins.examTitle = e;ins.calendarArray = {id:args[0], name:this.state.value.calendarArray.name};break;
             case "changeScheduleBeforeDate" : ins.changeScheduleBeforeDate = e;break;
             case "changeScheduleAfterDate" : ins.changeScheduleAfterDate = e;break;
-            case "selectSchedule" : ins.selectSchedule = e;break;
+            case "selectSchedule" : ins.selectSchedule = e;ins.calendarArray = {id:args[0], name:this.state.value.calendarArray.name};ins.calPosition = args[1];ins.changeScheduleBeforeDate = "";break;
             case "calendar" : ins.calendarArray = {id:e.id, name:e.name};break;
         }
         this.setState({value:ins});
@@ -170,12 +171,13 @@ export default class Popup extends Component {
                             setTask={() => this.setTask()}
                             setExam={() => this.setExam()}
                             setChangeSchedule={() => this.setChangeSchedule()}
-                            handleOnChange={(index,e) => this.handleOnChange(index,e)}
+                            handleOnChange={(index,e, cal_id, selectCal) => this.handleOnChange(index,e, cal_id, selectCal)}
                             changePage={(ce) => this.changePage(ce)} page={this.state.taskPpage}
                             datas={this.props.datas}
                             value={this.state.value}
                             selectSchedule={this.state.value.selectSchedule}
                             calendar={this.props.calendar}
+                            user={this.props.user}
                             />
                    
                    )
@@ -187,16 +189,6 @@ export default class Popup extends Component {
             return(
                    <Login user={this.props.user} isPopup={this.props.status} action={{sec: (type) => this.sec(type) ,userSignin: (user,sns) => this.props.action.userSignin(user,sns) ,logout: () => this.props.action.logout()}} news={this.props.news}/>
                    
-                   )
-        }else if(this.props.type == 4){
-            return(
-                   <PopupClassRegester isPopup={this.props.status}
-                                       action={{popupshow: (val) => this.props.action.PopupToggle(val),
-                                               addregesterId:(cd, array) => this.props.action.addregesterId(cd, array),
-                                               regester: (cal_id) => this.props.action.regester(cal_id),
-                                               getSchedule: (val,position) => this.props.action.getSchedule(val,position)
-                                               }}
-                                       sceduleDatas = {{APIresult: this.props.sceduleDatas.APIresult, regesterIds: this.props.sceduleDatas.regesterIds, regesterElements: this.props.sceduleDatas.regesterElements}}/>
                    )
         }
     }
@@ -380,7 +372,10 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(2)}>授業の変更</div>
                     </div>
                     <div className="pcePopup-item adTaskbody">
-                        <DDMschedule type={2} data={props.datas.schedules} fLabel={"試験がある授業を選択"} action={(val) => props.handleOnChange("examTitle",val.title)} key={"DDMschedule1"}/>
+                        <div>
+                            <FontAwesomeIcon style={clock} icon={faBook} />
+                            <DDMschedule data={props.calendar} user={props.user} fLabel={"試験がある授業を選択"} label={props.value.examTitle} action={(val, cal_id) => props.handleOnChange("examTitle", val.title, cal_id)} key={"DDMschedule1"}/>
+                        </div>
                         <div>
                             <FontAwesomeIcon icon={faClock} style={clock} />
                             <div className="calpointer"><Calender action={(date) => props.handleOnChange("examDate",date)} key={"dscal1"}/></div>
@@ -398,12 +393,6 @@ const AddTask = (props) => {
             </div>
         )
     }else if (props.page == 2){
-        let semesNum = 0
-        if(props.selectSchedule.position !== void 0){
-            if(props.selectSchedule.semester != "前学期"){
-                semesNum = 1;
-            }
-        }
         return(
             <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
                 <div className="popup_wrap" onClick={() => props.action() }></div>
@@ -417,12 +406,28 @@ const AddTask = (props) => {
                     <div className="pcePopup-item adTaskbody">
                         <div style={p2head}>変更する授業と日時</div>
                         <div style={beforeBox}>
-                            <DDMschedule type={2} data={props.datas.schedules} fLabel={"変更する授業を選択"} action={(val) => props.handleOnChange("selectSchedule",val)} key={"DDMschedule2"}/>
+                        <FontAwesomeIcon style={clock} icon={faBook} />
+                        <DDMschedule 
+                            data={props.calendar} 
+                            user={props.user}
+                            fLabel={"授業変更をする授業を選択"} 
+                            label={props.value.selectSchedule.title} 
+                            action={(val, cal_id, selectCal) => props.handleOnChange("selectSchedule", val, cal_id, selectCal)} 
+                            key={"DDMschedule2"}
+                        />
                             
                             {props.selectSchedule.position !== void 0 &&
                                 <div>
                                     <FontAwesomeIcon icon={faClock} style={clock} />
-                                    <div className="calpointer"><ExCalender action={(date) => props.handleOnChange("changeScheduleBeforeDate",date)} select={parseInt(props.selectSchedule.position / 6)} semesterMinDate={props.datas.semesterDate[semesNum]} semesterMaxDate={props.datas.semesterDate[semesNum + 2]}/></div>
+                                    <div className="calpointer">
+                                        <ExCalender 
+                                            action={(date) => props.handleOnChange("changeScheduleBeforeDate",date)} 
+                                            select={parseInt(props.selectSchedule.position / 6)} 
+                                            value={props.value}
+                                            calendar={props.calendar}
+                                            user={props.user}
+                                        />
+                                    </div>
                                 </div>
                             }
                             
@@ -450,89 +455,7 @@ const AddTask = (props) => {
     
 }
 
-
-
-class PopupClassRegester extends Component{
-    constructor(props){
-        super(props)
-        this.state={
-            moreSearch: false
-            
-        }
-    }
-    _esGetsc(event){
-        let val = event.target.value;
-        this.props.action.getSchedule(val,"");
-    }
-    togglesh(){
-        this.setState({moreSearch: !this.state.moreSearch})
-    }
-    render(){
-        const dayString=["月","火","水","木","金","土","日"];
-        let k = 0;
-        const {APIresult, regesterIds, regesterElements} = this.props.sceduleDatas;
-        return(
-               <div className={this.props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
-               <div className="popup_wrap" onClick={() => this.props.action.popupshow("regester") }></div>
-                    <div className="whir no-select">
-                        <h2 className="add_scedule">授業の追加</h2>
-                        <input type="text" placeholder="授業名や科目番号で検索" className="removeCss searchInput adSheduleInput"
-                            onChange={(e) => this._esGetsc(e)} onBlur={(e) => this._esGetsc(e)}
-                        />
-                        <div className={!this.state.moreSearch ? 'toggle_effect searchBox flex-align-center bgHyu' : 'toggle_effect_de searchBox flex bgHyu'} onClick={() => this.togglesh()}>
-                            <div className="moreSearchIb flex-jus-center">もっと詳しく検索する <FontAwesomeIcon style={pmArrow} icon={faChevronRight}/></div>
-                        </div>
-                        <div className={this.state.moreSearch ? 'toggle_effect searchBox flex' : 'toggle_effect_de searchBox flex'} >
-                            <DDMsearchPosition />
-                            <div className="flex-jus-center crossSC" onClick={() => this.togglesh()}><FontAwesomeIcon icon={faTimes} style={pmcr}/></div>
-                        </div>
-                        <div className="scedulesBox">
-                           {APIresult.map((data,index) =>
-                                <div className="fa-schedule-enm flex" key={data.CoNum + data.title + data.id + index} onClick={() => this.props.action.addregesterId(data.id, data)}>
-                                    <div className="checkBoxlap">
-                                        <div className="checkBox"><div className={regesterIds.indexOf(data.id) >= 0 ? "checkBoxInner cBIactive" : "checkBoxInner"}></div></div>
-                                                      
-                                    </div>
-                                    <div className="sceduleDataBox">
-                                          <div className="sceduleName">
-                                            {data.title}
-                                          </div>
-                                          <div className="scheduleSubdata">
-                                              {data.CoNum}・{data.semester}・{dayString[Math.floor(data.position / 6)]}曜 {data.position % 6 + 1}講時
-                                          </div>
-                                          <div className="scheduleSubdata">
-                                              {data.status}
-                                          </div>
-                                          <div className="scheduleSubdata">
-                                              {data.teacher}
-                                          </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                        <div className="infBox">
-                            <div className="flex fa-reges-elementBox">
-                                <div className="fa-reges-h">選択した授業</div>
-                                <div className="flex fa-reges-elementInner">
-                                   {regesterElements.map((element) =>
-                                        <div className="reges-schedule" key={"regester" + element.CoNum + element.title + element.id} onClick={() => this.props.action.addregesterId(element.id, element)}>
-                                            {element.title} <FontAwesomeIcon icon={faTimes} />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="submitBox flex-jus-center">
-                                                                                      
-                            <div className="btn-submit-sub fa-scedule-submit" onClick={() => this.props.action.popupshow("manual")}>手動で授業を追加</div>
-                            <div className="btn-submit fa-scedule-submit" onClick={() => this.props.action.regester(1)}>選択した授業を追加</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        )
-    }
-}
-
+//あとで分割したときに親コンポーネントの値から変更するようにする。
 class Calender extends Component {
      constructor(props){
          super(props)
@@ -567,40 +490,51 @@ class Calender extends Component {
 }
 
 class ExCalender extends Component {
-     constructor(props){
-         super(props)
-         this.state={
-             startDate: new Date()
-         }
-     }
   handleChange = date => {
-    this.setState({
-      startDate: date
-    });
       this.props.action(this.parseAsMoment(date).format('YYYY/MM/DD'));
   };
   parseAsMoment = (dateTimeStr) => {
     return moment.utc(dateTimeStr, 'YYYY-MM-DDTHH:mm:00Z', 'ja').utcOffset(9)
   }
   render() {
-      const isWeekday = date => {
-          let select = this.props.select +1;
-          if(select === 7)select = 0;
-          const day = date.getDay();
-          return day === select;
-      };
+    const isWeekday = date => {
+        let select = this.props.select +1;
+        if(select === 7)select = 0;
+        const day = date.getDay();
+        return day === select;
+    };
+
+    //学期の期間の処理
+    let semesterMinDate = 0;
+    let semesterMaxDate = 0;
+    if(this.props.calendar !== void 0){
+        if(this.props.value.selectSchedule.semester != "前学期"){
+            semesterMinDate = this.props.calendar[this.props.value.calPosition].semesterPeriod[this.props.user.grade - 1].lateSemester1;
+            semesterMaxDate = this.props.calendar[this.props.value.calPosition].semesterPeriod[this.props.user.grade - 1].lateSemester2;
+            
+        }else{
+            semesterMinDate = this.props.calendar[this.props.value.calPosition].semesterPeriod[this.props.user.grade - 1].fhSemester1;
+            semesterMaxDate = this.props.calendar[this.props.value.calPosition].semesterPeriod[this.props.user.grade - 1].fhSemester2;
+        }
+    }
+    const changeScheduleBeforeDate = this.props.value.changeScheduleBeforeDate
+
     return (
       <DatePicker
-        selected={this.state.startDate}
+        selected={changeScheduleBeforeDate == "" ? new Date() : new Date(changeScheduleBeforeDate)}
         onChange={this.handleChange}
         locale="ja"
         filterDate={isWeekday}
-            minDate={new Date(this.props.semesterMinDate)}
-            maxDate={new Date(this.props.semesterMaxDate)}
-            style={exdp}
+        minDate={new Date(semesterMinDate)}
+        maxDate={new Date(semesterMaxDate)}
+        style={exdp}
         customInput={
           <div>
-            {this.parseAsMoment(this.state.startDate).format('YYYY年 MM月 DD日')}
+            {changeScheduleBeforeDate == "" ?
+                <>クリックして変更する日付を選択</>
+            :
+                <>{this.parseAsMoment(new Date(changeScheduleBeforeDate)).format('YYYY年 MM月 DD日')}</>
+            }
           </div>
         }
       />

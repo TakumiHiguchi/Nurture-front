@@ -45,7 +45,7 @@ class DDMcalendar extends Component{
 
        return (
          <div style={styles.dropDown}>
-           <div onClick={this.toggleList.bind(this)} style={styles.menuButton} className="flex-jus-center">
+           <div onClick={this.toggleList.bind(this)} className="flex-jus-center ddmButton">
                {this.props.element}<FontAwesomeIcon style={pmArrow} icon={faCaretDown}/>
            </div>
            {listOpen && (
@@ -77,14 +77,6 @@ const styles = {
         display:'inline-block',
         margin:'0 0 0 10px',
         zIndex:'999'
-    },
-    menuButton: {
-      height: '26px',
-      cursor: 'pointer',
-      border: '1px solid #aaa',
-      borderRadius: '5px',
-      padding:'2px 10px',
-      color:'#aaa'
     },
     lastMenuContent: {
       padding: '3px 5px',

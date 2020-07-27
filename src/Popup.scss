@@ -221,7 +221,6 @@
         left:0;
         right:0;
         border-radius:10px;
-        
     }
     .pcePopup-item{
         width:calc(100% - 60px);
@@ -286,7 +285,7 @@ input.adSheduleInput{
 }
 
 
-.scedulesBox{
+.schedulesBox{
     width:100%;
     height:calc(100vh - 391px);
     border-top:1px solid #e8e8e8;
@@ -296,6 +295,12 @@ input.adSheduleInput{
     &::-webkit-scrollbar {
         display:none;
     }
+}
+.moreSettingBox{
+    width:100%;
+    height:calc(100vh - 305px);
+    border-top:1px solid #e8e8e8;
+    overflow:hidden;
 }
 .infBox{
     width:calc(100% - 60px);
@@ -338,6 +343,8 @@ input.adSheduleInput{
             cursor: pointer;
             margin:0 10px;
             padding:8px 16px;
+            width:150px;
+            text-align:center;
         }
     }
 }
@@ -589,16 +596,31 @@ div.cd {
 
 
 //effect
+//レジスター
+.reges_toggle_effect{
+    animation-name:leftToright01;
+    animation-duration:0.5s;
+    animation-fill-mode: forwards;
+    transform: scale(1);
+}
+.reges_toggle_effect_de{
+    animation-name:rightToleft02;
+    animation-duration:0.5s;
+    animation-fill-mode: forwards;
+    pointer-events: none;
+    transform: scale(0);
+    display:none;
+}
 //表示非表示
 .toggle_effect{
-    animation-name:leftToright01;
+    animation-name:rightToleft01;
     animation-duration:0.5s;
     animation-fill-mode: forwards;
     display:flex;
     transform: scale(1);
 }
 .toggle_effect_de{
-    animation-name:leftTorightBack01;
+    animation-name:rightToleftBack01;
     animation-duration:0.5s;
     animation-fill-mode: forwards;
     pointer-events: none;
@@ -654,6 +676,30 @@ div.cd {
     }
 }
 
+@keyframes rightToleft01 {
+    0% {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+@keyframes rightToleft02 {
+    0% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+    100%{
+        opacity: 0;
+        transform: translateX(10px);
+        height:0;
+        ovarflow:hidden;
+        display:block;
+    }
+}
+
 div.react-datepicker-popper{
     z-index:9999;
 }
@@ -704,4 +750,13 @@ div.react-datepicker-popper{
     display: inline-block;
     cursor: pointer;
     padding: 5px 10px;
+}
+
+.msB-h2{
+    color:#aaa;
+    font-size:1em;
+    padding:10px 25px;
+}
+.msB-line{
+    padding:0 25px;
 }
