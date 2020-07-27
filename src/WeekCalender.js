@@ -73,6 +73,8 @@ const WeekLine = (props) => {
     let taskData = [[],[],[],[],[],[]];
     let examData = [[],[],[],[],[],[]];
     let ScheduleData = [0,0,0,0,0,0];
+    let changeScheduleData_before = [0,0,0,0,0,0];
+    let changeScheduleData_after = [0,0,0,0,0,0];
     let tCount = new Array(6).fill(0);
     let eCount = new Array(6).fill(0);
     let sCount = new Array(6).fill(0);
@@ -126,7 +128,36 @@ const WeekLine = (props) => {
             }
         }
     }
-    //カレンダーの選択個数分ループしてスケジュールを成形する
+    //カレンダーの選択個数分ループして授業変更を成形する
+    if(calendar.length > 0){
+        for(var i = 0; i < selectCalendarNumber.length; i++){
+            let count = 0;
+            //schedule取り出す処理
+            let cs_before = calendar[selectCalendarNumber[i]].change_schedules_before;
+            let cs_after = calendar[selectCalendarNumber[i]].change_schedules_after;
+            let insCs_before = [];
+            let insCs_after = [];
+            if(cs_before[year] !== void 0 && cs_before[year][mon] !== void 0){
+                if(cs_before[year][mon][day] !== void 0){
+                    insCs_before= cs_before[year][mon][day] ;
+                }
+            }
+            if(cs_after[year] !== void 0 && cs_after[year][mon] !== void 0){
+                if(cs_after[year][mon][day] !== void 0){
+                    insCs_after= cs_after[year][mon][day] ;
+                }
+            }
+            insCs_before.map((data) =>{
+                if(changeScheduleData_before[data.before_position] === 0)
+                    changeScheduleData_before[data.before_position] = data;
+            });
+            insCs_after.map((data) =>{
+                if(changeScheduleData_after[data.after_position] === 0)
+                    changeScheduleData_after[data.after_position] = data;
+            });
+        }
+    }
+    //カレンダーの選択個数分ループしてスケジュールを成形するchangeScheduleData
     if(calendar.length > 0){
         for(var i = 0; i < selectCalendarNumber.length; i++){
             let count = 0;
@@ -157,7 +188,12 @@ const WeekLine = (props) => {
             }
         }
     }
-    
+    //スケジュールがあるか判定
+    sCount.map((_,index)=>{
+        if(ScheduleData[index] != 0 || changeScheduleData_before[index] != 0 || changeScheduleData_after[index] != 0){
+            sCount[index] = 2
+        }
+    });
     
     
        return(
@@ -167,21 +203,42 @@ const WeekLine = (props) => {
                         <div className="fa-class-scedule">
                             {data !== 0 ?
                                 <>
-                                    <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data , "nomal")}>
-                                        <div className="title">{data.title}</div>
-                                        <div className="classroom">107教室</div>
-                                    </div>
+                                    {changeScheduleData_after[index] !== 0 ?
+                                        <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,changeScheduleData_after[index], "change")}>
+                                            <div className="title">{changeScheduleData_after[index].title}</div>
+                                            <div className="classroom flex">107教室<div className="weekCSMark">授業変更</div></div>
+                                        </div>
+                                        :
+                                        <>
+                                            {changeScheduleData_before[index] !== 0 ?
+                                                <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data , "nomal")}>
+                                                    <div className="title"><s>{changeScheduleData_before[index].title}</s></div>
+                                                    <div className="classroom">107教室</div>
+                                                </div>
+                                                :
+                                                <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data , "nomal")}>
+                                                    <div className="title">{data.title}</div>
+                                                    <div className="classroom">107教室</div>
+                                                </div>
+                                            }
+                                        </>
+                                    }
                                 </>
                             :
                                 <>
-                                    
+                                    {changeScheduleData_after[index] !== 0 &&
+                                        <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,changeScheduleData_after[index], "change")}>
+                                            <div className="title">{changeScheduleData_after[index].title}</div>
+                                            <div className="classroom flex">107教室<div className="weekCSMark">授業変更</div></div>
+                                        </div>
+                                    }
                                 </>
                             }
                             {eCount[index] > 0 &&
                                 <div className="taskListWrap">
                                     {examData[index].map((eData,i) =>
                                         <>
-                                            {(i < (4 - sCount[index] - eCount[index]))&&
+                                            {(i < (4 - sCount[index] - index))&&
                                                 <div className="weekExamBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,examData[index][i]))}>
                                                     {eData.complete ?
                                                         <><s>{eData.title}</s>（完了済み）</>
@@ -210,6 +267,9 @@ const WeekLine = (props) => {
                                         </>
                                     )}
                                 </div>
+                            }
+                            {tCount[index] + eCount[index] > (4 - sCount[index]) &&
+                                <div className="weekMoreBox" onClick={(e) => props.action.showMoreTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,taskData[index])}>他{tCount[index] + eCount[index] - (4 - sCount[index])}件</div>
                             }
                         </div>
                     </div>

@@ -4,7 +4,7 @@ import DDMsettingGrade from '../../../dropdownMenu/DDMsettingGrade'
 
 export default function p1(props){
     return(
-        <main key={"settingP1"} className={props.element.page === 1 ? 'bodyWrap popup_toggle_effect' : 'bodyWrap popup_toggle_effect_de'}>
+        <main key={"settingP1"} className={props.element.page === 1 ? 'settingBodyWrap popup_toggle_effect' : 'settingBodyWrap popup_toggle_effect_de'}>
             <section className="settingBody">
                 <h2 className="menu flex-algin-center">現在の学年</h2>
                 <DDMsettingGrade element={props.element.user.grade} action={(select) => props.action.setGrade(select)}/>

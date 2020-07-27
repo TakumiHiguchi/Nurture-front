@@ -1,5 +1,8 @@
 section.settingBody{
     margin-bottom:40px;
+    .menuH2{
+        margin-bottom:10px;
+    }
 }
 .secline{
     font-size:0.8em;
@@ -49,14 +52,37 @@ section.settingBody{
         }
     }
 }
-.bodyWrap{
+.settingBodyWrap{
     width:calc(100% - 334px);
     height:calc(100vh - 40px);
     padding:20px 30px;
     h2{
         color:#aaa;
         font-size:1.1em;
-        margin-bottom:10px;
+    }
+    .authorContainer{
+        color:#aaa;
+        margin-bottom:20px;
+        font-size:0.9em;
+    }
+    .setting_CalCheckBox{
+        margin:0 0 5px 0;
+        .label{
+            width:calc(100% - 28px);
+            font-size:0.9em;
+            margin:5px 0px 3px 0;
+        }
+        .point{
+            width:16px;
+            height:16px;
+            border-radius:50%;
+            margin:4px 8px 4px 0;
+            div{
+                width:calc(100% - 4px);
+                height:calc(100% - 4px);
+                border-radius:50%;
+            }
+        }
     }
 }
 

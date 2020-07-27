@@ -85,7 +85,6 @@ class xyScheduleWindow extends Component{
             tll = value.showSchedule.position % 6 + 1
         }
         
-        
         return(
                <div className="no-select">
                    <div style={xyWindowMain} className={this.props.value.window ? "xyw-inner xyWindowWrap" : "xyw_de-inner xyWindowWrap"}>
@@ -97,7 +96,7 @@ class xyScheduleWindow extends Component{
                                     <div className="twitter flex-jus-center"><FontAwesomeIcon icon={faTwitter} style={twitterIcon}/></div>
                                     <div className="twitter flex-jus-center"
                                         onClick={changeBl1 ?
-                                                () => this.props.apiFunction.change_schedule_destroy(value.showSchedule.scheduleId)
+                                                () => this.props.apiFunction.change_schedule_destroy(value.showSchedule.id, value.showSchedule.calendarId)
                                                 :
                                                 () => this.props.apiFunction.user_schedule_destory(value.showSchedule.scheduleId, value.showSchedule.calendarId)
                                                 }

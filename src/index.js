@@ -525,7 +525,7 @@ class Nurture extends Component {
         }
     }
     //授業変更APIを叩く部分
-    change_schedule(type,id, ...args){
+    change_schedule(type,id, cal_id, ...args){
         const user = this.state.user;
         let ins;
                 
@@ -547,7 +547,7 @@ class Nurture extends Component {
                 ins.then(res => {
                     this.rWindow(true,res.status,res.mes);
                     //スケジュールを再読み込み
-                    //this.calendar("index");
+                    this.calendar("index");
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -555,11 +555,11 @@ class Nurture extends Component {
                 this.PopupToggle("addTask")
                 break;
             case "destory" :
-                ins = change_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade);//外部関数
+                ins = change_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade, cal_id);//外部関数
                 ins.then(res => {
                     this.rWindow(true,res.status,res.mes);
                     //スケジュールを再読み込み
-                    this.change_schedule("index",0);
+                    this.calendar("index");
                     //ウィンドウを全て閉じる
                     this.closeAllWindow()
                 })
@@ -859,7 +859,7 @@ class Nurture extends Component {
                                     task_update: (id, value, mes) => this.task("update",id, 0, value, mes),
                                     exam_destroy: (id,cal_id) => this.exam("destory",id, cal_id),
                                     exam_update: (id, value, mes) => this.exam("update",id, 0, value, mes),
-                                    change_schedule_destroy: (id) => this.change_schedule("destory",id),
+                                    change_schedule_destroy: (id, cal_id) => this.change_schedule("destory",id, cal_id),
                                     }}
                     />
                     <EditPage
@@ -888,7 +888,10 @@ class Nurture extends Component {
                
                     <ResultWindow value={this.state.rWindow} action={(a,b,c) => this.rWindow(a,this.state.rWindow.type,this.state.rWindow.mes)}/>
                     <SettingPage 
-                        regesSemesterDate = {(cal,date,position) => this.regesSemesterDate(cal,date,position)} action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} status={this.state.popup.setting} element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}
+                        regesSemesterDate = {(cal,date,position) => this.regesSemesterDate(cal,date,position)} 
+                        action={{PopupToggle: (ce) => this.PopupToggle(ce), setGrade: (select) => this.setGrade(select),logout:() => this.logout()}} 
+                        status={this.state.popup.setting} 
+                        element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}
                         calendar = {this.state.calendar}
                     />
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
@@ -919,7 +922,7 @@ class Nurture extends Component {
                         />
                         
                         
-                        <Popup1 type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value, cal_id) => this.task("create",0, cal_id, value), setExam: (value, cal_id) => this.exam("create",0, cal_id, value),setChangeSchedule:(value) => this.change_schedule("create",0, value)}} status={this.state.popup.addTask}
+                        <Popup1 type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value, cal_id) => this.task("create",0, cal_id, value), setExam: (value, cal_id) => this.exam("create",0, cal_id, value),setChangeSchedule:(value) => this.change_schedule("create",0,0, value)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas[this.state.user.grade - 1],semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
                                         calendar={this.state.calendar}
                                         user = {this.state.user}                                                   

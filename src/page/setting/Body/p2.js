@@ -23,7 +23,7 @@ export default function p2(props){
     let user = props.element.user;
     
     return(
-        <main key={"settingP2"} className={props.element.page === 2 ? 'bodyWrap popup_toggle_effect' : 'bodyWrap popup_toggle_effect_de'}>
+        <main key={"settingP2"} className={props.element.page === 2 ? 'settingBodyWrap popup_toggle_effect' : 'settingBodyWrap popup_toggle_effect_de'}>
             <section className="settingBody">
                 <h2 className="menu flex-algin-center alp">アカウント</h2>
                 <div className="userAccountBox">
