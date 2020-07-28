@@ -2,20 +2,20 @@ import React from 'react';
 import axios from 'axios';
 
 
-export default async function create(endpoint, key, session, exam, grade){
-    const r1 = await api(endpoint, key, session, exam, grade);
+export default async function create(endpoint, key, session, calendar){
+    const r1 = await api(endpoint, key, session, calendar);
     return r1
 }
 
-async function api(endpoint, key, session, exam, grade){
+async function api(endpoint, key, session, calendar){
     try{
-        const response = await axios.post(endpoint + '/api/v1/exam', {
+        const response = await axios.post(endpoint + '/api/v1/calendar', {
             key: key,
             session: session,
-            title: exam.examTitle,
-            content:exam.examCont,
-            examdate:exam.examDate,
-            position:exam.position - 1
+            shareBool: calendar.shareBool,
+            cloneBool: calendar.cloneBool,
+            name: calendar.name,
+            description: calendar.description
         });
         
         if(response.data.status == "SUCCESS"){

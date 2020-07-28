@@ -67,7 +67,7 @@ export default class p3 extends Component{
         switch(type){
             case "shareBool": calendar.shareBool = val; break;
             case "cloneBool": calendar.cloneBool = val; break;
-            case "name": calendar.name = val; break;
+            case "name": if(val != "")calendar.name = val; break;
             case "description": calendar.description = val; break;
         }
         this.props.apiFunction.calendar_update(calendar, mes)

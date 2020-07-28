@@ -41,6 +41,7 @@ import * as serviceWorker from './serviceWorker';
 
 //APIを叩く関数のインポート
 import calendar_index from './API/calendar/index'
+import calendar_create from './API/calendar/create'
 import calendar_update from './API/calendar/update'
 import calendar_destroy from './API/calendar/destroy'
 
@@ -51,21 +52,21 @@ import schedule_create from './API/schedule/create'
 
 import user_schedule_index from './API/user_schedule/index'
 import user_schedule_create from './API/user_schedule/create'
-import user_schedule_destroy from './API/user_schedule/destory'
+import user_schedule_destroy from './API/user_schedule/destroy'
 
 import task_index from './API/task/index'
 import task_create from './API/task/create'
 import task_update from './API/task/update'
-import task_destroy from './API/task/destory'
+import task_destroy from './API/task/destroy'
 
 import exam_index from './API/exam/index'
 import exam_create from './API/exam/create'
 import exam_update from './API/exam/update'
-import exam_destroy from './API/exam/destory'
+import exam_destroy from './API/exam/destroy'
 
 import change_schedule_index from './API/change_schedule/index'
 import change_schedule_create from './API/change_schedule/create'
-import change_schedule_destroy from './API/change_schedule/destory'
+import change_schedule_destroy from './API/change_schedule/destroy'
 
 const ENDPOINT = 'http://localhost:3020'
 //const ENDPOINT = 'https://nurture-api.herokuapp.com'
@@ -307,13 +308,28 @@ class Nurture extends Component {
                     this.rWindow(true,2,'通信に失敗しました');
                 });
                 break;
+            case "create" :
+                ins = calendar_create(ENDPOINT, user.key, user.session, calendar);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //タスクを再読み込み
+                    this.calendar("index");
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
             case "update" :
                 ins = calendar_update(ENDPOINT, user.key, user.session, calendar);//外部関数
                 ins.then(res => {
                     if(args[1] === void 0){
                         this.rWindow(true,res.status,res.mes);
                     }else{
-                        this.rWindow(true,res.status,args[1]);
+                        if(res.status === 2){
+                            this.rWindow(true,res.status,res.mes);
+                        }else{
+                            this.rWindow(true,res.status,args[1]);
+                        }
                     }
                     //カレンダーを再読み込みはしない
                     //this.calendar("index");
@@ -322,12 +338,12 @@ class Nurture extends Component {
                     this.rWindow(true,2,'通信に失敗しました');
                 });
                 break;
-            case "destory" :
+            case "destroy" :
                 ins = calendar_destroy(ENDPOINT, user.key, user.session, calendar);//外部関数
                 ins.then(res => {
                     this.rWindow(true,res.status,res.mes);
                     //カレンダーを再読み込み
-                    //this.calendar("index");
+                    this.calendar("index");
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -920,7 +936,9 @@ class Nurture extends Component {
                         element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}
                         calendar = {this.state.calendar}
                         apiFunction={{
-                            calendar_update: (calendar, mes) => this.calendar("update", calendar, 0, mes)
+                            calendar_update: (calendar, mes) => this.calendar("update", calendar, 0, mes),
+                            calendar_create: (calendar) => this.calendar("create", calendar),
+                            calendar_destroy: (calendar) => this.calendar("destroy", calendar)
                            }}
                     />
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>

@@ -8,10 +8,7 @@ export default async function destory(endpoint, key, session, calendar){
 
 async function api(endpoint, key, session, calendar){
     try{
-        const response = await axios.delete(endpoint + '/api/v1/calendar/' + calendar.id, {
-            key: key,
-            session: session
-        });
+        const response = await axios.delete(endpoint + '/api/v1/calendar?calendarId=' + calendar.id + '&key=' + key + '&session=' + session);
         if(response.data.status == "SUCCESS"){
             return {status:1,mes:response.data.mes};
         }else{

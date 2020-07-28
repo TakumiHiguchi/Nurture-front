@@ -8,6 +8,7 @@ import DDMsettingGrade from '../../dropdownMenu/DDMsettingGrade'
 import P1 from './Body/p1'
 import P2 from './Body/p2'
 import P3 from './Body/p3'
+import P4 from './Body/p4'
 
 import './setting.scss';
 
@@ -30,7 +31,9 @@ export default class Body extends Component{
                                 page={this.props.page}
                                 apiFunction={this.props.apiFunction}
                                 changePage={this.props.changePage}
-                            /> ;break;
+                            /> ;
+                            break;
+            case 4: return <P4 element={this.props.element} action={this.props.action} apiFunction={this.props.apiFunction}/> ;break;
         }
     }
     

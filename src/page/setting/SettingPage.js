@@ -55,6 +55,7 @@ export default class SettingPage extends Component {
         this.calendarDelete("","","");
     }
     submit(){
+        this.props.apiFunction.calendar_destroy(this.props.calendar[this.state.calPage])
         this.calendarDelete("","","");
     }
     
