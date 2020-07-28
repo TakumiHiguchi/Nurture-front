@@ -169,7 +169,7 @@ export default class p3 extends Component{
                 </section>
                 <section className="settingBody">
                     <h2 className="menuH2 flex-algin-center">カレンダーの削除</h2>
-                    <div className="btn-submit settingDeleteBtn" onClick={() => this.props.action.calendarDelete("削除する","キャンセル","「" + nowCalendar.name + "」カレンダーを削除しようとしています。カレンダーを削除すると永久的にデータにアクセスできなくなります。本当にカレンダーを削除しますか？")}>カレンダーを削除</div>
+                    <div className="btn-submit settingDeleteBtn" onClick={() => this.props.action.calendarDelete("削除する","キャンセル","「" + nowCalendar.name + "」カレンダーを削除しようとしています。カレンダーを削除すると永久的にデータにアクセスできなくなります。本当にカレンダーを削除しますか？",nowCalendar)}>カレンダーを削除</div>
 
                     <p className="secline">このカレンダーのすべての予定が削除されます。</p>
                     <p className="secline">このカレンダーをFollowしたユーザからもカレンダーが削除されます。</p>

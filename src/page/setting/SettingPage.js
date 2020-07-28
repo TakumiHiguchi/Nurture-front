@@ -30,6 +30,7 @@ export default class SettingPage extends Component {
             calPage:1,
             calendarDelete:{popup:false,submit:"",cancel:"",main:""},
             changePage:false,
+            targetCalendar:[]
         }
     }
     
@@ -43,20 +44,21 @@ export default class SettingPage extends Component {
         }
         this.setState({changePage:true});
     }
-    calendarDelete(submit,cancel,main){
+    calendarDelete(submit,cancel,main,target){
         let ins = this.state.calendarDelete;
         ins.popup = !ins.popup;
         ins.submit = submit;
         ins.cancel = cancel;
         ins.main = main;
         this.setState({calendarDelete:ins});
+        this.setState({targetCalendar:target});
     }
     cancel(){
-        this.calendarDelete("","","");
+        this.calendarDelete("","","",[]);
     }
     submit(){
-        this.props.apiFunction.calendar_destroy(this.props.calendar[this.state.calPage])
-        this.calendarDelete("","","");
+        this.props.apiFunction.calendar_destroy(this.state.targetCalendar)
+        this.calendarDelete("","","",[]);
     }
     
     render(){
@@ -75,10 +77,11 @@ export default class SettingPage extends Component {
                         <Body element={{user:this.props.element.user,semesterDate: this.props.element.semesterDate,page:this.state.page}}
                             action={{setGrade: (select) => this.props.action.setGrade(select),
                                     logout:() => this.props.action.logout(),
-                                    calendarDelete:(submit,cancel,main) => this.calendarDelete(submit,cancel,main)
+                                    calendarDelete:(submit,cancel,main,target) => this.calendarDelete(submit,cancel,main,target)
                                     }}
                             regesSemesterDate = {(cal,date,position) => this.props.regesSemesterDate(cal,date,position)}
                             calendar={this.props.calendar}
+                            calendarSearchResult = {this.props.calendarSearchResult}
                             page={this.state}
                             apiFunction={this.props.apiFunction}
                             changePage={{value:this.state.changePage,action:() => this.setState({changePage:false})}}

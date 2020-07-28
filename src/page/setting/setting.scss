@@ -238,3 +238,97 @@ h2.alp{
     padding:4px 8px;
     cursor:pointer;
 }
+
+//ライブラリー
+.libraryMenu{
+    border-bottom:1px solid #f0f0f0;
+    padding:10px 0 5px;
+    -webkit-transition: background-color 100ms linear;
+    transition: background-color 100ms linear;
+    .tags div{
+        cursor:pointer;
+        padding:8px 15px;
+        border-radius:10px;
+        min-width:64px;
+        margin:0 2px;
+        &:hover{
+            background:#f8f8f8;
+        }
+    }
+    .active{
+        background:#f8f8f8;
+    }
+    .search{
+        width:30%;
+        min-width:200px;
+        input{
+            font-size:1em;
+            width:calc(100% - 20px);
+            border:1px solid #f0f0f0;
+            border-radius:10px;
+            padding:8px 10px;
+        }
+    }
+}
+.calendarSearchResult{
+    flex-wrap:wrap;
+    padding-top:10px;
+    .CalendarCard{
+        width:calc(50% - 42px);
+        min-width:450px;
+        padding:10px;
+        margin:0 10px 10px;
+        border:1px solid #f0f0f0;
+        border-radius:10px;
+        .imageContainer{
+            width:150px;
+            height:150px;
+            background:#f4f4f4;
+            border-radius:5px;
+            font-size:4em;
+            line-height:150px;
+            text-align:center;
+        }
+        .dataContainer{
+            width:calc(100% - 160px);
+            margin-left:10px;
+            .nameBox{
+                padding:2px 0;
+                font-size:1.2em;
+            }
+            .descriptionBox{
+                padding:10px 0;
+            }
+            .authorBox{
+                font-size:0.9em;
+                color:#aaa;
+            }
+            .data{
+                font-size:0.9em;
+                color:#aaa;
+                div{
+                    font-size:0.9em;
+                    color:#aaa;
+                    padding-right:5px;
+                }
+            }
+            .buBo{
+                padding:10px 0;
+                div{
+                    cursor:pointer;
+                    padding:4px 8px;
+                    font-size:0.8em;
+                    border-radius:10px;
+                    margin-right:10px;
+                    border:1px solid #00aced;
+                    color:#00aced;
+                    -webkit-transition: background-color 200ms linear;
+                    transition: background-color 200ms linear;
+                    &:hover{
+                        background:#f8f8f8;
+                    }
+                }
+            }
+        }
+    }
+}

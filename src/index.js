@@ -44,6 +44,8 @@ import calendar_index from './API/calendar/index'
 import calendar_create from './API/calendar/create'
 import calendar_update from './API/calendar/update'
 import calendar_destroy from './API/calendar/destroy'
+import calendar_search from './API/calendar/search'
+import calendar_clone from './API/calendar/clone'
 
 import news_index from './API/news/index'
 
@@ -225,6 +227,7 @@ class Nurture extends Component {
             xyScheduleWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showSchedule:{},type:""},
             editPage:{window:false,showData:{title:''},type:""},
             calendar:[],
+            calendar_search:[],
             selectCalendarNumber:[0]
         }
     }
@@ -612,13 +615,42 @@ class Nurture extends Component {
         }
     }
 
+    //カレンダーのシェアAPIの部分
+    calendar_share(type,id, ...args){
+        const user = this.state.user;
+        let ins;
+                
+        if(type == "clone" || type == "create" || type == "update")this.rWindow(true,0,"");
+        
+        switch(type){
+            case "search" :
+                ins = calendar_search(ENDPOINT, args);//外部関数
+                ins.then(res => {
+                    this.setState({calendar_search:res.calendars})
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "clone" :
+                ins = calendar_clone(ENDPOINT, user.key, user.session, id);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //スケジュールを再読み込み
+                    this.calendar("index");
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+        }
+    }
     /*
 
     ここまで修正済み
 
 
     */
-    //試験APIを叩く部分
     
     
     
@@ -642,27 +674,8 @@ class Nurture extends Component {
                 }});
                 
                 this.calendar("index");
-                this.news("index")
-                
-                //学期期間の取得部分
-                /*
-                let insDate = this.state.semesterPeriod;
-                
-                for(var i = 0;i < response.data.semesterPeriod.length;i++){
-                    let date = response.data.semesterPeriod[i]
-                    insDate[i][0] = date.fhSemester1;
-                    insDate[i][1] = date.fhSemester2;
-                    insDate[i][2] = date.lateSemester1;
-                    insDate[i][3] = date.lateSemester2;
-                }
-                
-                
-                this.user_schedule("index",0);
-                this.task("index",0);
-                this.exam("index",0);
-                this.change_schedule("index",0);
-                
-                */
+                this.news("index");
+                this.calendar_share("search");
             })
             .catch(() => {
                 console.log('通信に失敗しました');
@@ -935,10 +948,12 @@ class Nurture extends Component {
                         status={this.state.popup.setting} 
                         element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}
                         calendar = {this.state.calendar}
+                        calendarSearchResult = {this.state.calendar_search}
                         apiFunction={{
                             calendar_update: (calendar, mes) => this.calendar("update", calendar, 0, mes),
                             calendar_create: (calendar) => this.calendar("create", calendar),
-                            calendar_destroy: (calendar) => this.calendar("destroy", calendar)
+                            calendar_destroy: (calendar) => this.calendar("destroy", calendar),
+                            calendar_share: (type) => this.calendar_share(type)
                            }}
                     />
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
