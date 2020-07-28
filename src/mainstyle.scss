@@ -94,3 +94,37 @@ input.formInput{
         display:none;
     }
 }
+
+.formInputWrap{
+    background:#f0f0f0;
+    width:400px;
+    padding:5px 10px;
+    border-radius:10px;
+    div{
+        font-size:0.8em;
+        margin:0;
+    }
+    input{
+        width:100%;
+        margin:0;
+        background:#f0f0f0;
+        font-size:0.8em;
+    }
+}
+.formTextareaWrap{
+    background:#f0f0f0;
+    width:400px;
+    padding:5px 10px;
+    border-radius:10px;
+    div{
+        font-size:0.8em;
+        margin:0;
+    }
+    textarea{
+        width:100%;
+        margin:0;
+        background:#f0f0f0;
+        font-size:0.8em;
+        line-height:1.5em;
+    }
+}

@@ -28,6 +28,8 @@ export default class Body extends Component{
             case 3: return <P3 calendar={this.props.calendar} element={this.props.element} action={this.props.action} 
                                 regesSemesterDate = {(cal,date,position) => this.props.regesSemesterDate(cal,date,position)}
                                 page={this.props.page}
+                                apiFunction={this.props.apiFunction}
+                                changePage={this.props.changePage}
                             /> ;break;
         }
     }

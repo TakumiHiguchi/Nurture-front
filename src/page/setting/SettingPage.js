@@ -6,7 +6,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";//矢印アイ�
 
 import Sidebar from './SettingSidebar'
 import Body from './SettingBody'
-
+import Confirmation from './Popup/Confirmation'
 
 const FASiconsstyle = {
     arrowLeft:{
@@ -28,6 +28,8 @@ export default class SettingPage extends Component {
         this.state={
             page: 1,
             calPage:1,
+            calendarDelete:{popup:false,submit:"",cancel:"",main:""},
+            changePage:false,
         }
     }
     
@@ -39,7 +41,21 @@ export default class SettingPage extends Component {
                 this.setState({calPage:page});break;
             
         }
-        
+        this.setState({changePage:true});
+    }
+    calendarDelete(submit,cancel,main){
+        let ins = this.state.calendarDelete;
+        ins.popup = !ins.popup;
+        ins.submit = submit;
+        ins.cancel = cancel;
+        ins.main = main;
+        this.setState({calendarDelete:ins});
+    }
+    cancel(){
+        this.calendarDelete("","","");
+    }
+    submit(){
+        this.calendarDelete("","","");
     }
     
     render(){
@@ -57,13 +73,21 @@ export default class SettingPage extends Component {
                         <Sidebar action={(index,page) => this.changePage(index,page)} page={this.state} calendar={this.props.calendar}/>
                         <Body element={{user:this.props.element.user,semesterDate: this.props.element.semesterDate,page:this.state.page}}
                             action={{setGrade: (select) => this.props.action.setGrade(select),
-                                    logout:() => this.props.action.logout()
+                                    logout:() => this.props.action.logout(),
+                                    calendarDelete:(submit,cancel,main) => this.calendarDelete(submit,cancel,main)
                                     }}
                             regesSemesterDate = {(cal,date,position) => this.props.regesSemesterDate(cal,date,position)}
                             calendar={this.props.calendar}
                             page={this.state}
+                            apiFunction={this.props.apiFunction}
+                            changePage={{value:this.state.changePage,action:() => this.setState({changePage:false})}}
                         />
                     </div>
+                    <Confirmation 
+                        isPopup={this.state.calendarDelete.popup}
+                        action={{cancel:() => this.cancel(),submit:() => this.submit()}}
+                        label={this.state.calendarDelete}
+                    />
                 </div>
             </div>
         )

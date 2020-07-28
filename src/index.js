@@ -41,6 +41,8 @@ import * as serviceWorker from './serviceWorker';
 
 //APIを叩く関数のインポート
 import calendar_index from './API/calendar/index'
+import calendar_update from './API/calendar/update'
+import calendar_destroy from './API/calendar/destroy'
 
 import news_index from './API/news/index'
 
@@ -287,7 +289,7 @@ class Nurture extends Component {
     }
 
     //カレンダーAPIを叩く部分
-    calendar(type){
+    calendar(type, calendar, ...args){
         const user = this.state.user;
         let ins;
            
@@ -297,7 +299,6 @@ class Nurture extends Component {
                 ins.then(res => {
                     if(res){
                         this.setState({calendar:res.calendars})
-                        console.log(this.state.calendar)
                     }else{
                         this.rWindow(true,2,'セッション切れです');
                     }
@@ -306,7 +307,32 @@ class Nurture extends Component {
                     this.rWindow(true,2,'通信に失敗しました');
                 });
                 break;
-            
+            case "update" :
+                ins = calendar_update(ENDPOINT, user.key, user.session, calendar);//外部関数
+                ins.then(res => {
+                    if(args[1] === void 0){
+                        this.rWindow(true,res.status,res.mes);
+                    }else{
+                        this.rWindow(true,res.status,args[1]);
+                    }
+                    //カレンダーを再読み込みはしない
+                    //this.calendar("index");
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "destory" :
+                ins = calendar_destroy(ENDPOINT, user.key, user.session, calendar);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,res.status,res.mes);
+                    //カレンダーを再読み込み
+                    //this.calendar("index");
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
         }
     }
 
@@ -868,7 +894,7 @@ class Nurture extends Component {
                         handleOnChange={(index,e) => this.editHandleOnChange(index,e)}
                         apiFunction={{
                             exam_update: () => this.exam("update", this.state.editPage.showData.id, 0, this.state.editPage.showData),
-                            task_update: () => this.task("update", this.state.editPage.showData.id, 0, this.state.editPage.showData)
+                            task_update: () => this.task("update", this.state.editPage.showData.id, 0, this.state.editPage.showData),
                            }}
                     />
                     <Popup 
@@ -893,6 +919,9 @@ class Nurture extends Component {
                         status={this.state.popup.setting} 
                         element={{user:this.state.user,semesterDate:this.state.semesterPeriod}}
                         calendar = {this.state.calendar}
+                        apiFunction={{
+                            calendar_update: (calendar, mes) => this.calendar("update", calendar, 0, mes)
+                           }}
                     />
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>
                     <div className="flex-jus-between fa-rap no-select">

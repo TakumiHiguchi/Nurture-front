@@ -2,15 +2,23 @@ import React from 'react';
 import axios from 'axios';
 
 
-export default async function update(endpoint, key, session, id, exam, grade){
-    const r1 = await api(endpoint, key, session, id, exam, grade);
+export default async function update(endpoint, key, session, calendar){
+    const r1 = await api(endpoint, key, session, calendar);
     return r1
 }
 
-async function api(endpoint, key, session, id, exam, grade){
+async function api(endpoint, key, session, calendar){
     try{
-        const response = await axios.patch(endpoint + '/api/v1/exam?key=' + key + '&session=' + session +'&exam_id=' + id +'&title=' + exam.title +'&content=' + exam.content +'&examdate=' + exam.date +'&position=' + exam.position +'&complete=' + exam.complete);
-        
+        const response = await axios.put(endpoint + '/api/v1/calendar/' + calendar.id, {
+            key: key,
+            session: session,
+            calendarId: calendar.id,
+            shareBool: calendar.shareBool,
+            cloneBool: calendar.cloneBool,
+            name: calendar.name,
+            description: calendar.description,
+            color: calendar.color
+        });
         if(response.data.status == "SUCCESS"){
             return {status:1,mes:response.data.mes};
         }else{

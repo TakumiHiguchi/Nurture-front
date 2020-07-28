@@ -1,5 +1,5 @@
 section.settingBody{
-    margin-bottom:40px;
+    margin-bottom:50px;
     .menuH2{
         margin-bottom:10px;
     }
@@ -197,7 +197,7 @@ h2.alp{
 
 //サイドバー
 .calListBox_open{
-    overflow:hidden;
+    border-bottom:1px solid #f0f0f0;
     animation-name:topTobottom1;
     animation-duration:0.3s;
     animation-fill-mode: forwards;
@@ -233,4 +233,8 @@ h2.alp{
     &:hover{
         background:#f8f8f8;
     }
+}
+.settingDeleteBtn{
+    padding:4px 8px;
+    cursor:pointer;
 }
