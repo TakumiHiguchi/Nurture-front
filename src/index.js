@@ -48,6 +48,8 @@ import calendar_search from './API/calendar/search'
 import calendar_clone from './API/calendar/clone'
 import calendar_follow from './API/calendar/follow'
 
+import canceled_lecture_create from './API/canceled_lecture/create'
+
 import news_index from './API/news/index'
 
 import user_update from './API/user/update'
@@ -680,6 +682,27 @@ class Nurture extends Component {
                 break;
         }
     }
+
+    //休講API
+    canceled_lecture(type, cal_id, canceled_lecture, ...args){
+        const user = this.state.user;
+        let ins;
+        if(type == "clone" || type == "create" || type == "update")this.rWindow(true,0,"");
+        
+        switch(type){
+            case "create" :
+                ins = canceled_lecture_create(ENDPOINT, user.key, user.session, cal_id, canceled_lecture);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,1,res.mes);
+                    //スケジュールを再読み込み
+                    
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+        }
+    }
     /*
 
     ここまで修正済み
@@ -1023,7 +1046,10 @@ class Nurture extends Component {
                         <Popup1 type={1} action={{PopupToggle: (ce) => this.PopupToggle(ce), setTask: (value, cal_id) => this.task("create",0, cal_id, value), setExam: (value, cal_id) => this.exam("create",0, cal_id, value),setChangeSchedule:(value) => this.change_schedule("create",0,0, value)}} status={this.state.popup.addTask}
                                         datas={{schedules:this.state.caDatas[this.state.user.grade - 1],semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
                                         calendar={this.state.calendar}
-                                        user = {this.state.user}                                                   
+                                        user = {this.state.user}    
+                                        apiFunction={{ 
+                                            canceled_lectureAPI:(type, cal_id, value) => this.canceled_lecture(type, cal_id, value)    
+                                        }}                                      
                         />
                         <Popup1 type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}
                             news={this.state.news}
