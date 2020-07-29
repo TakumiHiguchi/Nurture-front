@@ -19,13 +19,59 @@ const FASiconsstyle = {
     }
 }
 
-export default function p2(props){
-    let user = props.element.user;
+export default class p2 extends Component{
     
-    return(
-        <main key={"settingP2"} className={props.element.page === 2 ? 'settingBodyWrap popup_toggle_effect' : 'settingBodyWrap popup_toggle_effect_de'}>
-            <section className="settingBody">
-                <h2 className="menu flex-algin-center alp">アカウント</h2>
+    constructor(props){
+        super(props);
+        this.state={
+            name:-1,
+        }
+    }
+    inputNameStart(val){
+        this.setState({name:val});
+        setTimeout(() => {
+            let user = this.props.element.user;
+            user.name = this.state.name;
+            this.props.apiFunction.user_update(user);
+        }, 2000)
+    }
+    render(){
+        let user = this.props.element.user;
+        
+        return(
+            <main key={"settingP2"} className={this.props.element.page === 2 ? 'settingBodyWrap popup_toggle_effect' : 'settingBodyWrap popup_toggle_effect_de'}>
+                <section className="settingBody">
+                    <h2 className="menuH2 flex-algin-center alp">アカウント情報</h2>
+                    <div className="formInputWrap" style={{marginBottom:"10px"}}>
+                        <div>名前</div>
+                        <input type="text" placeholder="カレンダーの名前を入力（必須）" className="removeCss" value={this.state.name == -1 ? user.name : this.state.name} onChange={(e) => this.inputNameStart(e.target.value)}/>
+                    </div>
+                </section>
+                <section className="settingBody">
+                    <h2 className="menu flex-algin-center alp">アカウント登録日</h2>
+                    <div>
+                        <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock_lp} />
+                        {user.created_at}
+                    </div>
+                </section>
+                <section className="settingBody">
+                    <h2 className="menu flex-algin-center alp">UserKey</h2>
+                    <div className="sec-main">
+                        <FontAwesomeIcon icon={faClipboard} style={FASiconsstyle.clock_lp} />
+                        {user.key}
+                    </div>
+                    <p className="secline">ユーザーごとの固有のキーです。各種お問い合わせ時などに使用することがあります。</p>
+                    <p className="secline">このキーは4.3*10^-60の確率で衝突する場合があります。詳しくは<a>ヘルプ: UserKeyについて</a>をご覧ください。</p>
+                </section>
+            </main>
+        )
+    }
+}
+
+//userプレート
+/*
+<section className="settingBody">
+<h2 className="menu flex-algin-center alp">アカウント</h2>
                 <div className="userAccountBox">
                     <div className="iconBox flex-jus-center">
                         {user.imageURL=="" ?
@@ -85,22 +131,4 @@ export default function p2(props){
                     </div>
                 </div>
             </section>
-            <section className="settingBody">
-                <h2 className="menu flex-algin-center alp">アカウント登録日</h2>
-                <div>
-                    <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock_lp} />
-                    {user.created_at}
-                </div>
-            </section>
-            <section className="settingBody">
-                <h2 className="menu flex-algin-center alp">UserKey</h2>
-                <div className="sec-main">
-                    <FontAwesomeIcon icon={faClipboard} style={FASiconsstyle.clock_lp} />
-                    {user.key}
-                </div>
-                <p className="secline">ユーザーごとの固有のキーです。各種お問い合わせ時などに使用することがあります。</p>
-                <p className="secline">このキーは4.3*10^-60の確率で衝突する場合があります。詳しくは<a>ヘルプ: UserKeyについて</a>をご覧ください。</p>
-            </section>
-        </main>
-    )
-}
+            */

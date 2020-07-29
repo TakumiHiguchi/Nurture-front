@@ -50,6 +50,8 @@ import calendar_follow from './API/calendar/follow'
 
 import news_index from './API/news/index'
 
+import user_update from './API/user/update'
+
 import schedule_index from './API/schedule/index'
 import schedule_create from './API/schedule/create'
 
@@ -658,6 +660,26 @@ class Nurture extends Component {
                 break;
         }
     }
+    //カレンダーのシェアAPIの部分
+    user(type, userData, ...args){
+        const user = this.state.user;
+        let ins;
+        if(type == "clone" || type == "create" || type == "update")this.rWindow(true,0,"");
+        
+        switch(type){
+            case "update" :
+                ins = user_update(ENDPOINT, user.key, user.session, userData);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,1,res.mes);
+                    //スケジュールを再読み込み
+                    
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+        }
+    }
     /*
 
     ここまで修正済み
@@ -966,7 +988,8 @@ class Nurture extends Component {
                             calendar_update: (calendar, mes) => this.calendar("update", calendar, 0, mes),
                             calendar_create: (calendar) => this.calendar("create", calendar),
                             calendar_destroy: (calendar) => this.calendar("destroy", calendar),
-                            calendar_share: (type,id) => this.calendar_share(type,id)
+                            calendar_share: (type,id) => this.calendar_share(type,id),
+                            user_update: (userData) => this.user("update", userData)
                            }}
                     />
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>

@@ -26,7 +26,7 @@ export default class Body extends Component{
     render(){
         switch(this.props.element.page){
             case 1: return <P1 element={this.props.element} action={this.props.action}/> ;break;
-            case 2: return <P2 element={this.props.element} action={this.props.action}/> ;break;
+            case 2: return <P2 element={this.props.element} action={this.props.action} apiFunction={this.props.apiFunction}/> ;break;
             case 3: return <P3 calendar={this.props.calendar} element={this.props.element} action={this.props.action} 
                                 regesSemesterDate = {(cal,date,position) => this.props.regesSemesterDate(cal,date,position)}
                                 page={this.props.page}
