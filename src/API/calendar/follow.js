@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-export default async function clone(endpoint, key, session, id){
+export default async function follow(endpoint, key, session, id){
     const r1 = await api(endpoint, key, session, id);
     return r1
     
@@ -9,7 +9,7 @@ export default async function clone(endpoint, key, session, id){
 
 async function api(endpoint, key, session, id){
     try{
-        const response = await axios.post(endpoint + '/api/v1/calendar_clone', {
+        const response = await axios.post(endpoint + '/api/v1/calendar_follow', {
             key: key,
             session: session,
             calendarId: id

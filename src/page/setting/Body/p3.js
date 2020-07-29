@@ -12,7 +12,8 @@ export default class p3 extends Component{
         this.state={
             semesterDateGrade:1,
             name:-1,
-            description:-1
+            description:-1,
+            anim:-1,
         }
     }
     parDate(target){
@@ -96,84 +97,102 @@ export default class p3 extends Component{
 
         //ページが変わった時の処理
         if(this.props.changePage.value){
-            this.setState({name:-1,description:-1});
+            this.setState({name:-1,description:-1,anim:this.props.page.calPage});
             this.props.changePage.action();
         }
         return(
             <main key={"p3"} className={this.props.element.page === 3 ? 'settingBodyWrap popup_toggle_effect scroll-y' : 'settingBodyWrap popup_toggle_effect_de scroll-y'}>
-                <h2>{nowCalendar.name}</h2>
-                <div className="authorContainer">作成者：{nowCalendar.author_name}</div>
-                <section className="settingBody">
-                    <h2 className="menuH2 flex-algin-center">公開設定</h2>
-                    <div className="setting_CalCheckBox flex-align-center" style={{cursor:"pointer"}} onClick={() => this.calendarUpdate("shareBool", nowCalendar, "共有設定を変更しました", !nowCalendar.shareBool)}>
-                        <div className="point flex-jus-center" style={{border:"2px solid " + nowCalendar.color}} >
-                            {nowCalendar.shareBool &&
-                                <div style={{background:nowCalendar.color}}></div>
-                            }
+                <div key={"calSettingInner" + this.state.anim} className={this.props.page.calPage === this.state.anim ? 'popup_toggle_effect' : 'popup_toggle_effect_de'}>
+                    <h2 className="flex-align-center">{nowCalendar.name}{nowCalendar.user_id != nowCalendar.author_id && <div className="followedBox flex-jus-center" style={{background:nowCalendar.color}}>フォロー</div>}</h2>
+                    <div className="authorContainer">作成者：{nowCalendar.author_name}</div>
+                    {nowCalendar.user_id == nowCalendar.author_id &&
+                        <section className="settingBody">
+                            <h2 className="menuH2 flex-algin-center">公開設定</h2>
+                            <div className="setting_CalCheckBox flex-align-center" style={{cursor:"pointer"}} onClick={() => this.calendarUpdate("shareBool", nowCalendar, "共有設定を変更しました", !nowCalendar.shareBool)}>
+                                <div className="point flex-jus-center" style={{border:"2px solid " + nowCalendar.color}} >
+                                    {nowCalendar.shareBool &&
+                                        <div style={{background:nowCalendar.color}}></div>
+                                    }
+                                </div>
+                                <div className="label scroll-x">カレンダーを公開して他の人と共有する</div>
+                            </div>
+                            <div className="setting_CalCheckBox flex-align-center" style={nowCalendar.shareBool ? {cursor:"pointer"} : null} onClick={nowCalendar.shareBool ? () => this.calendarUpdate("cloneBool", nowCalendar, "共有設定を変更しました", !nowCalendar.cloneBool) : null}>
+                                <div className="point flex-jus-center" style={nowCalendar.shareBool ? {border:"2px solid " + nowCalendar.color,cursor:"pointer"} : {border:"2px solid #aaa"}}>
+                                    {nowCalendar.shareBool && nowCalendar.cloneBool &&
+                                        <div style={nowCalendar.cloneBool ? {background:nowCalendar.color} : {background:"#aaa"}}></div>
+                                    }
+                                </div>
+                                <div className="label scroll-x" style={nowCalendar.shareBool ? null : {color:"#aaa"}}>カレンダーのコピーを許可する</div>
+                            </div>
+                            <p className="secline">「カレンダーを公開して他の人と共有する」を選択すると、誰でもあなたの予定を見れるようになります。</p>
+                            <p className="secline">詳しいカレンダーの公開設定の説明については<a>ヘルプ: カレンダーの公開設定について</a>をご覧ください。</p>
+                        </section>
+                    }
+                    <section className="settingBody">
+                        <h2 className="menuH2 flex-algin-center">授業開始日</h2>
+                        <DDMsettingGrade element={this.state.semesterDateGrade} action={(select) => this.setState({semesterDateGrade:select})}/>
+                        <div className="flex-align-center semeswrap">
+                            <div className="semesLabel">前学期</div>
+                            <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
+                            <DateRangeDatePicker date={{start:this.parDate(semeDate.fhSemester1),end:this.parDate(semeDate.fhSemester2)}}
+                                action={(date,select) => this.setDate(nowCalendar,date,select)}
+                                start={1}
+                            />
                         </div>
-                        <div className="label scroll-x">カレンダーを公開して他の人と共有する</div>
-                    </div>
-                    <div className="setting_CalCheckBox flex-align-center" style={nowCalendar.shareBool ? {cursor:"pointer"} : null} onClick={nowCalendar.shareBool ? () => this.calendarUpdate("cloneBool", nowCalendar, "共有設定を変更しました", !nowCalendar.cloneBool) : null}>
-                        <div className="point flex-jus-center" style={nowCalendar.shareBool ? {border:"2px solid " + nowCalendar.color,cursor:"pointer"} : {border:"2px solid #aaa"}}>
-                            {nowCalendar.shareBool && nowCalendar.cloneBool &&
-                                <div style={nowCalendar.cloneBool ? {background:nowCalendar.color} : {background:"#aaa"}}></div>
-                            }
+                        <div className="flex-align-center semeswrap">
+                            <div className="semesLabel">後学期</div>
+                            <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
+                            <DateRangeDatePicker date={{start:this.parDate(semeDate.lateSemester1),end:this.parDate(semeDate.lateSemester2)}}
+                                action={(date,select) => this.setDate(nowCalendar,date,select)}
+                                start={3}
+                            />
                         </div>
-                        <div className="label scroll-x" style={nowCalendar.shareBool ? null : {color:"#aaa"}}>カレンダーのコピーを許可する</div>
-                    </div>
-                    <p className="secline">「カレンダーを公開して他の人と共有する」を選択すると、誰でもあなたの予定を見れるようになります。</p>
-                    <p className="secline">詳しいカレンダーの公開設定の説明については<a>ヘルプ: カレンダーの公開設定について</a>をご覧ください。</p>
-                </section>
-                <section className="settingBody">
-                    <h2 className="menuH2 flex-algin-center">授業開始日</h2>
-                    <DDMsettingGrade element={this.state.semesterDateGrade} action={(select) => this.setState({semesterDateGrade:select})}/>
-                    <div className="flex-align-center semeswrap">
-                        <div className="semesLabel">前学期</div>
-                        <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
-                        <DateRangeDatePicker date={{start:this.parDate(semeDate.fhSemester1),end:this.parDate(semeDate.fhSemester2)}}
-                            action={(date,select) => this.setDate(nowCalendar,date,select)}
-                            start={1}
-                        />
-                    </div>
-                    <div className="flex-align-center semeswrap">
-                        <div className="semesLabel">後学期</div>
-                        <FontAwesomeIcon icon={faClock} style={FASiconsstyle.clock} />
-                        <DateRangeDatePicker date={{start:this.parDate(semeDate.lateSemester1),end:this.parDate(semeDate.lateSemester2)}}
-                            action={(date,select) => this.setDate(nowCalendar,date,select)}
-                            start={3}
-                        />
-                    </div>
-                    <p className="secline">ここで選択された日時をもとに、カレンダーにスケジュールを表示します。</p>
-                    <p className="secline">不正な日時であった場合登録されません。登録条件については<a>ヘルプ: 授業開始日の登録について</a>をご覧ください。</p>
-                </section>
-                <section className="settingBody">
-                    <h2 className="menuH2 flex-algin-center">カレンダーの設定</h2>
-                    <div className="formInputWrap" style={{marginBottom:"10px"}}>
-                        <div>カレンダーの名前</div>
-                        <input type="text" placeholder="カレンダーの名前を入力（必須）" className="removeCss" value={this.state.name == -1 ? nowCalendar.name : this.state.name} onChange={(e) => this.inputNameStart(e.target.value)}/>
-                    </div>
-                    <div className="formTextareaWrap" style={{marginBottom:"10px"}}> 
-                        <div>カレンダーの説明</div>
-                        <textarea placeholder="カレンダーの説明を入力" className="removeTACss" rows="10" value={this.state.description == -1 ? nowCalendar.description : this.state.description} onChange={(e) => this.inputDescriptionStart(e.target.value)}>
-                            
-                        </textarea>
-                    </div>
-                </section>
-                <section className="settingBody">
-                    <h2 className="menuH2 flex-algin-center">カレンダーのKey</h2>
-                    <div className="flex-align-center">
-                        <FontAwesomeIcon icon={faKey} style={FASiconsstyle.key} />
-                        <div>{nowCalendar.key}</div>
-                    </div>
-                    <p className="secline">カレンダーのKeyはこのカレンダーに固有の文字列です。お問い合わせ時や、カレンダーの検索で使用します。</p>
-                </section>
-                <section className="settingBody">
-                    <h2 className="menuH2 flex-algin-center">カレンダーの削除</h2>
-                    <div className="btn-submit settingDeleteBtn" onClick={() => this.props.action.calendarDelete("削除する","キャンセル","「" + nowCalendar.name + "」カレンダーを削除しようとしています。カレンダーを削除すると永久的にデータにアクセスできなくなります。本当にカレンダーを削除しますか？",nowCalendar)}>カレンダーを削除</div>
+                        <p className="secline">ここで選択された日時をもとに、カレンダーにスケジュールを表示します。</p>
+                        <p className="secline">不正な日時であった場合登録されません。登録条件については<a>ヘルプ: 授業開始日の登録について</a>をご覧ください。</p>
+                    </section>
+                    {nowCalendar.user_id == nowCalendar.author_id &&
+                        <section className="settingBody">
+                            <h2 className="menuH2 flex-algin-center">カレンダーの設定</h2>
+                            <div className="formInputWrap" style={{marginBottom:"10px"}}>
+                                <div>カレンダーの名前</div>
+                                <input type="text" placeholder="カレンダーの名前を入力（必須）" className="removeCss" value={this.state.name == -1 ? nowCalendar.name : this.state.name} onChange={(e) => this.inputNameStart(e.target.value)}/>
+                            </div>
+                            <div className="formTextareaWrap" style={{marginBottom:"10px"}}> 
+                                <div>カレンダーの説明</div>
+                                <textarea placeholder="カレンダーの説明を入力" className="removeTACss" rows="10" value={this.state.description == -1 ? nowCalendar.description : this.state.description} onChange={(e) => this.inputDescriptionStart(e.target.value)}>
+                                    
+                                </textarea>
+                            </div>
+                        </section>
+                    }
+                    <section className="settingBody">
+                        <h2 className="menuH2 flex-algin-center">カレンダーのKey</h2>
+                        <div className="flex-align-center">
+                            <FontAwesomeIcon icon={faKey} style={FASiconsstyle.key} />
+                            <div>{nowCalendar.key}</div>
+                        </div>
+                        <p className="secline">カレンダーのKeyはこのカレンダーに固有の文字列です。お問い合わせ時や、カレンダーの検索で使用します。</p>
+                    </section>
+                    <section className="settingBody">
+                        {nowCalendar.user_id == nowCalendar.author_id ?
+                            <>
+                                <h2 className="menuH2 flex-algin-center">カレンダーの削除</h2>
+                                <div className="btn-submit settingDeleteBtn" onClick={() => this.props.action.calendarDelete("削除する","キャンセル","「" + nowCalendar.name + "」カレンダーを削除しようとしています。カレンダーを削除すると永久的にデータにアクセスできなくなります。本当にカレンダーを削除しますか？",nowCalendar)}>カレンダーを削除</div>
 
-                    <p className="secline">このカレンダーのすべての予定が削除されます。</p>
-                    <p className="secline">このカレンダーをFollowしたユーザからもカレンダーが削除されます。</p>
-                </section>
+                                <p className="secline">このカレンダーのすべての予定が削除されます。</p>
+                                <p className="secline">このカレンダーをFollowしたユーザからもカレンダーが削除されます。</p>
+                            </>
+                        :
+                            <>
+                                <h2 className="menuH2 flex-algin-center">フォローの解除</h2>
+                                <div className="btn-submit settingDeleteBtn" onClick={() => this.props.action.calendarDelete("解除する","キャンセル","「" + nowCalendar.name + "」カレンダーのフォローを解除しようとしています。フォローを解除するとデータにアクセスできなくなります。本当にフォローを解除しますか？",nowCalendar)}>フォローを解除</div>
+
+                                <p className="secline">このカレンダーのフォローが解除されます。</p>
+                                <p className="secline">一度解除した場合でも、カレンダーライブラリーから再度フォローすることができます。</p>
+                            </>
+                        }
+                    </section>
+                </div>
             </main>
         )
     }

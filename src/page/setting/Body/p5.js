@@ -17,7 +17,6 @@ export default class p5 extends Component{
         }, 100)
     }
     render(){
-        console.log(this.props.calendarSearchResult)
         return(
             <main key={"settingP5"} className={this.props.element.page === 5 ? 'settingBodyWrap popup_toggle_effect' : 'settingBodyWrap popup_toggle_effect_de'}>
                 <section className="settingBody">
@@ -34,7 +33,7 @@ export default class p5 extends Component{
                     </div>
                     <div className="flex calendarSearchResult">
                         {this.props.calendarSearchResult.map((data) =>
-                            <div className="CalendarCard flex" key={data.key}>
+                            <div className="CalendarCard flex" key={data.key + "calendarSearch" + this.state.search}>
                                 <div className="flex" style={{width:"100%"}}>
                                     <div className="imageContainer" style={{color:data.color}}>{data.name.slice(0,1)}</div>
                                     <div className="dataContainer">
@@ -43,9 +42,9 @@ export default class p5 extends Component{
                                         <div className="descriptionBox flex-jus-between scroll-y">{data.description}</div>
                                         <div className="buBo flex">
                                             {data.cloneBool &&
-                                                <div><FontAwesomeIcon icon={faClone} style={{paddingRight:"5px"}}/>コピーする</div>
+                                                <div onClick={() => this.props.apiFunction.calendar_share("clone",data.id)}><FontAwesomeIcon icon={faClone} style={{paddingRight:"5px"}}/>コピーする</div>
                                             }
-                                            <div><FontAwesomeIcon icon={faUserTag} style={{paddingRight:"5px"}}/>フォローする</div>
+                                            <div onClick={() => this.props.apiFunction.calendar_share("follow",data.id)}><FontAwesomeIcon icon={faUserTag} style={{paddingRight:"5px"}}/>フォローする</div>
                                         </div>
                                         <div className="data flex">
                                             <div>授業: {data.scheduleCount}件</div>

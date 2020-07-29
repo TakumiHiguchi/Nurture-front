@@ -46,6 +46,7 @@ import calendar_update from './API/calendar/update'
 import calendar_destroy from './API/calendar/destroy'
 import calendar_search from './API/calendar/search'
 import calendar_clone from './API/calendar/clone'
+import calendar_follow from './API/calendar/follow'
 
 import news_index from './API/news/index'
 
@@ -285,7 +286,7 @@ class Nurture extends Component {
             session: this.state.user.session
         })
         .then(response => {
-            this.rWindow(true,1,"学期の期間を保存しました");
+            this.rWindow(true,1,response.data.mes);
         })
         .catch(() => {
             this.rWindow(true,2,'通信に失敗しました');
@@ -619,12 +620,11 @@ class Nurture extends Component {
     calendar_share(type,id, ...args){
         const user = this.state.user;
         let ins;
-                
         if(type == "clone" || type == "create" || type == "update")this.rWindow(true,0,"");
         
         switch(type){
             case "search" :
-                ins = calendar_search(ENDPOINT, args);//外部関数
+                ins = calendar_search(ENDPOINT, args, user.key, user.session);//外部関数
                 ins.then(res => {
                     this.setState({calendar_search:res.calendars})
                 })
@@ -633,9 +633,22 @@ class Nurture extends Component {
                 });
                 break;
             case "clone" :
+                
                 ins = calendar_clone(ENDPOINT, user.key, user.session, id);//外部関数
                 ins.then(res => {
-                    this.rWindow(true,res.status,res.mes);
+                    this.rWindow(true,1,res.mes);
+                    //スケジュールを再読み込み
+                    this.calendar("index");
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "follow" :
+                
+                ins = calendar_follow(ENDPOINT, user.key, user.session, id);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,1,res.mes);
                     //スケジュールを再読み込み
                     this.calendar("index");
                 })
@@ -953,7 +966,7 @@ class Nurture extends Component {
                             calendar_update: (calendar, mes) => this.calendar("update", calendar, 0, mes),
                             calendar_create: (calendar) => this.calendar("create", calendar),
                             calendar_destroy: (calendar) => this.calendar("destroy", calendar),
-                            calendar_share: (type) => this.calendar_share(type)
+                            calendar_share: (type,id) => this.calendar_share(type,id)
                            }}
                     />
                     <Header actionShow={(mode) => this.PopupToggle(mode)} action={(mode) => this.togglePvmode(mode)} user={this.state.user}/>

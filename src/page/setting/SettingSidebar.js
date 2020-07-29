@@ -30,7 +30,7 @@ export default function Sidebar(props){
                                 margin:"0 10px",
                                 background:cal.color
                                 }}></div>
-                            <p style={{fontSize:"0.9em",padding:"6px 0 4px 0"}}>{cal.name}</p>
+                            <p className="flex-align-center scroll-x" style={{fontSize:"0.9em",padding:"6px 0 4px 0"}}>{cal.name}{cal.user_id != cal.author_id && <div className="followedBox flex-jus-center" style={{background:cal.color}}>フォロー</div>}</p>
                         </div>
                     )}
                 </div>

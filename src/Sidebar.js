@@ -105,16 +105,18 @@ export default function sidebar(props){
              </div>
              <div className="sideCalendarContainer">
                  <div style={{paddingLeft:"10px"}}>マイカレンダー</div>
-                 {calendar.map((cal,index) =>
-                    <div className="calendarList flex-align-center" onClick={() => props.changeSelectCalendar(index)}>
-                        <div className="point flex-jus-center" style={{border:"2px solid " + cal.color}}>
-                            {selectCalendarNumber.indexOf(index) !== -1 &&
-                                <div style={{background:cal.color}}></div>
-                            }
+                 <div className="scroll-y sideccl">
+                    {calendar.map((cal,index) =>
+                        <div className="calendarList flex-align-center" onClick={() => props.changeSelectCalendar(index)}>
+                            <div className="point flex-jus-center" style={{border:"2px solid " + cal.color}}>
+                                {selectCalendarNumber.indexOf(index) !== -1 &&
+                                    <div style={{background:cal.color}}></div>
+                                }
+                            </div>
+                            <div className="name scroll-x">{cal.name}</div>
                         </div>
-                        <div className="name scroll-x">{cal.name}</div>
-                    </div>
-                 )}
+                    )}
+                 </div>
              </div>
              <div className="sideHelpContainer">
                  <a>利用規約</a><a>ヘルプ</a><a>プライバシー</a>
