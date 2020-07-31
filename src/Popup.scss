@@ -468,9 +468,6 @@ input.adSheduleInput{
         border-radius:5px;
     }
 }
-.adTaskbody{
-    margin:10px 0 0 0;
-}
 //タスクのinput
 input.task-input{
     height:30px;
@@ -480,7 +477,7 @@ input.task-input{
     border:1px solid #e8e8e8;
 }
 textarea.task-textarea{
-    height:calc(100% - 350px);
+    height:100%;
     width:calc(100% - 64px);
     font-size:1em;
     margin:5px 32px 10px 32px;
@@ -733,14 +730,23 @@ div.react-datepicker-popper{
 }
 
 //タスク入力のcss
-.task-textarea{
+.TlEditor_task{
+    height:calc(100% - 355px);
+}
+//exam入力のcss
+.TlEditor_exam{
+    height:calc(100% - 307px);
+}
+
+//tledotor
+.tl-textarea{
     position:relative;
-    height:calc(100% - 335px);
+    height:100%;
     width:calc(100% - 64px);
     font-size:1em;
     margin:10px 32px 10px 32px;
     .RichTextEditor__root___2QXK-{
-        height:100%;
+        height:calc(100% - 10px);
         width:100%;
     }
     .RichTextEditor__editor___1QqIU{
@@ -765,7 +771,7 @@ div.react-datepicker-popper{
 .tlEDeleteButton{
     position:absolute;
     right:2px;
-    bottom:2px;
+    bottom:12px;
     padding:4px 8px;
     border-radius:5px;
     z-index:99999;

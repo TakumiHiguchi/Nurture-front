@@ -23,7 +23,7 @@ export default class TlEditor extends React.Component {
 
   render () {
     return (
-            <div className="task-textarea">
+            <div className="tl-textarea">
               <RichTextEditor
                 value={this.state.value}
                 onChange={value => this.onChange(value)}

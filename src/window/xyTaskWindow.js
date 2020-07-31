@@ -125,8 +125,6 @@ class xyTaskWindow extends Component{
             lab = "task"
         }
         
-        
-        
         return(
                <div className="no-select">
                    <div style={xyWindowMain} className={this.props.value.window ? "xyw-inner xyWindowWrap" : "xyw_de-inner xyWindowWrap"}>
@@ -136,9 +134,13 @@ class xyTaskWindow extends Component{
                                 <div className="brandIcons flex">
                                     <div className="line flex-jus-center"><FontAwesomeIcon icon={faLine} style={lineIcon}/></div>
                                     <div className="twitter flex-jus-center"><FontAwesomeIcon icon={faTwitter} style={twitterIcon}/></div>
-                                    <div className="twitter flex-jus-center" onClick={apiDis ? examAPIfunction_delete : taskAPIfunction_delete}><FontAwesomeIcon icon={faTrashAlt} style={pmcl}/></div>
+                                    {value.showData.calOwner === value.showData.calUser &&
+                                        <div className="twitter flex-jus-center" onClick={apiDis ? examAPIfunction_delete : taskAPIfunction_delete}><FontAwesomeIcon icon={faTrashAlt} style={pmcl}/></div>
+                                    }
                                 </div>
-                                <div className="edit flex-jus-center" onClick={() => this.props.action.editPage(true, editShowData, lab)}><FontAwesomeIcon icon={faEdit} style={pmcl}/></div>
+                                {value.showData.calOwner === value.showData.calUser &&
+                                    <div className="edit flex-jus-center" onClick={() => this.props.action.editPage(true, editShowData, lab)}><FontAwesomeIcon icon={faEdit} style={pmcl}/></div>
+                                }
                                 <div className="plus flex-jus-center"><FontAwesomeIcon icon={faPlus} style={pmcr}/></div>
                             </div>
                         </div>
@@ -159,17 +161,19 @@ class xyTaskWindow extends Component{
                                 }}></div>
                             }
                         </div>
-                        <div className="taskWindow_complete">
-                            {value.showData != void 0 && value.showData.complete ?
-                                    <div onClick={apiDis ? () => this.examAPIfunction_update() : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
-                                        未完了にする
-                                    </div>
-                                :
-                                    <div onClick={apiDis ? () => this.examAPIfunction_update() : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
-                                        完了にする
-                                    </div>
-                            }
-                        </div>
+                        {value.showData.calOwner === value.showData.calUser &&
+                            <div className="taskWindow_complete">
+                                {value.showData != void 0 && value.showData.complete ?
+                                        <div onClick={apiDis ? () => this.examAPIfunction_update() : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
+                                            未完了にする
+                                        </div>
+                                    :
+                                        <div onClick={apiDis ? () => this.examAPIfunction_update() : () => this.taskAPIfunction_update()} className="taskWindow_completeButton">
+                                            完了にする
+                                        </div>
+                                }
+                            </div>
+                        }
                     </div>
                 </div>
                );

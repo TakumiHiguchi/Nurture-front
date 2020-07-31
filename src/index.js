@@ -226,14 +226,14 @@ class Nurture extends Component {
             news:[],
             change_schedules_after:{},
             change_schedules_before:{},
-            xyWindow:{window:false,x:0,y:0,year:0,month:0,date:0,semesterNom:0,task:{},exam:{},changeSchedule:{},csBefore:{}},
+            xyWindow:{window:false,x:0,y:0,year:0,month:0,date:0},
             xyTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{}},
             moreTaskWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showData:{}},
             xyScheduleWindow:{window:false,x:0,y:0,year:0,month:0,date:0,position:0,showSchedule:{},type:""},
             editPage:{window:false,showData:{title:''},type:""},
             calendar:[],
             calendar_search:[],
-            selectCalendarNumber:[0]
+            selectCalendarNumber:[]
         }
     }
     //カレンダーの選択を変更
@@ -307,7 +307,8 @@ class Nurture extends Component {
                 ins = calendar_index(ENDPOINT, user.key, user.session);//外部関数
                 ins.then(res => {
                     if(res){
-                        this.setState({calendar:res.calendars})
+                        this.setState({calendar:res.calendars});
+                        this.setState({selectCalendarNumber : [...Array(this.state.calendar.length).keys()]});
                     }else{
                         this.rWindow(true,2,'セッション切れです');
                     }
@@ -733,7 +734,8 @@ class Nurture extends Component {
                 
                 this.calendar("index");
                 this.news("index");
-                this.calendar_share("search");
+                this.calendar_share("search")
+                
             })
             .catch(() => {
                 console.log('通信に失敗しました');
@@ -783,19 +785,14 @@ class Nurture extends Component {
         this.setState({rWindow:ins});
     }
     
-    showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore){
+    showWindow(bl,x,y,year,month,date){
         let ins = this.state.xyWindow;
         ins.window = bl;
         ins.x = x;
         ins.y = y;
-        ins.task = task;
-        ins.exam = exam;
-        ins.changeSchedule = changeSchedule;
-        ins.csBefore = csBefore;
         ins.year = year;
         ins.month = month;
         ins.date = date;
-        ins.semesterNom = semesterNom;
         this.setState({xyWindow:ins})
     }
     showTaskWindow(bl,x,y,year,month,date,position,showData){
@@ -873,7 +870,7 @@ class Nurture extends Component {
             this.setState({select:select});
         }else if(type == "month"){
             //月セレクターの変更
-            const selectDate = new Date(this.state.select.year,this.state.select.month - 1 + parseInt(amount), this.state.select.day );
+            const selectDate = new Date(this.state.select.year,this.state.select.month - 1 + parseInt(amount), 1);
             let y = selectDate.getFullYear();
             let m = selectDate.getMonth() + 1;
             
@@ -959,6 +956,10 @@ class Nurture extends Component {
                     <Window
                         value={{xyWindow: this.state.xyWindow,xyTaskWindow: this.state.xyTaskWindow,moreTaskWindow:this.state.moreTaskWindow,xyScheduleWindow:this.state.xyScheduleWindow}}
                         scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}
+
+                        calendar={this.state.calendar}
+                        selectCalendarNumber={this.state.selectCalendarNumber}
+                        user = {this.state.user}
                         action={{
                                 xyWindow: (bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
                                 xyTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showTaskWindow(bl,x,y,year,month,date,position,showData),
@@ -1024,19 +1025,14 @@ class Nurture extends Component {
                                 showTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showTaskWindow(bl,x,y,year,month,date,position,showData)
                             }}/>
                         <Body pageData={this.state.page}
-                            scheduleDatas={this.state.caDatas[this.state.user.grade - 1]}
-                            element={{caCount: this.state.caCount,semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
                             action = {{
                                 changeSelect: (type,amount) => this.changeSelect(type,amount),
-                                showWindow:(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore),
+                                showWindow:(bl,x,y,year,month,date) => this.showWindow(bl,x,y,year,month,date),
                                 showTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showTaskWindow(bl,x,y,year,month,date,position,showData),
                                 showMoreTaskWindow:(bl,x,y,year,month,date,position,showData) => this.showMoreTaskWindow(bl,x,y,year,month,date,position,showData),
                                 xyScheduleWindow:(bl,x,y,year,month,date,position,showSchedule,type) => this.showScheduleWindow(bl,x,y,year,month,date,position,showSchedule,type)
                             }}
                             select = {this.state.select}
-                            task ={this.state.task}
-                            exam ={this.state.exam}
-                            change_schedules ={{after:this.state.change_schedules_after,before:this.state.change_schedules_before}}
                             calendar={this.state.calendar}
                             selectCalendarNumber={this.state.selectCalendarNumber}
                             user = {this.state.user}
@@ -1091,7 +1087,12 @@ class Body extends Component {
                 <main className="fa-mainContainer">
                    <DateBox type={"month"} action={(type,amount) => this.props.action.changeSelect(type,amount)} data={{year:this.props.select.year,month:this.props.select.month}}/>
                    <div className="fa-scedule">
-                   <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} scheduleData = {this.props.scheduleDatas} element={this.props.element} task={this.props.task} exam={this.props.exam} change_schedules ={this.props.change_schedules} action={{showWindow:(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.props.action.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)}}/>
+                   <MonthCalender select={{year:this.props.select.year,month:this.props.select.month,day:this.props.select.day}} 
+                        action={{showWindow:(bl,x,y,year,month,date) => this.props.action.showWindow(bl,x,y,year,month,date)}}
+                        calendar={this.props.calendar}
+                        selectCalendarNumber={this.props.selectCalendarNumber}
+                        user = {this.props.user}
+                   />
                    </div>
                 </main>
             )
@@ -1103,9 +1104,10 @@ class Body extends Component {
                    />
                    <div className="fa-scedule">
                    <SemesterCalender data={{year:this.props.select.year,month:this.props.select.month}}
-                        scheduleData = {this.props.scheduleDatas} element={this.props.element}
-                        task={this.props.task} exam={this.props.exam} change_schedules ={this.props.change_schedules}
                         action={{showWindow:(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore) => this.props.action.showWindow(bl,x,y,year,month,date,semesterNom,task,exam,changeSchedule,csBefore)}}
+                        calendar={this.props.calendar}
+                        selectCalendarNumber={this.props.selectCalendarNumber}
+                        user = {this.props.user}
                    />
                    </div>
                 </main>

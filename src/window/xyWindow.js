@@ -6,6 +6,11 @@ import { faTimes,faPlus,faTrashAlt,faEdit } from "@fortawesome/free-solid-svg-ic
 import { faLine,faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 import './xyWindow.scss'
+import P0 from './page/xyWindowPage0'
+import P1 from './page/xyWindowPage1'
+import P2 from './page/xyWindowPage2'
+
+
 class xyWindow extends Component{
     constructor(props){
         super(props);
@@ -24,20 +29,7 @@ class xyWindow extends Component{
         //詳細表示のフラグを初期化
         this.setState({page:-1,taskOpenFlag:-1,examOpenFlag:-1});
     }
-    handleTask(index){
-        if(this.state.taskOpenFlag !== index){
-            this.setState({taskOpenFlag:index});
-        }else{
-            this.setState({taskOpenFlag:-1});
-        }
-    }
-    handleExam(index){
-        if(this.state.examOpenFlag !== index){
-            this.setState({examOpenFlag:index});
-        }else{
-            this.setState({examOpenFlag:-1});
-        }
-    }
+    
     
     //画面の大きさを取得
     componentWillMount () {
@@ -57,260 +49,241 @@ class xyWindow extends Component{
         }
         this.setState({size: wsize});
     }
+    parDate(target){
+        var dateSeme = target.split('/');
+        let stDate = new Date();
+        if(dateSeme.length == 3){
+            stDate = new Date(dateSeme[0],dateSeme[1] - 1,dateSeme[2]);
+        }
+        return stDate
+    }
     
-    taskAPIfunction_update(task){
-        const disString = ["完了済み","未完了"]
-        let value = this.props.value;
-        let d_id = 0;
-        let dataHash = {};
-        let cont = ""
-        if(task != void 0){
-            d_id = task.id;
-            dataHash = task;
-            dataHash.complete = !dataHash.complete;
-        }
-        if(dataHash.complete){
-            cont = disString[0];
-        }else{
-            cont = disString[1];
-        }
-        this.props.apiFunction.task_update(d_id, dataHash ,"タスクを" + cont + "にしました");
-    }
-    examAPIfunction_update(exam){
-        const disString = ["完了済み","未完了"]
-        let value = this.props.value;
-        let d_id = 0;
-        let dataHash = {};
-        let cont = ""
-        if(exam != void 0){
-            d_id = exam.id;
-            dataHash = exam;
-            dataHash.complete = !dataHash.complete;
-        }
-        if(dataHash.complete){
-            cont = disString[0];
-        }else{
-            cont = disString[1];
-        }
-        this.props.apiFunction.exam_update(d_id, dataHash ,"試験を" + cont + "にしました");
-    }
+    
     
     render(){
+        ///props
+        const value = this.props.value;
+        const year = value.year;
+        const mon = value.month;
+        const day = value.date;
+        const selectCalendarNumber = this.props.selectCalendarNumber;
+        const calendar = this.props.calendar;    
+        //表示場所を生成する
         const bl1 = this.props.value.y + 300 > this.state.size.height;
         const bl2 = this.props.value.x + 450 > this.state.size.width;
         let xyWindowMain = {};
         if(bl1 && bl2){
             xyWindowMain = {
-                top:this.props.value.y - 300 + "px",
-                left:this.props.value.x - 450 + "px"
+                top:value.y - 300 + "px",
+                left:value.x - 450 + "px"
             }
         }else if(bl1 && !bl2){
             xyWindowMain = {
-                top:this.props.value.y - 300 + "px",
-                left:this.props.value.x + 40 + "px"
+                top:value.y - 300 + "px",
+                left:value.x + 40 + "px"
             }
         }else if(!bl1 && bl2){
             xyWindowMain = {
-                top:this.props.value.y + "px",
-                left:this.props.value.x - 450 + "px"
+                top:value.y + "px",
+                left:value.x - 450 + "px"
             }
         }else{
             xyWindowMain = {
-                top:this.props.value.y + "px",
-                left:this.props.value.x + 40 + "px"
+                top:value.y + "px",
+                left:value.x + 40 + "px"
             }
         }
-        
-        let value = this.props.value;
-        
-        //授業フラグ
-        let schflag = [void 0,void 0,void 0,void 0,void 0,void 0];
-        if(value.semesterNom !== -1){
-            schflag = this.props.scheduleDatas[value.semesterNom].map((schedule,index) =>
-                schedule.find(item => item !== 0)
-            )
+
+        //task
+        //カレンダーの選択個数分ループしてタスクを成形する
+        let taskData = []
+        if(calendar.length > 0){
+            for(var i = 0; i < selectCalendarNumber.length; i++){
+                //日付のtaskを取り出す処理
+                let tasks = calendar[selectCalendarNumber[i]].tasks;
+                if(tasks[year] != null){
+                    if(tasks[year] !== void 0 && tasks[year][mon] !== void 0 && tasks[year][mon][day] !== void 0){
+                        tasks[year][mon][day].map((d)=>{
+                            d.calOwner = calendar[selectCalendarNumber[i]].author_id
+                            d.calUser = calendar[selectCalendarNumber[i]].user_id
+                            taskData.push(d)
+                        })
+                    }
+                }
+            }
         }
-        
-        //positionを生成
-        let date = new Date(value.year,value.month - 1,value.date).getDay();
-        if(date === 0)date = 7;
-        date -= 1
-        
-        
-        //初期値の時のpage
-        if(schflag[date] !== void 0 || value.changeSchedule.length !== void 0)if(this.state.page == -1)this.setState({page:2});
-        if(value.task.length !== void 0)if(this.state.page == -1)this.setState({page:1});
-        if(value.exam.length !== void 0)if(this.state.page == -1)this.setState({page:0});
-        
-        
+        //exam
+        //カレンダーの選択個数分ループしてタスクを成形する
+        let examData = []
+        if(calendar.length > 0){
+            for(var i = 0; i < selectCalendarNumber.length; i++){
+                //日付のtaskを取り出す処理
+                let exams = calendar[selectCalendarNumber[i]].exams;
+                if(exams[year] != null){
+                    if(exams[year] !== void 0 && exams[year][mon] !== void 0 && exams[year][mon][day] !== void 0){
+                        exams[year][mon][day].map((d)=>{
+                            d.calOwner = calendar[selectCalendarNumber[i]].author_id
+                            d.calUser = calendar[selectCalendarNumber[i]].user_id
+                            examData.push(d)
+                        })
+                    }
+                }
+            }
+        }
+
+        //カレンダーの選択個数分ループしてスケジュールを成形する
+        let ScheduleData = [0,0,0,0,0,0];
+        if(calendar.length > 0){
+            for(var i = 0; i < selectCalendarNumber.length; i++){
+                let count = 0;
+                //schedule取り出す処理
+                let schedules = calendar[selectCalendarNumber[i]].schedules;
+                let semesterPeriod = calendar[selectCalendarNumber[i]].semesterPeriod[this.props.user.grade - 1];
+                let insSchedules = [];
+                let nowDate = this.parDate(year + "/" + mon + "/" + day);
+                let youbi = nowDate.getDay();
+                if(youbi === 0)youbi = 7;
+                youbi--;
+                const bl1 = this.parDate(semesterPeriod.fhSemester1) <= nowDate;
+                const bl2 = this.parDate(semesterPeriod.fhSemester2) >= nowDate;
+                const bl3 = this.parDate(semesterPeriod.lateSemester1) <= nowDate;
+                const bl4 = this.parDate(semesterPeriod.lateSemester2) >= nowDate;
+
+                if(schedules[this.props.user.grade] !== void 0){
+                    insSchedules = schedules[this.props.user.grade - 1];
+                    if(bl1 && bl2){
+                        for(var ix = 0; ix < 6; ix++){
+                            if(ScheduleData[ix] === 0){
+                                ScheduleData[ix] = insSchedules[0][youbi][ix];
+                            }
+                        }
+                    }else if(bl3 && bl4){
+                        for(var ix = 0; ix < 6; ix++){
+                            if(ScheduleData[ix] === 0){
+                                ScheduleData[ix] = insSchedules[1][youbi][ix];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //カレンダーの選択個数分ループして授業変更を成形する
+        let changeScheduleData_before = [0,0,0,0,0,0];
+        let changeScheduleData_after = [0,0,0,0,0,0];
+        if(calendar.length > 0){
+            for(var i = 0; i < selectCalendarNumber.length; i++){
+                let count = 0;
+                //schedule取り出す処理
+                let cs_before = calendar[selectCalendarNumber[i]].change_schedules_before;
+                let cs_after = calendar[selectCalendarNumber[i]].change_schedules_after;
+                let insCs_before = [];
+                let insCs_after = [];
+                if(cs_before[year] != null){
+                    if(cs_before[year] !== void 0 && cs_before[year][mon] !== void 0){
+                        if(cs_before[year][mon][day] !== void 0){
+                            insCs_before= cs_before[year][mon][day] ;
+                        }
+                    }
+                }
+                if(cs_after[year] != null){
+                    if(cs_after[year] !== void 0 && cs_after[year][mon] !== void 0){
+                        if(cs_after[year][mon][day] !== void 0){
+                            insCs_after= cs_after[year][mon][day] ;
+                        }
+                    }
+                }
+                insCs_before.map((data) =>{
+                    if(changeScheduleData_before[data.before_position] === 0)
+                        changeScheduleData_before[data.before_position] = data;
+                });
+                insCs_after.map((data) =>{
+                    if(changeScheduleData_after[data.after_position] === 0)
+                        changeScheduleData_after[data.after_position] = data;
+                });
+            }
+        }
+
+        //目次を割り当てる
+        let pageNom = this.state.page
+        if(pageNom === -1){
+            if(examData.length > 0){
+                pageNom = 0;
+            }else if(taskData.length > 0){
+                pageNom = 1;
+            }else if(ScheduleData.length > 0 || changeScheduleData_before.length > 0 || changeScheduleData_after.length > 0){
+                pageNom = 2;
+            }
+        }
+
+        //目次
         let index = [];
-        let taskData = [];
-        if(value.exam.length !== void 0){
+        if(examData.length > 0){
             index.push(
-                       <div onClick={() => this.setState({page:0})} className={this.state.page === 0 ? "aTindexactive" : null}>
-                            試験
-                       </div>
-                       
-                       );
-        }
-        if(value.task.length !== void 0){
-            
-            index.push(
-                       <div onClick={() => this.setState({page:1})} className={this.state.page === 1 ? "aTindexactive" : null}>
-                            タスク
-                       </div>
-                       
-                       );
-        }
-        if(schflag[date] !== void 0 || value.changeSchedule.length !== void 0){
-            index.push(
-                <div onClick={() => this.setState({page:2})} className={this.state.page === 2 ? "aTindexactive" : null}>
-                     スケジュール
+                <div onClick={() => this.setState({page:0})} className={pageNom === 0 ? "aTindexactive" : null}>
+                    試験
                 </div>
             );
         }
-        
-        //授業の変更の配列を作る
-        let csArray = new Array(6);
-        for(let i = 0;i<value.changeSchedule.length;i++){
-             csArray[value.changeSchedule[i]["after_position"]] = value.changeSchedule
-        }
-        //授業の変更前の配列を作る
-        let csBeforeArray = new Array(6);
-        for(let i = 0;i<value.csBefore.length;i++){
-             csBeforeArray[parseInt(value.csBefore[i]["before_position"] % 6)] = value.csBefore
-        }
-        //表示する授業を作り、授業の変更を反映する
-        let insSchedule = [];
-        if(schflag[date] !== void 0){
-            insSchedule = this.props.scheduleDatas[value.semesterNom][date].map((schedule,index) =>
-                <div>
-                    {csArray[index] !== void 0 &&
-                        <div>
-                            <div className="scheduleList">
-                                <div className="sbu-window-c flex">{index+1}講時<div className="changeScheduleMark">授業変更</div></div>
-                                <div className="">{csArray[index][0].title}</div>
-                            </div>
-                        </div>
-                    }
-                    {((schedule !== 0 && csArray[index] === void 0) && (schedule !== 0 && csBeforeArray[index] === void 0))&&
-                        <div className="scheduleList">
-                            <div className="sbu-window">{index+1}講時</div>
-                            <div className="">{schedule.title}</div>
-                        </div>
-                    }
-                    {(schedule !== 0 && csArray[index] !== void 0) &&
-                        <div className="scheduleList">
-                            <div className="sbu-window"><s>{index+1}講時</s></div>
-                            <div className=""><s>{schedule.title}</s></div>
-                        </div>
-                    }
-                    {(schedule !== 0 && csBeforeArray[index] !== void 0)&&
-                        <div className="scheduleList">
-                            <div className="sbu-window-c flex"><s>{index+1}講時</s><div className="changeScheduleMark">{csBeforeArray[index][0].afterDate} {csBeforeArray[index][0].after_position + 1}限目へ授業変更</div></div>
-                            <div className=""><s>{schedule.title}</s></div>
-                        </div>
-                    }
-                    
+        if(taskData.length > 0){
+            index.push(
+                <div onClick={() => this.setState({page:1})} className={pageNom === 1 ? "aTindexactive" : null}>
+                     タスク
                 </div>
-            )
-        }else{
-            insSchedule = csArray.map((schedule,index) =>
-                             <div>
-                                 {csArray[index] !== void 0 &&
-                                     <div>
-                                         <div className="scheduleList">
-                                             <div className="sbu-window-c flex">{index+1}講時<div className="changeScheduleMark">授業変更</div></div>
-                                             <div className="">{csArray[index][0].title}</div>
-                                         </div>
-                                     </div>
-                                 }
-                             </div>
             );
         }
+        if(ScheduleData.length > 0 || changeScheduleData_before.length > 0 || changeScheduleData_after.length > 0){
+            index.push(
+                <div onClick={() => this.setState({page:2})} className={pageNom === 2 ? "aTindexactive" : null}>
+                    スケジュール
+                </div>
+            );
+        }
+
         
+        //page
+        let page = [];
+        switch(pageNom){
+            case 0:page.push(
+                    <P0 
+                        exams={examData}
+                        apiFunction={this.props.apiFunction}
+                    />)
+                    break;
+            case 1:page.push(
+                    <P1 
+                        tasks={taskData}
+                        apiFunction={this.props.apiFunction}
+                    />)
+                    break;
+            case 2:page.push(
+                <P2 
+                    schedules={ScheduleData}
+                    apiFunction={this.props.apiFunction}
+                    before={changeScheduleData_before}
+                    after={changeScheduleData_after}
+                />)
+                break;
+
+        }
         
         return(
-               <div className="no-select">
-                   <div style={xyWindowMain} className={this.props.value.window ? "xyw-inner xyWindowWrap" : "xyw_de-inner xyWindowWrap"}>
-                        <div className="flex-jus-between xywindowTitleBox">
-                            <div className="windowDate">{value.year}年{value.month}月{value.date}日</div>
-                            <div className="windowIcons flex">
-                                <div className="brandIcons flex">
-                                    <div className="line flex-jus-center"><FontAwesomeIcon icon={faLine} style={lineIcon}/></div>
-                                    <div className="twitter flex-jus-center"><FontAwesomeIcon icon={faTwitter} style={twitterIcon}/></div>
-                                </div>
-                                <div className="plus flex-jus-center"><FontAwesomeIcon icon={faPlus} style={pmcr}/></div>
-                            </div>
+            <div style={xyWindowMain} className={value.window ? "xyw-inner xyWindowWrap no-select" : "xyw_de-inner xyWindowWrap"}>
+                <div className="flex-jus-between xywindowTitleBox">
+                    <div className="windowDate">{value.year}年{value.month}月{value.date}日</div>
+                    <div className="windowIcons flex">
+                        <div className="brandIcons flex">
+                            <div className="line flex-jus-center"><FontAwesomeIcon icon={faLine} style={lineIcon}/></div>
+                            <div className="twitter flex-jus-center"><FontAwesomeIcon icon={faTwitter} style={twitterIcon}/></div>
                         </div>
-                        <div className="flex xypageIndex">{index}</div>
-                        <div className="xyWindowInner">
-                            {(value.exam.length !== void 0 && this.state.page == 0) &&(
-                                    <div className="taskListWrap">
-                                        {[...Array(value.exam.length)].map((_,index) =>
-                                            <div className="taskList" key={"examWindow" + index}>
-                                                <div className="elp" onClick={() => this.handleExam(index)} key={"examTitle" + index}>{value.exam[index].position + 1}限:
-                                                    {value.exam[index].complete ?
-                                                        <><s>{value.exam[index].title}</s>（完了済み）</>
-                                                    :
-                                                        <>{value.exam[index].title}</>
-                                                    }
-                                                                           
-                                                </div>
-                                                <div className={this.state.examOpenFlag === index ? "xyTaskEf xyTaskContant" : "xyTaskEf_de xyTaskContant"}>
-                                                    <div className="mainCont" dangerouslySetInnerHTML={{
-                                                      __html: value.exam[index].content
-                                                    }}></div>
-                                                    <div className="completeBtn" onClick={() => this.examAPIfunction_update(value.exam[index])}>
-                                                        {value.exam[index].complete ?
-                                                            <>未完了にする</>
-                                                        :
-                                                            <>完了にする</>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                            )}
-                            {(value.task.length !== void 0 && this.state.page == 1) &&(
-                                    <div className="taskListWrap">
-                                        {[...Array(value.task.length)].map((_,index) =>
-                                            <div className="taskList" key={"taskWindow" + index}>
-                                                <div className="tlp" onClick={() => this.handleTask(index)} key={"taskTitle" + index}>
-                                                    {value.task[index].complete ?
-                                                        <><s>{value.task[index].title}</s>（完了済み）</>
-                                                    :
-                                                        <>{value.task[index].title}</>
-                                                    }
-                                                </div>
-                                                <div className={this.state.taskOpenFlag === index ? "xyTaskEf xyTaskContant" : "xyTaskEf_de xyTaskContant"}>
-                                                    <div className="mainCont" dangerouslySetInnerHTML={{
-                                                      __html: value.task[index].content
-                                                    }}></div>
-                                                    <div className="completeBtn" onClick={() => this.taskAPIfunction_update(value.task[index])}>
-                                                        {value.task[index].complete ?
-                                                            <>未完了にする</>
-                                                        :
-                                                            <>完了にする</>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                            )}
-                            {((schflag[date] !== void 0 || value.changeSchedule.length !== void 0) && this.state.page == 2) &&(
-                                    <div className="taskListWrap">
-                                        
-                                        {insSchedule}
-                                                                                                                     
-                                    </div>
-                            )}
-                        </div>
+                        <div className="plus flex-jus-center"><FontAwesomeIcon icon={faPlus} style={pmcr}/></div>
                     </div>
                 </div>
-               );
+                <div className="flex xypageIndex">{index}</div>
+                <div className="xyWindowInner">
+                    {page}
+                </div>
+            </div>
+        );
         
     }
 }

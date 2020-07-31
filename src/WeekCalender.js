@@ -23,8 +23,6 @@ export default class WeekCalender extends Component{
         const selectDay = this.props.select.day;
         const selectMonth = this.props.select.month;
         const selectYear = this.props.select.year;
-        //学期の期間
-        let semeD = this.props.element.semesterDate
         
         //選択している日
         const selectDate = new Date(selectYear+"/"+selectMonth+"/"+selectDay)
@@ -38,19 +36,15 @@ export default class WeekCalender extends Component{
         return(
                <div className="flex-jus-between fa-scedule-in">
                    {[...Array(7)].map((_,index) =>
-                        <WeekLine daySchedule={this.parDate(semeD[0]) <= new Date(selectYear+"/"+selectMonth+"/"+(startDay + index)) && new Date(selectYear+"/"+selectMonth+"/"+(startDay + index)) <= this.parDate(semeD[1]) ?
-                            this.props.scheduleData[0][index]
-                            :
-                            (this.parDate(semeD[2]) <= new Date(selectYear+"/"+selectMonth+"/"+(startDay + index)) && new Date(selectYear+"/"+selectMonth+"/"+(startDay + index)) <= this.parDate(semeD[3]) ?
-                                this.props.scheduleData[1][index]
-                                :
-                                plCal[index]
-                             )
-                            }
+                        <WeekLine
                             key={"weekLine"+index}
                             action = {this.props.action}
                             task={this.props.task} exam={this.props.exam} change_schedules={this.props.change_schedules}
-                            date={{year:selectYear,month:selectMonth,day:startDay+index}}
+                            date={{
+                                year:new Date(selectYear,selectMonth,startDay + index).getFullYear(),
+                                month:new Date(selectYear,selectMonth,startDay + index).getMonth(),
+                                day:new Date(selectYear,selectMonth,startDay + index).getDate()
+                                }}
                             change_schedules = {this.props.change_schedules}
 
                             calendar={this.props.calendar}
@@ -72,6 +66,7 @@ const WeekLine = (props) => {
     const calendar = props.calendar;
     let taskData = [[],[],[],[],[],[]];
     let examData = [[],[],[],[],[],[]];
+    let clData = [[],[],[],[],[],[]];
     let ScheduleData = [0,0,0,0,0,0];
     let changeScheduleData_before = [0,0,0,0,0,0];
     let changeScheduleData_after = [0,0,0,0,0,0];
@@ -95,7 +90,7 @@ const WeekLine = (props) => {
             //日付のtaskを取り出す処理
             let tasks = calendar[selectCalendarNumber[i]].tasks;
             let instask = [];
-            if(tasks[year] !== void 0 && tasks[year][mon] !== void 0){
+            if(tasks[year] !== null && tasks[year] !== void 0 && tasks[year][mon] !== void 0){
                 if(tasks[year][mon][day] !== void 0){
                     count = tasks[year][mon][day].length;
                     instask = tasks[year][mon][day] ;
@@ -103,6 +98,8 @@ const WeekLine = (props) => {
             }
             //タスク成形
             for(let iv=0;iv<count;iv++){
+                instask[iv].calOwner = calendar[selectCalendarNumber[i]].author_id;
+                instask[iv].calUser = calendar[selectCalendarNumber[i]].user_id;
                 tCount[parseInt(instask[iv].position)]++;
                 taskData[parseInt(instask[iv].position)].push(instask[iv]);
             }
@@ -115,7 +112,7 @@ const WeekLine = (props) => {
             //日付のexamを取り出す処理
             let exams = calendar[selectCalendarNumber[i]].exams;
             let insexam = [];
-            if(exams[year] !== void 0 && exams[year][mon] !== void 0){
+            if(exams[year] !== null && exams[year] !== void 0 && exams[year][mon] !== void 0){
                 if(exams[year][mon][day] !== void 0){
                     count = exams[year][mon][day].length;
                     insexam = exams[year][mon][day] ;
@@ -123,8 +120,29 @@ const WeekLine = (props) => {
             }
             //exam成形
             for(let iv=0;iv<count;iv++){
+                insexam[iv].calOwner = calendar[selectCalendarNumber[i]].author_id;
+                insexam[iv].calUser = calendar[selectCalendarNumber[i]].user_id;
                 eCount[parseInt(insexam[iv].position)]++;
                 examData[parseInt(insexam[iv].position)].push(insexam[iv]);
+            }
+        }
+    }
+    //カレンダーの選択個数分ループして休講を成形する
+    if(calendar.length > 0){
+        for(var i = 0; i < selectCalendarNumber.length; i++){
+            let count = 0;
+            //日付の休講を取り出す処理
+            let cls = calendar[selectCalendarNumber[i]].canceled_lecture;
+            let inscl = [];
+            if(cls[year] !== void 0 && cls[year][mon] !== void 0){
+                if(cls[year][mon][day] !== void 0){
+                    count = cls[year][mon][day].length;
+                    inscl = cls[year][mon][day];
+                }
+            }
+            //exam成形
+            for(let iv=0;iv<count;iv++){
+                clData[parseInt(inscl[iv].position)] = inscl[iv];
             }
         }
     }
@@ -137,12 +155,12 @@ const WeekLine = (props) => {
             let cs_after = calendar[selectCalendarNumber[i]].change_schedules_after;
             let insCs_before = [];
             let insCs_after = [];
-            if(cs_before[year] !== void 0 && cs_before[year][mon] !== void 0){
+            if(cs_before[year] !== null && cs_before[year] !== void 0 && cs_before[year][mon] !== void 0){
                 if(cs_before[year][mon][day] !== void 0){
                     insCs_before= cs_before[year][mon][day] ;
                 }
             }
-            if(cs_after[year] !== void 0 && cs_after[year][mon] !== void 0){
+            if(cs_after[year] !== null && cs_after[year] !== void 0 && cs_after[year][mon] !== void 0){
                 if(cs_after[year][mon][day] !== void 0){
                     insCs_after= cs_after[year][mon][day] ;
                 }
@@ -157,7 +175,7 @@ const WeekLine = (props) => {
             });
         }
     }
-    //カレンダーの選択個数分ループしてスケジュールを成形するchangeScheduleData
+    //カレンダーの選択個数分ループしてスケジュールを成形する
     if(calendar.length > 0){
         for(var i = 0; i < selectCalendarNumber.length; i++){
             let count = 0;
@@ -190,7 +208,7 @@ const WeekLine = (props) => {
     }
     //スケジュールがあるか判定
     sCount.map((_,index)=>{
-        if(ScheduleData[index] != 0 || changeScheduleData_before[index] != 0 || changeScheduleData_after[index] != 0){
+        if(ScheduleData[index] !== 0 || changeScheduleData_before[index] !== 0 || changeScheduleData_after[index] !== 0){
             sCount[index] = 2
         }
     });
@@ -206,19 +224,28 @@ const WeekLine = (props) => {
                                     {changeScheduleData_after[index] !== 0 ?
                                         <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,changeScheduleData_after[index], "change")}>
                                             <div className="title">{changeScheduleData_after[index].title}</div>
-                                            <div className="classroom flex">107教室<div className="weekCSMark">授業変更</div></div>
+                                            <div className="classroom flex">107教室<div className="weekCSMark">補講</div></div>
                                         </div>
                                         :
                                         <>
                                             {changeScheduleData_before[index] !== 0 ?
                                                 <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data , "nomal")}>
                                                     <div className="title"><s>{changeScheduleData_before[index].title}</s></div>
-                                                    <div className="classroom">107教室</div>
+                                                    <div className="classroom flex">107教室<div className="weekCSMark">授業変更</div></div>
                                                 </div>
                                                 :
                                                 <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data , "nomal")}>
-                                                    <div className="title">{data.title}</div>
-                                                    <div className="classroom">107教室</div>
+                                                    {clData[index].calendarId == data.calendarId ?
+                                                        <>
+                                                        <div className="title"><s>{data.title}</s></div>
+                                                        <div className="classroom flex">107教室<div className="weekCSMark">休講</div></div>
+                                                        </>
+                                                    :
+                                                        <>
+                                                            <div className="title">{data.title}</div>
+                                                            <div className="classroom">107教室</div>
+                                                        </>
+                                                    }
                                                 </div>
                                             }
                                         </>
@@ -229,7 +256,7 @@ const WeekLine = (props) => {
                                     {changeScheduleData_after[index] !== 0 &&
                                         <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,changeScheduleData_after[index], "change")}>
                                             <div className="title">{changeScheduleData_after[index].title}</div>
-                                            <div className="classroom flex">107教室<div className="weekCSMark">授業変更</div></div>
+                                            <div className="classroom flex">107教室<div className="weekCSMark">補講</div></div>
                                         </div>
                                     }
                                 </>

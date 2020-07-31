@@ -19,9 +19,9 @@ export default class MonthLine extends Component {
     
 
     render(){
-        const dayString=["日","月","火","水","木","金","土"];
+        const youbiContent=["月","火","水","木","金","土","日"];
+        let itemsFir=[];
         //stateを入れる
-        const selectDay = this.props.select.day;
         const selectMonth = this.props.select.month;
         const selectYear = this.props.select.year;
         
@@ -29,15 +29,15 @@ export default class MonthLine extends Component {
         const now = new Date();
         const year = this.props.select.year
         const mon = this.props.select.month;
-        const day = now.getDate();
-        const youbi = now.getDay();
+        const selectCalendarNumber = this.props.selectCalendarNumber;
+        const calendar = this.props.calendar;    
         
         const lastday = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
         //閏年加算
         if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {lastday[1]++;}
         
         //１日の曜日取得
-        let firstYoubi = new Date(year+"/"+mon+"/1").getDay();
+        let firstYoubi = new Date(selectYear,selectMonth - 1,1).getDay();
         if(firstYoubi===0)firstYoubi=7;
         const fOf = [];
         for (let i = 0; i < firstYoubi - 1; i++) {
@@ -62,7 +62,6 @@ export default class MonthLine extends Component {
             fEf.push(
                      <div className="month-dataBox">
                           <div className="month-date flex-jus-center">
-                              
                           </div>
                           <div className="month-dateBody">
                               
@@ -70,155 +69,164 @@ export default class MonthLine extends Component {
                      </div>
                      )
         }
-        //各月最初の月の曜日取得
-        const aFirstDay = []
-        for (let i = 1; i <= 12; i++) {
-            let dlc = new Date(year+"/"+i+"/1").getDay()
-            if(i==1){
-                aFirstDay.push(0);
-            }else if(dlc == 0){
-                aFirstDay.push(1);
-            }else if(dlc == 1){
-                aFirstDay.push(0);
-            }else{
-                aFirstDay.push(8 - new Date(year+"/"+i+"/1").getDay());
+        itemsFir.push(fOf);
+        //カレンダーの選択個数分ループしてタスクを成形する
+        let taskMonthCount = new Array(40).fill(0);
+        if(calendar.length > 0){
+            for(var i = 0; i < selectCalendarNumber.length; i++){
+                let count = 0;
+                //日付のtaskを取り出す処理
+                let tasks = calendar[selectCalendarNumber[i]].tasks;
+                if(tasks[year] != null){
+                    if(tasks[year] !== void 0 && tasks[year][mon] !== void 0){
+                        for(let i=1;i <= lastday[selectMonth-1]; i++){
+                            if(tasks[year][mon][i] !== void 0){
+                                taskMonthCount[i] += tasks[year][mon][i].length
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //カレンダーの選択個数分ループしてタスクを成形する
+        let examMonthCount = new Array(40).fill(0);
+        if(calendar.length > 0){
+            for(var i = 0; i < selectCalendarNumber.length; i++){
+                let count = 0;
+                //日付のtaskを取り出す処理
+                let exams = calendar[selectCalendarNumber[i]].exams;
+                if(exams[year] !== null){
+                    if(exams[year] !== void 0 && exams[year][mon] !== void 0){
+                        for(let day=1;day <= lastday[selectMonth-1]; day++){
+                            if(exams[year][mon][day] !== void 0){
+                                examMonthCount[day] += exams[year][mon][day].length
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        //学期の期間
-        let semeD = this.props.element.semesterDate
+        //スケジュール
+        let scheduleExsist = new Array(40).fill(void 0);
+        if(calendar.length > 0){
+            for(var day = 1; day <= lastday[selectMonth-1]; day++){
+                let nowDate = this.parDate(year + "/" + mon + "/" + day);
+                let youbi = nowDate.getDay();
+                if(youbi === 0)youbi = 7;
+                youbi--;
+
+                for(var i = 0; i < selectCalendarNumber.length; i++){
+                    //schedule取り出す処理
+                    let schedules = calendar[selectCalendarNumber[i]].schedules;
+                    let semesterPeriod = calendar[selectCalendarNumber[i]].semesterPeriod[this.props.user.grade - 1];
+                    const bl1 = this.parDate(semesterPeriod.fhSemester1) <= nowDate;
+                    const bl2 = this.parDate(semesterPeriod.fhSemester2) >= nowDate;
+                    const bl3 = this.parDate(semesterPeriod.lateSemester1) <= nowDate;
+                    const bl4 = this.parDate(semesterPeriod.lateSemester2) >= nowDate;
+                    
         
-        //授業がある場合フラグを立たせる
-        let schflag = this.props.scheduleData.map((data) =>
-                                           data.map((schedule,index) =>
-                                                    schedule.find(item => item !== 0)
-                                                    )
-                                           )
-        
-        const itemsFir = [];
-        itemsFir.push(fOf);
-        
-        //task関係処理
-        let tasks = this.props.task;
-        //exam関係処理
-        let exams = this.props.exam;
-        //授業変更関係処理
-        let changeSchedulesAfter = this.props.change_schedules.after;
-        let changeSchedulesBefore = this.props.change_schedules.before;
-        
-        
-        for (let i = 1; i <= lastday[mon - 1]; i++) {
-            //task関係処理
-            let taskCount = 0;
-            let task = {};
-            if(tasks[year] !== void 0 && tasks[year][mon] !== void 0){
-                if(tasks[year][mon][i] !== void 0){
-                    taskCount = tasks[year][mon][i].length;
-                    task = tasks[year][mon][i]
+                    if(schedules[this.props.user.grade] !== void 0){
+                        if(bl1 && bl2){
+                            let bl = false;
+                            if(schedules[this.props.user.grade][0][youbi] !== void 0) bl = schedules[this.props.user.grade - 1][0][youbi].find(item => item !== 0)
+                            if(scheduleExsist[day] === void 0){
+                                scheduleExsist[day] = bl;
+                            }
+                        }else if(bl3 && bl4){
+                            if(scheduleExsist[day] === 0){
+                                let bl = false;
+                                if(schedules[this.props.user.grade][1][youbi] !== void 0) bl = schedules[this.props.user.grade - 1][0][youbi].find(item => item !== 0)
+                                if(scheduleExsist[day] === void 0){
+                                    scheduleExsist[day] = bl;
+                                }
+                            }
+                        }
+                    }
+                }
+                if(scheduleExsist[day] != void 0){
+                    //曜日を入れる
+                    scheduleExsist[day] = youbiContent[youbi] + "曜日授業"
                 }
             }
-            
-            //exam関係処理
-            let examCount = 0;
-            let exam = {};
-            if(exams[year] !== void 0 && exams[year][mon] !== void 0){
-                if(exams[year][mon][i] !== void 0){
-                    examCount = exams[year][mon][i].length;
-                    exam = exams[year][mon][i]
+        }
+
+        //カレンダーの選択個数分ループして授業変更を成形する
+        let cSBeforeCount = new Array(40).fill(0);
+        let cSAfterCount = new Array(40).fill(0);
+        if(calendar.length > 0){
+            for(let day=1;day <= lastday[selectMonth-1]; day++){
+                for(var i = 0; i < selectCalendarNumber.length; i++){
+                    //schedule取り出す処理
+                    let cs_before = calendar[selectCalendarNumber[i]].change_schedules_before;
+                    let cs_after = calendar[selectCalendarNumber[i]].change_schedules_after;
+                    if(cs_before[year] !== null){
+                        if(cs_before[year] !== void 0 && cs_before[year][mon] !== void 0){
+                            if(cs_before[year][mon][day] !== void 0){
+                                cSBeforeCount[day] += cs_before[year][mon][day].length;
+                            }
+                        }
+                    }
+                    if(cs_after[year] !== null){
+                        if(cs_after[year] !== void 0 && cs_after[year][mon] !== void 0){
+                            if(cs_after[year][mon][day] !== void 0){
+                                cSAfterCount[day] += cs_after[year][mon][day].length;
+                            }
+                        }
+                    }
                 }
             }
-            
-            //授業変更関係処理
-            let changeScheduleCount = 0;
-            let changeSchedule = {};
-            if(changeSchedulesAfter[year] !== void 0 && changeSchedulesAfter[year][mon] !== void 0){
-                if(changeSchedulesAfter[year][mon][i] !== void 0){
-                    changeScheduleCount = changeSchedulesAfter[year][mon][i].length;
-                    changeSchedule = changeSchedulesAfter[year][mon][i]
-                }
-            }
-            
-            //授業変更元関係処理
-            let cscBefore = 0;
-            let csBefore = {};
-            if(changeSchedulesBefore[year] !== void 0 && changeSchedulesBefore[year][mon] !== void 0){
-                if(changeSchedulesBefore[year][mon][i] !== void 0){
-                    cscBefore = changeSchedulesBefore[year][mon][i].length;
-                    csBefore = changeSchedulesBefore[year][mon][i]
-                }
-            }
-            
-            //曜日の処理
-            let youbi = firstYoubi
-            youbi += (i - 1);
-            if(youbi >= 7)youbi=youbi%7;
-            
-            //スケジュール参照場所用変数の処理
-            let parWe = youbi - 1;
-            if(youbi === 0)parWe = 6;
-            
-            //判定式
-            let bool1 = this.parDate(semeD[0]) <= new Date(selectYear+"/"+selectMonth+"/"+i) && new Date(selectYear+"/"+selectMonth+"/"+i) <= this.parDate(semeD[1]);//前学期
-            let bool2 = this.parDate(semeD[2]) <= new Date(selectYear+"/"+selectMonth+"/"+i) && new Date(selectYear+"/"+selectMonth+"/"+i) <= this.parDate(semeD[3]);//後学期
-            let bool3 = schflag[0][parWe] != void 0;
-            let bool4 = schflag[1][parWe] != void 0;
-            let bool5 = (bool1 && bool3) || (bool2 && bool4) || taskCount > 0 || examCount > 0 || changeScheduleCount > 0 || cscBefore > 0
-            
-            //前学期後学期を判定
-            let semesterNom = -1;
-            if(bool1){
-                semesterNom = 0;
-            }else if(bool2){
-                semesterNom = 1;
-            }
-            
+        }
+        
+
+        [...Array(lastday[selectMonth-1])].map((_,index)=>{
+            let bl = examMonthCount[index+1] !== void 0 && examMonthCount[index+1] !== 0;
+            let bl1 = taskMonthCount[index+1] !== void 0 && taskMonthCount[index+1] !== 0;
+            let bl2 = scheduleExsist[index + 1] !== void 0;
+
             itemsFir.push(
-                <div className="month-dataBox" onClick={bool5 && ((e) => this.props.action.showWindow(true,e.pageX,e.pageY,year,mon,i,semesterNom,task,exam,changeSchedule,csBefore)) } key={i + "mdb"}>
-                    <div className="">
-                         <div className={now.getDate() == i && mon == (now.getMonth() + 1) && year == now.getFullYear() ? "month-date flex-jus-center month-select" : "month-date flex-jus-center"}>
-                             {i}
-                          
-                         </div>
-                         <div className="month-dateBody">
-                             {bool1 ?
-                                (bool3 ?
-                                        <div className="plans"><div>{dayString[youbi]}曜日授業</div></div>
-                                 :
-                                        null
-                                 )
+                <div className="month-dataBox"
+                    key={"MonthCal"+year+"/"+mon+ "/"+index}    
+                    onClick={bl || bl1 || bl2 ?
+                        (e) => this.props.action.showWindow(true,e.pageX,e.pageY,year,mon,index+1)
+                    :
+                        null
+                    }
+                >
+                    <div className={now.getDate() == index+1 && mon == (now.getMonth() + 1) && year == now.getFullYear() ? "month-date flex-jus-center month-select" : "month-date flex-jus-center"}>
+                          {index+1}
+                    </div>
+                    <div className="month-dateBody">
+                        {bl2 &&
+                            <div className="plans"><div>{scheduleExsist[index + 1]}</div></div>
+                        }
+                        {bl &&
+                            <div className="examBox">
+                                {examMonthCount[index+1]}件の試験
                                 
-                                :
-                                (bool2 ?
-                                       (bool4 ?
-                                        <div className="plans"><div>{dayString[youbi]}曜日授業</div></div>
-                                       :
-                                              null
-                                       )
-                                   :
-                                   null
-                                )
-                             }
-                            {examCount > 0 &&
-                               <div className="examBox">
-                                   {examCount}件の試験
-                               </div>
-                            }
-                            {(changeScheduleCount > 0 || cscBefore > 0) &&
-                               <div className="changeBox">
-                                   {changeScheduleCount + cscBefore}件の授業変更
-                               </div>
-                            }
-                            {taskCount > 0 &&
-                                <div className="taskBox">
-                                    {taskCount}件のタスク
-                                </div>
-                             }
-                            
-                         </div>
+                            </div>
+                        }
+                        {bl1 &&
+                            <div className="taskBox">
+                                {taskMonthCount[index+1]}件のタスク
+                            </div>
+                        }
+                        {cSBeforeCount[index+1] !== void 0 && cSBeforeCount[index+1] !== 0 &&
+                            <div className="changeBox">
+                                {cSBeforeCount[index+1]}件の授業変更
+                            </div>
+                        }
+                        {cSAfterCount[index+1] !== void 0 && cSAfterCount[index+1] !== 0 &&
+                            <div className="changeBox">
+                                {cSAfterCount[index+1]}件の補講
+                            </div>
+                        }
+                        
                     </div>
                 </div>
-            )
-        }
+            );
+        })
+        
         itemsFir.push(fEf);
         return(
                <div className="monthCalenderBox flex">

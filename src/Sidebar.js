@@ -11,6 +11,8 @@ export default function sidebar(props){
 
     let taskData = [[],[],[],[],[],[]];
     let tCount = new Array(6).fill(0);
+    let examData = [[],[],[],[],[],[]];
+    let eCount = new Array(6).fill(0);
     
     //今日の日付
     let d = new Date();
@@ -39,21 +41,25 @@ export default function sidebar(props){
         }
     }
 
-    //exam
-    let exams = props.exam;
-    let examCount = 0;
-    let exam = {};
-    if(exams[year] !== void 0 && exams[year][mon] !== void 0){
-        if(exams[year][mon][day] !== void 0){
-            examCount = exams[year][mon][day].length;
-            exam = exams[year][mon][day];
+    //カレンダーの選択個数分ループしてexamを成形する
+    if(calendar.length > 0){
+        for(var i = 0; i < selectCalendarNumber.length; i++){
+            let count = 0;
+            //日付のtaskを取り出す処理
+            let exams = calendar[selectCalendarNumber[i]].exams;
+            let insexam = [];
+            if(exams[year] !== void 0 && exams[year][mon] !== void 0){
+                if(exams[year][mon][day] !== void 0){
+                    count = exams[year][mon][day].length;
+                    insexam = exams[year][mon][day] ;
+                }
+            }
+            //タスク成形
+            for(let iv=0;iv<count;iv++){
+                eCount[parseInt(insexam[iv].position)]++;
+                examData[parseInt(insexam[iv].position)].push(insexam[iv]);
+            }
         }
-    }
-    let eCount = new Array(6).fill(0);
-    let examData = [[],[],[],[],[],[]]
-    for(let iv=0;iv<examCount;iv++){
-        eCount[parseInt(exam[iv].position)]++;
-        examData[parseInt(exam[iv].position)].push(exam[iv]);
     }
 
     return(
@@ -67,21 +73,21 @@ export default function sidebar(props){
                  <div>今日の予定</div>
                  <div className="side-taskListWrap">
                     {examData.map((data,index) =>
-                        <>
-                        {examCount > 0 &&
-                            <div>
-                            {examData[index].map((eData,i) =>
-                                <div className="weekExamBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,year,mon,day,index,eData)) }>
-                                {eData.complete ?
-                                    <><s>{eData.title}</s>（完了済み）</>
-                                :
-                                    <>{eData.title}</>
-                                }
+                        <div>
+                            {eCount[index] > 0 &&
+                                <div>
+                                    {examData[index].map((tData,i) =>
+                                        <div className="weekExamBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,year,mon,day,index,tData))}>
+                                            {tData.complete ?
+                                                <><s>{tData.title}</s>（完了済み）</>
+                                            :
+                                                <>{tData.title}</>
+                                            }
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                            </div>
-                        }
-                        </>
+                            }
+                        </div>
                     )}
                     {taskData.map((data,index) =>
                         <div>

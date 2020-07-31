@@ -40,16 +40,18 @@ class DDMschedule extends Component{
     const semesterString=["前学期","後学期"];
     let item = [];
     this.props.data.map((data,index) => {
-      item.push(
-        <div className="index" key={data.name + data.key + "DDMscheduleIndex"}>{data.name}</div>
-      );
-      data.schedules.map((d) => {
-        d[this.props.user.grade - 1].map((dx) => {
-          dx.map((dy) => {
-            if(dy !== 0)item.push(<div className="element" key={data.name + dy.title + "DDMscheduleElement"} onClick={() => this.handleClickMenu(dy, data.id, index)}>{dy.title}</div>);
+      if(data.author_id === data.user_id){
+        item.push(
+          <div className="index" key={data.name + data.key + "DDMscheduleIndex"}>{data.name}</div>
+        );
+        data.schedules.map((d) => {
+          d[this.props.user.grade - 1].map((dx) => {
+            dx.map((dy) => {
+              if(dy !== 0)item.push(<div className="element" key={data.name + dy.title + "DDMscheduleElement"} onClick={() => this.handleClickMenu(dy, data.id, index)}>{dy.title}</div>);
+            });
           });
         });
-      });
+      }
     });
     return (
       <div style={styles.dropDown}>

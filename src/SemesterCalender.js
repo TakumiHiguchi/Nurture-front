@@ -39,6 +39,8 @@ export default class SemesterCalender extends Component {
         //stateを入れる
         const selectMonth = this.props.data.month;
         const selectYear = this.props.data.year;
+        const selectCalendarNumber = this.props.selectCalendarNumber;
+        const calendar = this.props.calendar;
         
         //１月１日の曜日取得
         let firstYoubi = new Date(year+"/1/1").getDay();
@@ -73,24 +75,71 @@ export default class SemesterCalender extends Component {
         const lastday = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
         //閏年加算
         if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {lastday[1]++;}
-        
-        //授業がある場合フラグを立たせる
-        let schflag = this.props.scheduleData.map((data) =>
-                                           data.map((schedule,index) =>
-                                                    schedule.find(item => item !== 0)
-                                                    )
-                                           )
-        //学期の期間
-        let semeD = this.props.element.semesterDate
-        
-        //task関係処理
-        let tasks = this.props.task;
-        //exam関係処理
-        let exams = this.props.exam;
-        //授業変更関係処理
-        let changeSchedulesAfter = this.props.change_schedules.after;
-        let changeSchedulesBefore = this.props.change_schedules.before;
-        
+
+
+
+
+        //カレンダーの選択個数分ループしてタスクを成形する
+        let taskCount = [...Array(12)].map(k=>[...Array(40)].map(k=>0))
+        if(calendar.length > 0){
+            for(var i = 0; i < selectCalendarNumber.length; i++){
+                let count = 0;
+                //日付のtaskを取り出す処理
+                let tasks = calendar[selectCalendarNumber[i]].tasks;
+                [...Array(12)].map((_,index)=>{
+                    if(tasks[year] !== null && tasks[year] !== void 0 && tasks[year][index+1] !== void 0){
+                        for(let i=1;i <= lastday[selectMonth-1]; i++){
+                            if(tasks[year][index+1][i] !== void 0){
+                                taskCount[index][i] += tasks[year][index+1][i].length
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        //カレンダーの選択個数分ループして試験を成形する
+        let examCount = [...Array(12)].map(k=>[...Array(40)].map(k=>0))
+        if(calendar.length > 0){
+            for(var i = 0; i < selectCalendarNumber.length; i++){
+                let count = 0;
+                //日付のexamを取り出す処理
+                let exams = calendar[selectCalendarNumber[i]].exams;
+                [...Array(12)].map((_,index)=>{
+                    if(exams[year] !== null && exams[year] !== void 0 && exams[year][index+1] !== void 0){
+                        for(let i=1;i <= lastday[selectMonth-1]; i++){
+                            if(exams[year][index+1][i] !== void 0){
+                                examCount[index][i] += exams[year][index+1][i].length
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        //カレンダーの選択個数分ループして授業変更を成形する
+        let cSBeforeCount = [...Array(12)].map(k=>[...Array(40)].map(k=>0))
+        let cSAfterCount = [...Array(12)].map(k=>[...Array(40)].map(k=>0))
+        if(calendar.length > 0){
+            [...Array(12)].map((_,mon)=>{
+                for(let day=1;day <= lastday[selectMonth-1]; day++){
+                    for(var i = 0; i < selectCalendarNumber.length; i++){
+                        //schedule取り出す処理
+                        let cs_before = calendar[selectCalendarNumber[i]].change_schedules_before;
+                        let cs_after = calendar[selectCalendarNumber[i]].change_schedules_after;
+                        if(cs_before[year] !== null && cs_before[year] !== void 0 && cs_before[year][mon+1] !== void 0){
+                            if(cs_before[year][mon+1][day] !== void 0){
+                                cSBeforeCount[mon][day] += cs_before[year][mon+1][day].length;
+                            }
+                        }
+                        if(cs_after[year] !== null && cs_after[year] !== void 0 && cs_after[year][mon+1] !== void 0){
+                            if(cs_after[year][mon+1][day] !== void 0){
+                                cSAfterCount[mon][day] += cs_after[year][mon+1][day].length;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         
         const itemsFir = [];
         for(let k = 0; k < 2; k++) {
@@ -106,111 +155,29 @@ export default class SemesterCalender extends Component {
                 fparWe = 7 - fparWe;
                 
                 for(let ix = 0;ix < Array.from(Array(lastday[i-1] - aFirstDay[i-1]).keys()).length;ix++){
-                    //task関係処理
-                    let taskCount = 0;
-                    let task = {};
-                    if(tasks[year] !== void 0 && tasks[year][i] !== void 0){
-                        if(tasks[year][i][ix+1+aFirstDay[i-1]] !== void 0){
-                            taskCount = tasks[year][i][ix+1+aFirstDay[i-1]].length;
-                            task = tasks[year][i][ix+1+aFirstDay[i-1]]
-                        }
-                    }
-                    
-                    //exam関係処理
-                    let examCount = 0;
-                    let exam = {};
-                    if(exams[year] !== void 0 && exams[year][i] !== void 0){
-                        if(exams[year][i][ix+1+aFirstDay[i-1]] !== void 0){
-                            examCount = exams[year][i][ix+1+aFirstDay[i-1]].length;
-                            exam = exams[year][i][ix+1+aFirstDay[i-1]]
-                        }
-                    }
-                    
-                    //授業変更関係処理
-                    let changeScheduleCount = 0;
-                    let changeSchedule = {};
-                    if(changeSchedulesAfter[year] !== void 0 && changeSchedulesAfter[year][i] !== void 0){
-                        if(changeSchedulesAfter[year][i][ix+1+aFirstDay[i-1]] !== void 0){
-                            changeScheduleCount = changeSchedulesAfter[year][i][ix+1+aFirstDay[i-1]].length;
-                            changeSchedule = changeSchedulesAfter[year][i][ix+1+aFirstDay[i-1]]
-                        }
-                    }
-                    
-                    //授業変更元関係処理
-                    let cscBefore = 0;
-                    let csBefore = {};
-                    if(changeSchedulesBefore[year] !== void 0 && changeSchedulesBefore[year][i] !== void 0){
-                        if(changeSchedulesBefore[year][i][ix+1+aFirstDay[i-1]] !== void 0){
-                            cscBefore = changeSchedulesBefore[year][i][ix+1+aFirstDay[i-1]].length;
-                            csBefore = changeSchedulesBefore[year][i][ix+1+aFirstDay[i-1]]
-                        }
-                    }
-                    
-                    //曜日の処理
-                    let youbi = 0;
-                    if(i === 1){
-                        youbi = new Date(selectYear,i - 1,ix + 1).getDay();
-                    }else{
-                        youbi = new Date(selectYear,i - 1,ix + 1 + fparWe).getDay();
-                    }
-                    
-                    //スケジュール参照場所用変数の処理
-                    let parWe = youbi - 1;
-                    if(youbi === 0)parWe = 6;
-                    
-                    //条件式
-                    let bool1 = this.parDate(semeD[0]) <= new Date(selectYear+"/"+i+"/"+(ix+1+aFirstDay[i-1])) && new Date(selectYear+"/"+i+"/"+(ix+1+aFirstDay[i-1])) <= this.parDate(semeD[1]);//前学期
-                    let bool2 = this.parDate(semeD[2]) <= new Date(selectYear+"/"+i+"/"+(ix+1+aFirstDay[i-1])) && new Date(selectYear+"/"+i+"/"+(ix+1+aFirstDay[i-1])) <= this.parDate(semeD[3]);//後学期
-                    let bool3 = schflag[0][parWe] != void 0;
-                    let bool4 = schflag[1][parWe] != void 0;
-                    let bool5 = (bool1 && bool3) || (bool2 && bool4) || taskCount > 0 || examCount > 0 || changeScheduleCount > 0 || cscBefore > 0
-                    
-                    //前学期後学期を判定
-                    let semesterNom = -1;
-                    if(bool1){
-                        semesterNom = 0;
-                    }else if(bool2){
-                        semesterNom = 1;
-                    }
-                    
-                    
+                    let bl = taskCount[i - 1][ix+1 + aFirstDay[i-1]] > 0 || examCount[i - 1][ix+1 + aFirstDay[i-1]] > 0 || cSBeforeCount[i - 1][ix+1 + aFirstDay[i-1]] + cSAfterCount[i - 1][ix+1 + aFirstDay[i-1]] > 0
                     insMainCon.push(
-                                    <div className={ i % 2 == 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"} onClick={bool5 ? (e) => this.props.action.showWindow(true,e.pageX,e.pageY,year,i,ix+1+aFirstDay[i-1],semesterNom,task,exam,changeSchedule,csBefore) : undefined} key={i + "/" + ix+1+aFirstDay[i-1] + "semesdb"}>
+                                    <div className={ i % 2 == 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"} 
+                                        onClick={bl ? (e) => this.props.action.showWindow(true,e.pageX,e.pageY,year,i,ix+1+aFirstDay[i-1]) : null}
+                                        key={"semesmain" + i + "/" +ix+1 + aFirstDay[i-1]}
+                                    >
                                          <div className="semestar-month-date flex-jus-center">
-                                            <div className={(!bool1 && !bool2) ? "dateStyles" : undefined}>{ix+1 + aFirstDay[i-1]}</div>
+                                            <div className="">{ix+1 + aFirstDay[i-1]}</div>
                                          </div>
                                          <div className="semestar-month-dateBody">
-                                             {bool1 ?
-                                                (bool3 ?
-                                                        <div className="plans"><div>{dayString[youbi]}曜日授業</div></div>
-                                                 :
-                                                    null
-                                                 )
-                                                
-                                              :
-                                                (bool2 ?
-                                                       (bool4 ?
-                                                        <div className="plans"><div>{dayString[youbi]}曜日授業</div></div>
-                                                       :
-                                                              null
-                                                       )
-                                                   :
-                                                   null
-                                                )
-                                             }
                                             <div className="flex-jus-center">
-                                                {examCount > 0 &&
-                                                   <div className="examBox_semester">
-                                                   </div>
-                                                }
-                                                {(changeScheduleCount > 0 || cscBefore > 0) &&
-                                                   <div className="changeBox_semester">
-                                                   </div>
-                                                }
-                                                {taskCount > 0 &&
+                                                {taskCount[i - 1][ix+1 + aFirstDay[i-1]] > 0 &&
                                                     <div className="taskBox_semester">
                                                     </div>
-                                                 }
+                                                }
+                                                {examCount[i - 1][ix+1 + aFirstDay[i-1]] > 0 &&
+                                                    <div className="examBox_semester">
+                                                    </div>
+                                                }
+                                                {cSBeforeCount[i - 1][ix+1 + aFirstDay[i-1]] + cSAfterCount[i - 1][ix+1 + aFirstDay[i-1]] > 0 &&
+                                                    <div className="changeBox_semester">
+                                                    </div>
+                                                }
                                             </div>
                                          </div>
                                     </div>
@@ -225,105 +192,37 @@ export default class SemesterCalender extends Component {
                 }else{
                     cdYoubi = new Date(year+("/"+i+"/"+lastday[i-1])).getDay()
                 }
+
+                let y = year;
+                let m = i + 1
+                if(m>12){
+                    y++;
+                    m=1;
+                }
                 for(let ix=0;ix<Array.from(Array(7 - cdYoubi).keys()).length;ix++){
-                    //task関係処理
-                    let taskCount = 0;
-                    let task = {};
-                    if(tasks[year] !== void 0 && tasks[year][i+1] !== void 0){
-                        if(tasks[year][i+1][ix+1] !== void 0){
-                            taskCount = tasks[year][i+1][ix+1].length;
-                            task = tasks[year][i+1][ix+1]
-                        }
-                    }
-                    
-                    //exam関係処理
-                    let examCount = 0;
-                    let exam = {};
-                    if(exams[year] !== void 0 && exams[year][i+1] !== void 0){
-                        if(exams[year][i+1][ix+1] !== void 0){
-                            examCount = exams[year][i+1][ix+1].length;
-                            exam = exams[year][i+1][ix+1]
-                        }
-                    }
-                    
-                    //授業変更関係処理
-                    let changeScheduleCount = 0;
-                    let changeSchedule = {};
-                    if(changeSchedulesAfter[year] !== void 0 && changeSchedulesAfter[year][i+1] !== void 0){
-                        if(changeSchedulesAfter[year][i+1][ix+1] !== void 0){
-                            changeScheduleCount = changeSchedulesAfter[year][i+1][ix+1].length;
-                            changeSchedule = changeSchedulesAfter[year][i+1][ix+1]
-                        }
-                    }
-                    
-                    //授業変更元関係処理
-                    let cscBefore = 0;
-                    let csBefore = {};
-                    if(changeSchedulesBefore[year] !== void 0 && changeSchedulesBefore[year][i+1] !== void 0){
-                        if(changeSchedulesBefore[year][i+1][ix+1] !== void 0){
-                            cscBefore = changeSchedulesBefore[year][i+1][ix+1].length;
-                            csBefore = changeSchedulesBefore[year][i+1][ix+1]
-                        }
-                    }
-                    //曜日の処理
-                    let youbi = new Date(selectYear,i,ix + 1).getDay();
-                    
-                    //スケジュール参照場所用変数の処理
-                    let parWe = youbi - 1;
-                    if(youbi === 0)parWe = 6;
-                    
-                    //条件式
-                    let bool1 = this.parDate(semeD[0]) <= new Date(selectYear+"/"+(i+1)+"/"+(ix+1)) && new Date(selectYear+"/"+(i+1)+"/"+(ix+1)) <= this.parDate(semeD[1]);//前学期
-                    let bool2 = this.parDate(semeD[2]) <= new Date(selectYear+"/"+(i+1)+"/"+(ix+1)) && new Date(selectYear+"/"+(i+1)+"/"+(ix+1)) <= this.parDate(semeD[3]);//後学期
-                    let bool3 = schflag[0][parWe] != void 0;
-                    let bool4 = schflag[1][parWe] != void 0;
-                    let bool5 = (bool1 && bool3) || (bool2 && bool4) || taskCount > 0 || examCount > 0 || changeScheduleCount > 0 || cscBefore > 0
-                    
-                    //前学期後学期を判定
-                    let semesterNom = -1;
-                    if(bool1){
-                        semesterNom = 0;
-                    }else if(bool2){
-                        semesterNom = 1;
-                    }
-                    
+                    let bl = taskCount[m - 1][ix+1] > 0 || examCount[m - 1][ix+1] > 0 || cSBeforeCount[m - 1][ix+1] + cSAfterCount[m - 1][ix+1] > 0
                     insSubCon.push(
-                                   <div className={ i % 2 != 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"} onClick={bool5 ? (e) => this.props.action.showWindow(e.pageX,e.pageY,year,i+1,ix+1,semesterNom,task,exam,changeSchedule,csBefore) : undefined} key={i+1 + "/" + ix+1 + "sub-semesdb"}>
+                                   <div className={ i % 2 != 0 ? "semestar-month-dataBox smdbColor-f" : "semestar-month-dataBox smdbColor-s"} 
+                                        onClick={bl ? (e) => this.props.action.showWindow(true,e.pageX,e.pageY,y,m,ix+1) : null}
+                                        key={"semessub" + i + "/" +ix+1}
+                                   >
                                         <div className="semestar-month-date flex-jus-center">
-                                   <div className={(!bool1 && !bool2) ? "dateStyles" : undefined}>{ix+1}</div>
+                                            <div className="">{ix+1}</div>
                                         </div>
                                         <div className="semestar-month-dateBody">
-                                           {bool1 ?
-                                              (bool3 ?
-                                                      <div className="plans"><div>{dayString[youbi]}曜日授業</div></div>
-                                               :
-                                                  null
-                                               )
-                                              
-                                            :
-                                              (bool2 ?
-                                                     (bool4 ?
-                                                      <div className="plans"><div>{dayString[youbi]}曜日授業</div></div>
-                                                     :
-                                                            null
-                                                     )
-                                                 :
-                                                 null
-                                              )
-                                           }
                                             <div className="flex-jus-center">
-                                                {examCount > 0 &&
-                                                   <div className="examBox_semester">
-                                                   </div>
-                                                }
-                                                {(changeScheduleCount > 0 || cscBefore > 0) &&
-                                                   <div className="changeBox_semester">
-                                                   </div>
-                                                }
-                                                {taskCount > 0 &&
+                                                {taskCount[m - 1][ix+1] > 0 &&
                                                     <div className="taskBox_semester">
                                                     </div>
-                                                 }
+                                                }
+                                                {examCount[m - 1][ix+1] > 0 &&
+                                                    <div className="examBox_semester">
+                                                    </div>
+                                                }
+                                                {cSBeforeCount[m - 1][ix+1] + cSAfterCount[m - 1][ix+1] > 0 &&
+                                                    <div className="changeBox_semester">
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                    </div>

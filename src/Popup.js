@@ -349,19 +349,19 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(2)}>授業の変更</div>
                         <div onClick={() => props.changePage(3)}>休講</div>
                     </div>
-                    <div className="pcePopup-item adTaskbody">
+                    <div className="pcePopup-item">
                         <input type="text" placeholder="タスク名を入力（必須）" className="removeCss formInput task-input" onChange={e => props.handleOnChange("taskTitle",e)} value={props.value.taskTitle}/>
                         <div>
                             <FontAwesomeIcon icon={faClock} style={clock} /><div className="calpointer"><Calender action={(date) => props.handleOnChange("taskDate",date)} key={"dscal0"}/></div>
                             <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)} key={"page1DDM"}/>
                         </div>
-                        <div>
+                        <div style={{marginTop:"5px"}}>
                             <FontAwesomeIcon icon={faCalendarAlt} style={clock} />
                             <DDMcalendar element={props.value.calendarArray.name} data={props.calendar} action={(val) => props.handleOnChange("calendar",val)} key={"page1DDMcalendar"}/>
                         </div>
                     </div>
+                    <div className="TlEditor_task"><TlEditor onChange={(val) => props.handleOnChange("taskCont",val)} placeholder={"タスクの内容を入力"}/></div>
                     
-                    <TlEditor onChange={(val) => props.handleOnChange("taskCont",val)} placeholder={"タスクの内容を入力"}/>
                     <div className="infBox flex-jus-center cd">
                         <div className="submitBox flex-jus-center ">
                             <div className="btn-submit-sub fa-scedule-submit" onClick={() => props.action()}>キャンセル</div>
@@ -384,7 +384,7 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(3)}>休講</div>
                     </div>
                     <div className="pcePopup-item adTaskbody">
-                        <div>
+                        <div style={{margin:"10px 0 5px 0"}}>
                             <FontAwesomeIcon style={clock} icon={faBook} />
                             <DDMschedule data={props.calendar} user={props.user} fLabel={"試験がある授業を選択"} label={props.value.examTitle} action={(val, cal_id) => props.handleOnChange("examTitle", val.title, cal_id)} key={"DDMschedule1"}/>
                         </div>
@@ -394,7 +394,7 @@ const AddTask = (props) => {
                             <DDMposition element={props.value.position} action={(val) => props.handleOnChange("position",val)} key={"page2DDM"}/>
                         </div>
                     </div>
-                    <TlEditor onChange={(val) => props.handleOnChange("examCont",val)} placeholder={"試験の内容を入力"}/>
+                    <div className="TlEditor_exam"><TlEditor onChange={(val) => props.handleOnChange("examCont",val)} placeholder={"試験の内容を入力"}/></div>
                     <div className="infBox flex-jus-center cd">
                         <div className="submitBox flex-jus-center ">
                             <div className="btn-submit-sub fa-scedule-submit" onClick={() => props.action()}>キャンセル</div>
@@ -416,7 +416,7 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(2)} className="aTindexactive">授業の変更</div>
                         <div onClick={() => props.changePage(3)}>休講</div>
                     </div>
-                    <div className="pcePopup-item adTaskbody">
+                    <div className="pcePopup-item" style={{margin:"10px 0 5px 0"}}>
                         <div style={p2head}>変更する授業と日時</div>
                         <div style={beforeBox}>
                         <FontAwesomeIcon style={clock} icon={faBook} />
@@ -477,7 +477,7 @@ const AddTask = (props) => {
                         <div onClick={() => props.changePage(2)}>授業の変更</div>
                         <div onClick={() => props.changePage(3)} className="aTindexactive">休講</div>
                     </div>
-                    <div className="pcePopup-item adTaskbody">
+                    <div className="pcePopup-item" style={{margin:"10px 0 5px 0"}}>
                         <div style={p2head}>休講にする授業と日時</div>
                         <FontAwesomeIcon style={clock} icon={faBook} />
                         <DDMschedule 
@@ -507,7 +507,7 @@ const AddTask = (props) => {
                     <div className="infBox flex-jus-center cd fa-df-uo">
                         <div className="submitBox flex-jus-center ">
                             <div className="btn-submit-sub fa-scedule-submit" onClick={() => props.action()}>キャンセル</div>
-                            <div className="btn-submit fa-scedule-submit" onClick={() => props.setCanceled_lecture()}>授業を休校にする</div>
+                            <div className="btn-submit fa-scedule-submit" onClick={() => props.setCanceled_lecture()}>授業を休講にする</div>
                         </div>
                     </div>
                 </div>

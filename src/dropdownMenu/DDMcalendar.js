@@ -38,9 +38,11 @@ class DDMcalendar extends Component{
     const { listOpen } = this.state;
     let item = [];
     this.props.data.map((data) => {
-      item.push(
-        <div className="dropMenuElement" onClick={() => this.handleClickMenu(data)} key={data.name + data.key}>{data.name}</div>
-      )
+      if(data.author_id === data.user_id){
+        item.push(
+          <div className="dropMenuElement" onClick={() => this.handleClickMenu(data)} key={data.name + data.key}>{data.name}</div>
+        )
+      }
     });
 
        return (
