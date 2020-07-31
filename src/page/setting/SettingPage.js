@@ -28,9 +28,10 @@ export default class SettingPage extends Component {
         this.state={
             page: 1,
             calPage:1,
-            calendarDelete:{popup:false,submit:"",cancel:"",main:""},
+            cData:{popup:false,submit:"",cancel:"",main:"",type:""},
             changePage:false,
-            targetCalendar:[]
+            targetCalendar:[],
+            targetId:0
         }
     }
     
@@ -44,22 +45,43 @@ export default class SettingPage extends Component {
         }
         this.setState({changePage:true});
     }
-    calendarDelete(submit,cancel,main,target){
-        let ins = this.state.calendarDelete;
+    ConfirmationPopup(submit,cancel,main,target, type){
+        console.log(type)
+        let ins = this.state.cData;
         ins.popup = !ins.popup;
         ins.submit = submit;
         ins.cancel = cancel;
         ins.main = main;
-        this.setState({calendarDelete:ins});
-        this.setState({targetCalendar:target});
+        ins.type = type;
+        switch(type){
+            case "calDelete" :
+                this.setState({targetCalendar:target});
+            case "clone" :
+                this.setState({targetId:target});
+            case "follow" :
+                this.setState({targetId:target});
+        }
+        this.setState({cData:ins});
     }
     cancel(){
-        this.calendarDelete("","","",[]);
+        this.ConfirmationPopup("","","",[]);
     }
-    submit(){
-        this.props.apiFunction.calendar_destroy(this.state.targetCalendar)
-        this.setState({calPage:1})
-        this.calendarDelete("","","",[]);
+    submit(type){
+        switch(type){
+            case "calDelete" :
+                this.props.apiFunction.calendar_destroy(this.state.targetCalendar)
+                this.setState({calPage:1})
+                this.ConfirmationPopup("","","",[]);
+                break;
+            case "clone":
+                this.props.apiFunction.calendar_share("clone",this.state.targetId);
+                this.ConfirmationPopup("","","",[]);
+                break;
+            case "follow":
+                this.props.apiFunction.calendar_share("follow",this.state.targetId);
+                this.ConfirmationPopup("","","",[]);
+                break;
+        }
     }
     
     render(){
@@ -78,7 +100,7 @@ export default class SettingPage extends Component {
                         <Body element={{user:this.props.element.user,semesterDate: this.props.element.semesterDate,page:this.state.page}}
                             action={{setGrade: (select) => this.props.action.setGrade(select),
                                     logout:() => this.props.action.logout(),
-                                    calendarDelete:(submit,cancel,main,target) => this.calendarDelete(submit,cancel,main,target)
+                                    ConfirmationPopup:(submit,cancel,main,target,type) => this.ConfirmationPopup(submit,cancel,main,target,type)
                                     }}
                             regesSemesterDate = {(cal,date,position) => this.props.regesSemesterDate(cal,date,position)}
                             calendar={this.props.calendar}
@@ -89,9 +111,9 @@ export default class SettingPage extends Component {
                         />
                     </div>
                     <Confirmation 
-                        isPopup={this.state.calendarDelete.popup}
-                        action={{cancel:() => this.cancel(),submit:() => this.submit()}}
-                        label={this.state.calendarDelete}
+                        isPopup={this.state.cData.popup}
+                        action={{cancel:() => this.cancel(),submit:(type) => this.submit(type)}}
+                        label={this.state.cData}
                     />
                 </div>
             </div>

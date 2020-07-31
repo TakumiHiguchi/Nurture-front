@@ -13,7 +13,8 @@ export default class p5 extends Component{
     inputSearchStart(val){
         this.setState({search:val});
         setTimeout(() => {
-            this.props.apiFunction.calendar_share("search");
+            this.props.apiFunction.calendar_share("search",0,"search",this.state.search);
+            console.log(this.state.search)
         }, 100)
     }
     render(){
@@ -28,7 +29,7 @@ export default class p5 extends Component{
                             <div className="flex-jus-center">最新</div>
                         </div>
                         <div className="search">
-                            <input type="text" placeholder="カレンダー名やKey、キーワードで検索" className="removeCss" value={this.state.search} onChange={() => this.inputSearchStart()}/>
+                            <input type="text" placeholder="カレンダー名やKey、キーワードで検索" className="removeCss" value={this.state.search} onChange={(e) => this.inputSearchStart(e.target.value)}/>
                         </div>
                     </div>
                     <div className="flex calendarSearchResult">
@@ -42,9 +43,9 @@ export default class p5 extends Component{
                                         <div className="descriptionBox flex-jus-between scroll-y">{data.description}</div>
                                         <div className="buBo flex">
                                             {data.cloneBool &&
-                                                <div onClick={() => this.props.apiFunction.calendar_share("clone",data.id)}><FontAwesomeIcon icon={faClone} style={{paddingRight:"5px"}}/>コピーする</div>
+                                                <div onClick={() => this.props.action.ConfirmationPopup("コピーする","キャンセル","「" + data.name + "」カレンダーをコピーしようとしています。本当にコピーしますか？コピーされたカレンダーは自動的に追加されます。",data.id,"clone")}><FontAwesomeIcon icon={faClone} style={{paddingRight:"5px"}}/>コピーする</div>
                                             }
-                                            <div onClick={() => this.props.apiFunction.calendar_share("follow",data.id)}><FontAwesomeIcon icon={faUserTag} style={{paddingRight:"5px"}}/>フォローする</div>
+                                            <div onClick={() => this.props.action.ConfirmationPopup("フォローする","キャンセル","「" + data.name + "」カレンダーをフォローしようとしています。本当にフォローしますか？フォローされたカレンダーは自動的に追加されます。",data.id,"follow")}><FontAwesomeIcon icon={faUserTag} style={{paddingRight:"5px"}}/>フォローする</div>
                                         </div>
                                         <div className="data flex">
                                             <div>授業: {data.scheduleCount}件</div>

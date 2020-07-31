@@ -301,14 +301,15 @@ class Nurture extends Component {
     calendar(type, calendar, ...args){
         const user = this.state.user;
         let ins;
-           
+        if(type == "destory" || type == "create" || type == "update")this.rWindow(true,0,"");
         switch(type){
             case "index" :
                 ins = calendar_index(ENDPOINT, user.key, user.session);//外部関数
                 ins.then(res => {
                     if(res){
-                        this.setState({calendar:res.calendars});
-                        this.setState({selectCalendarNumber : [...Array(this.state.calendar.length).keys()]});
+                        this.setState(
+                            {calendar:res.calendars,selectCalendarNumber : [...Array(res.calendars.length).keys()]}
+                        );
                     }else{
                         this.rWindow(true,2,'セッション切れです');
                     }
@@ -629,6 +630,7 @@ class Nurture extends Component {
         
         switch(type){
             case "search" :
+                console.log(args)
                 ins = calendar_search(ENDPOINT, args, user.key, user.session);//外部関数
                 ins.then(res => {
                     this.setState({calendar_search:res.calendars})
@@ -1012,7 +1014,7 @@ class Nurture extends Component {
                             calendar_update: (calendar, mes) => this.calendar("update", calendar, 0, mes),
                             calendar_create: (calendar) => this.calendar("create", calendar),
                             calendar_destroy: (calendar) => this.calendar("destroy", calendar),
-                            calendar_share: (type,id) => this.calendar_share(type,id),
+                            calendar_share: (type,id,k,query) => this.calendar_share(type,id,k,query),
                             user_update: (userData) => this.user("update", userData)
                            }}
                     />

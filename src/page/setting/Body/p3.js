@@ -68,7 +68,7 @@ export default class p3 extends Component{
         switch(type){
             case "shareBool": calendar.shareBool = val; break;
             case "cloneBool": calendar.cloneBool = val; break;
-            case "name": if(val != "")calendar.name = val; break;
+            case "name": calendar.name = val; break;
             case "description": calendar.description = val; break;
         }
         this.props.apiFunction.calendar_update(calendar, mes)
@@ -177,7 +177,7 @@ export default class p3 extends Component{
                         {nowCalendar.user_id == nowCalendar.author_id ?
                             <>
                                 <h2 className="menuH2 flex-algin-center">カレンダーの削除</h2>
-                                <div className="btn-submit settingDeleteBtn" onClick={() => this.props.action.calendarDelete("削除する","キャンセル","「" + nowCalendar.name + "」カレンダーを削除しようとしています。カレンダーを削除すると永久的にデータにアクセスできなくなります。本当にカレンダーを削除しますか？",nowCalendar)}>カレンダーを削除</div>
+                                <div className="btn-submit settingDeleteBtn" onClick={() => this.props.action.ConfirmationPopup("削除する","キャンセル","「" + nowCalendar.name + "」カレンダーを削除しようとしています。カレンダーを削除すると永久的にデータにアクセスできなくなります。本当にカレンダーを削除しますか？",nowCalendar,"calDelete")}>カレンダーを削除</div>
 
                                 <p className="secline">このカレンダーのすべての予定が削除されます。</p>
                                 <p className="secline">このカレンダーをFollowしたユーザからもカレンダーが削除されます。</p>
@@ -185,7 +185,7 @@ export default class p3 extends Component{
                         :
                             <>
                                 <h2 className="menuH2 flex-algin-center">フォローの解除</h2>
-                                <div className="btn-submit settingDeleteBtn" onClick={() => this.props.action.calendarDelete("解除する","キャンセル","「" + nowCalendar.name + "」カレンダーのフォローを解除しようとしています。フォローを解除するとデータにアクセスできなくなります。本当にフォローを解除しますか？",nowCalendar)}>フォローを解除</div>
+                                <div className="btn-submit settingDeleteBtn" onClick={() => this.props.action.ConfirmationPopup("解除する","キャンセル","「" + nowCalendar.name + "」カレンダーのフォローを解除しようとしています。フォローを解除するとデータにアクセスできなくなります。本当にフォローを解除しますか？",nowCalendar,"calDelete")}>フォローを解除</div>
 
                                 <p className="secline">このカレンダーのフォローが解除されます。</p>
                                 <p className="secline">一度解除した場合でも、カレンダーライブラリーから再度フォローすることができます。</p>

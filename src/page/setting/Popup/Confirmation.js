@@ -8,7 +8,7 @@ export default function Confirmation(props){
           <div>{props.label.main}</div>
           <div className="confirmation-button flex-jus-center">
             <div onClick={() => props.action.cancel() } className="btn-submit-sub flex-jus-center">{props.label.cancel}</div>
-            <div onClick={() => props.action.submit() } className="btn-submit flex-jus-center">{props.label.submit}</div>
+            <div onClick={() => props.action.submit(props.label.type) } className="btn-submit flex-jus-center">{props.label.submit}</div>
           </div>
         </div>
       </div>
