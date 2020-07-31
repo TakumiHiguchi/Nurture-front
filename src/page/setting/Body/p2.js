@@ -18,6 +18,7 @@ const FASiconsstyle = {
         margin:"0 15 0 0"
     }
 }
+let nTimer;
 
 export default class p2 extends Component{
     
@@ -29,11 +30,12 @@ export default class p2 extends Component{
     }
     inputNameStart(val){
         this.setState({name:val});
-        setTimeout(() => {
+        if(nTimer){clearTimeout(nTimer);}
+        nTimer = setTimeout(() => {
             let user = this.props.element.user;
             user.name = this.state.name;
             this.props.apiFunction.user_update(user);
-        }, 2000)
+        }, 1000)
     }
     render(){
         let user = this.props.element.user;

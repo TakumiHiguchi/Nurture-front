@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresom
 import { faClone } from "@fortawesome/free-regular-svg-icons";//カレンダー
 import { faUserTag } from "@fortawesome/free-solid-svg-icons";
 
+let nTimer;
 export default class p5 extends Component{
     constructor(props){
         super(props);
@@ -12,7 +13,8 @@ export default class p5 extends Component{
     }
     inputSearchStart(val){
         this.setState({search:val});
-        setTimeout(() => {
+        if(nTimer){clearTimeout(nTimer);}
+        nTimer = setTimeout(() => {
             this.props.apiFunction.calendar_share("search",0,"search",this.state.search);
             console.log(this.state.search)
         }, 100)
@@ -57,7 +59,9 @@ export default class p5 extends Component{
                                 </div>
                             </div>
                         )}
-                    
+                        {this.props.calendarSearchResult.length < 1 &&
+                            <div>検索結果に合致するカレンダーがありません。キーワードを変えて再度検索ください。</div>
+                        }
                     </div>
                 </section>
                 

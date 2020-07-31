@@ -6,6 +6,7 @@ import { faKey } from "@fortawesome/free-solid-svg-icons";
 import DDMsettingGrade from '../../../dropdownMenu/DDMsettingGrade'
 import DateRangeDatePicker from '../DateRangeDatePicker'
 
+let nTimer;
 export default class p3 extends Component{
     constructor(props){
         super(props);
@@ -14,6 +15,7 @@ export default class p3 extends Component{
             name:-1,
             description:-1,
             anim:-1,
+            sleep:false
         }
     }
     parDate(target){
@@ -76,14 +78,16 @@ export default class p3 extends Component{
     inputNameStart(val){
         let nowCalendar = this.props.calendar[this.props.page.calPage - 1];
         this.setState({name:val});
-        setTimeout(() => {
+        if(nTimer){clearTimeout(nTimer);}
+        nTimer = setTimeout(() => {
             this.calendarUpdate("name", nowCalendar, "カレンダーの名前を変更しました", this.state.name);
         }, 1000)
     }
     inputDescriptionStart(val){
         let nowCalendar = this.props.calendar[this.props.page.calPage - 1];
         this.setState({description:val});
-        setTimeout(() => {
+        if(nTimer){clearTimeout(nTimer);}
+        nTimer = setTimeout(() => {
             this.calendarUpdate("description", nowCalendar, "カレンダーの説明を変更しました", this.state.description);
         }, 1000)
     }
