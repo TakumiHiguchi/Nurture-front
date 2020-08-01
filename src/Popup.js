@@ -325,7 +325,7 @@ const Login = (props) => {
                             <a class="linkBox-line hrm" href=""><FontAwesomeIcon style={lineIcon} icon={faLine} /> Lineでログイン</a>
                             <div class="new_user" >
                                 <p class="cls">ログインすることにより、N:urture利用規約、データーに関するポリシーに同意したものとみなされます。</p>
-                                <p class="alg">アカウントをお持ちではありませんか？<p onClick={() => props.action.sec(1) }>保存しないで利用する</p></p>
+                                
                             </div>
                         </div>
                     </div>
@@ -335,6 +335,8 @@ const Login = (props) => {
     }
     
 }
+//持ってない場合の処理のやつ
+//<p class="alg">アカウントをお持ちではありませんか？<p onClick={() => props.action.sec(1) }>保存しないで利用する</p></p>
 
 const AddTask = (props) => {
     if(props.page == 0){

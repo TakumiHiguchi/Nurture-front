@@ -9,8 +9,17 @@ export default async function update(endpoint, key, session, id, exam, grade){
 
 async function api(endpoint, key, session, id, exam, grade){
     try{
-        const response = await axios.patch(endpoint + '/api/v1/exam?calendarId=' + exam.calendarId +'&key=' + key + '&session=' + session +'&exam_id=' + id +'&title=' + exam.title +'&content=' + exam.content +'&examdate=' + exam.date +'&position=' + exam.position +'&complete=' + exam.complete);
-        
+        const response = await axios.put(endpoint + '/api/v1/exam/' + exam.id, {
+            key: key,
+            session: session,
+            calendarId: exam.calendarId,
+            exam_id: id,
+            title: exam.title,
+            content: exam.content,
+            examdate: exam.date,
+            position: exam.position,
+            complete: exam.complete
+        });
         if(response.data.status == "SUCCESS"){
             return {status:1,mes:response.data.mes};
         }else{

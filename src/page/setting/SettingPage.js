@@ -46,7 +46,6 @@ export default class SettingPage extends Component {
         this.setState({changePage:true});
     }
     ConfirmationPopup(submit,cancel,main,target, type){
-        console.log(type)
         let ins = this.state.cData;
         ins.popup = !ins.popup;
         ins.submit = submit;

@@ -154,14 +154,16 @@ function ClosePopup(props){
     return(
            <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
                <div className="popup_wrap" onClick={() => cancel() }></div>
-               <div className="confirmationWhir">
-                    <div>変更内容は保存されません。保存されていない変更内容を破棄しますか？</div>
-                    <div className="flex-jus-center">
-                        <div className="edit-submit-y" onClick={() => close() }>
-                            破棄する
-                        </div>
-                        <div className="edit-submit-n" onClick={() => cancel() }>
-                            キャンセル
+               <div className="confirmationWhir flex-jus-center">
+                    <div>
+                        <div>変更内容は保存されません。保存されていない変更内容を破棄しますか？</div>
+                        <div className="flex-jus-center">
+                            <div className="edit-submit-y" onClick={() => close() }>
+                                破棄する
+                            </div>
+                            <div className="edit-submit-n" onClick={() => cancel() }>
+                                キャンセル
+                            </div>
                         </div>
                     </div>
                </div>
