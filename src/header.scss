@@ -7,11 +7,24 @@
     border-bottom:1px solid #f0f0f0;
 }
 .fa-top-h1{
-    width:auto;
-    height:auto;
-    padding-left:20px;
-    font-size:1.2em;
-    font-weight:bold;
+      display:block;
+      width:auto;
+      height:100%;
+    a{
+      width:auto;
+      height:100%;
+      line-height:62px;
+      padding-left:20px;
+      font-size:1.2em;
+      font-weight:bold;
+      text-decoration:none;
+      img{
+        display:block;
+        height:50%;
+        margin-bottom:5px; 
+        margin-right:4px;
+      }
+    }
 }
 .header-right{
     margin:0 20px;

@@ -265,7 +265,7 @@ const WeekLine = (props) => {
                                 <div className="taskListWrap">
                                     {examData[index].map((eData,i) =>
                                         <>
-                                            {(i < (4 - sCount[index] - index))&&
+                                            {(i < (4 - sCount[index]))&&
                                                 <div className="weekExamBox" onClick={((e) => props.action.showTaskWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,examData[index][i]))}>
                                                     {eData.complete ?
                                                         <><s>{eData.title}</s>（完了済み）</>

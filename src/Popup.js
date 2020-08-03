@@ -27,6 +27,8 @@ import DDMsearchPosition from './DDMsearchPosition'
 
 import TlEditor from './TlEditor'
 
+import icon from './image/nurture.png';
+
 //datepicker
 import ja from 'date-fns/locale/ja';
 registerLocale('ja', ja)
@@ -316,15 +318,15 @@ const Login = (props) => {
                <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
                     <div className="popup_wrap" ></div>
                     <div className="logwhir">
-                        <div class="her-right">
-                            <h2>N:urture</h2>
-                            <p class="clx">今すぐログインして、自分の予定を管理したり、タスクを追加してみたりしましょう。</p>
+                        <div className="her-right">
+                            <h2 className="flex-jus-center">N:urture</h2>
+                            <p className="clx">今すぐログインして、自分の予定を管理したり、タスクを追加してみたりしましょう。</p>
                             <GoogleAuthentication action={(user,sns) => props.action.userSignin(user,sns)}/>
-                            <p class="ghi hrm"><span>または</span></p>
-                            <a class="linkBox-twitter hrm" href=""><FontAwesomeIcon style={twitterIcon} icon={faTwitter} /> twitterでログイン</a>
-                            <a class="linkBox-line hrm" href=""><FontAwesomeIcon style={lineIcon} icon={faLine} /> Lineでログイン</a>
-                            <div class="new_user" >
-                                <p class="cls">ログインすることにより、N:urture利用規約、データーに関するポリシーに同意したものとみなされます。</p>
+                            <p className="ghi hrm"><span>または</span></p>
+                            <a className="linkBox-twitter hrm" href=""><FontAwesomeIcon style={twitterIcon} icon={faTwitter} /> twitterでログイン</a>
+                            <a className="linkBox-line hrm" href=""><FontAwesomeIcon style={lineIcon} icon={faLine} /> Lineでログイン</a>
+                            <div className="new_user" >
+                                <p className="cls">ログインすることにより、N:urture利用規約、データーに関するポリシーに同意したものとみなされます。</p>
                                 
                             </div>
                         </div>

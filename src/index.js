@@ -15,6 +15,7 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons";//矢印ア�
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";//矢印アイコン
 import { faCog } from "@fortawesome/free-solid-svg-icons";//設定
 
+import icon from './image/nurture1.png';
 
 //cssのインポート
 import './header.scss';
@@ -75,8 +76,8 @@ import change_schedule_index from './API/change_schedule/index'
 import change_schedule_create from './API/change_schedule/create'
 import change_schedule_destroy from './API/change_schedule/destroy'
 
-const ENDPOINT = 'http://localhost:3020'
-//const ENDPOINT = 'https://nurture-api.herokuapp.com'
+//const ENDPOINT = 'http://localhost:3020'
+const ENDPOINT = 'https://nurture-api.herokuapp.com'
 
 //css
 const pmIcons = {
@@ -121,7 +122,7 @@ const lineIcon = {
 const Header = (props) => {
     return(
            <header className="fa-header flex-jus-between no-select">
-               <h1 className="fa-top-h1">N:urture</h1>
+               <h1 className="fa-top-h1"><a href="../" className="flex-align-center"><img src={icon}/>N:urture</a></h1>
                <div className="header-right flex-jus-between">
                     <DDMbodyChange action={(mode) => props.action(mode)} type={1}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faPlus} onClick={() => props.actionShow("regester")}/>
@@ -718,7 +719,6 @@ class Nurture extends Component {
     userSignin(user,sns){
         //ユーザーのログイン等処理APIを叩く部分
         if(sns == "Google"){
-            var profile = user.getBasicProfile();
             var id_token = user.getAuthResponse().id_token;
             
             axios.get(ENDPOINT + '/api/v1/userLogin?token=' + id_token +'&sns=google')
