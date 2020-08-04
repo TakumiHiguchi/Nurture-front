@@ -631,7 +631,6 @@ class Nurture extends Component {
         
         switch(type){
             case "search" :
-                console.log(args)
                 ins = calendar_search(ENDPOINT, args, user.key, user.session);//外部関数
                 ins.then(res => {
                     this.setState({calendar_search:res.calendars})
@@ -736,7 +735,7 @@ class Nurture extends Component {
                 
                 this.calendar("index");
                 this.news("index");
-                this.calendar_share("search")
+                this.calendar_share("search");
                 
             })
             .catch(() => {
@@ -991,11 +990,15 @@ class Nurture extends Component {
                         status={this.state.popup}
                         calendar={this.state.calendar}
                         sceduleDatas = {{APIresult: this.state.schedules, regesterIds: this.state.regesterIds, regesterElements: this.state.regesterElements}}
+                        user = {this.state.user}
+                        news = {this.state.news}
                         action={{
                             PopupToggle:(mode) => this.PopupToggle(mode),
                             addregesterId: (cd, array) => this.RegesterId(cd, array),
                             regester: (cal_id) => this.user_schedule("create",0,cal_id),
-                            getSchedule: (val,position) => this.schedule("index",val,position)
+                            getSchedule: (val,position) => this.schedule("index",val,position),
+                            userSignin:(user,sns) => this.userSignin(user,sns), 
+                            logout: () => this.logout()
                         }}
                         apiFunction={{
                             schedule_create: (schedule) => this.schedule("create",schedule)
@@ -1049,9 +1052,7 @@ class Nurture extends Component {
                                             canceled_lectureAPI:(type, cal_id, value) => this.canceled_lecture(type, cal_id, value)    
                                         }}                                      
                         />
-                        <Popup1 type={3} user={this.state.user} action={{PopupToggle: (ce) => this.PopupToggle(ce),userSignin:(user,sns) => this.userSignin(user,sns), logout: () => this.logout()}} status={this.state.popup.login}
-                            news={this.state.news}
-                        />
+                        
                         
                     </div>
                </div>

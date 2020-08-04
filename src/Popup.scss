@@ -795,3 +795,25 @@ div.react-datepicker-popper{
 .msB-line{
     padding:0 25px;
 }
+
+.loadingContainer{
+    padding:20px 0;
+    p{
+        text-align:center;
+    }
+    .loginerrorContainer{
+        .loginerrorTips{
+            p{
+                text-align:left;
+                font-size:0.9em;
+                padding-bottom:5px;
+                color:#aaa;
+                a{
+                    display:inline-block;
+                    padding:0 3px;
+                    color:#4285f4;
+                }
+            }
+        }
+    }
+}

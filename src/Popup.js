@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import moment from 'moment'
-import { GoogleLogout } from 'react-google-login'; //googleログインのログアウト
+
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresomeのインポート
 import { faClock } from '@fortawesome/free-regular-svg-icons';
@@ -14,8 +14,8 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";//minusアイコン
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";//矢印アイコン
 
 import { faCalendarAlt } from "@fortawesome/free-regular-svg-icons";//カレンダー
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";//情報
-import { faUsers } from "@fortawesome/free-solid-svg-icons";//ユーザー
+
+
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";//リンク
 import { faSignOutAlt,faBook } from "@fortawesome/free-solid-svg-icons";//サインアウト
 
@@ -34,54 +34,14 @@ import ja from 'date-fns/locale/ja';
 registerLocale('ja', ja)
 
 
-const githubIcon = {
-    fontSize:"1.3em",
-    color:"#24292e",
-    cursor: "pointer"
-}
-const exLogout = {
-    fontSize:"1.2em",
-    color:"#494949",
-    cursor: "pointer"
-}
-const exLink = {
-    fontSize:"1em",
-    color:"#494949",
-    cursor: "pointer"
-}
-const info = {
-    fontSize:"1.3em",
-    color:"#00aced",
-    cursor: "pointer"
-}
+
+
+
 const clock = {
     fontSize:"1em",
     margin:"0 15 0 5"
 }
-const calendar={
-}
-const twitterIcon = {
-    fontSize:"1.5em",
-    color:"white",
-    cursor: "pointer"
-}
-const lineIcon = {
-    fontSize:"1.5em",
-    color:"#Line",
-    cursor: "pointer"
-}
-const pmArrow = {
-    fontSize:"0.9em",
-    color:"rgb(170, 170, 170)",
-    cursor: "pointer",
-    padding:"0 0 0 10",
-    height:"28px"
-}
-const pmcr = {
-    fontSize:"1em",
-    color:"rgb(170, 170, 170)",
-    cursor: "pointer"
-}
+
 const p2head ={
     color:"#aaa"
 }
@@ -193,150 +153,15 @@ export default class Popup extends Component {
                             />
                    
                    )
-        }else if(this.props.type == 2){
-            return(
-                    <div></div>
-                   )
-        }else if(this.props.type == 3){
-            return(
-                   <Login user={this.props.user} isPopup={this.props.status} action={{sec: (type) => this.sec(type) ,userSignin: (user,sns) => this.props.action.userSignin(user,sns) ,logout: () => this.props.action.logout()}} news={this.props.news}/>
-                   
-                   )
         }
     }
     
 }
 
 
-class UserDetail extends Component {
-    constructor(props){
-        super(props)
-        this.state={
-            drop:{github:false}
-        }
-    }
-    render(){
-        return(
-               <div className={this.props.isPopup ? 'popup popup_toggle_effect' : 'popup popup_toggle_effect_de'} >
-                    <div className="popup_wrap" onClick={() => this.props.action(1) }></div>
-                    <div className="userDetailwhir flex">
-                        <div class="userDetailBox">
-                            <div className="iconBox flex-jus-center">
-                                <div className="userIcon"><img src={this.props.user.imageURL} /></div>
-                            </div>
-                            <div className="userName flex-jus-center">{this.props.user.name}</div>
-                            <div className="flex-jus-center"><div className="userKey flex">{this.props.user.key}</div></div>
-                            <div className="flex-jus-center nsB"><div className="nurtureSettingB flex-jus-center">Nurtureの設定</div></div>
-                            <div className="menuBox">
-                                <a href="https://portal.upex.ce.nihon-u.ac.jp/up/faces/login/Com00501A.jsp" className="menu flex">
-                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={exLink} icon={faExternalLinkAlt} /></div>
-                                    日本大学工学部ポータルサイト
-                                </a>
-                                <a href="https://classroom.google.com/u/0/h" className="menu flex">
-                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={githubIcon} icon={faUsers} /></div>
-                                    GoogleClassroom
-                                </a>
-                                <a href="https://calendar.google.com/calendar/" className="menu flex">
-                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={githubIcon} icon={faCalendarAlt} /></div>
-                                        Googleカレンダー
-                                </a>
-                                <div className="menu flex" onClick={() => this.setState({drop:{github:!this.state.drop.github}})}>
-                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={githubIcon} icon={faGithub} /></div>
-                                    N:urture Githubレポジトリ
-                                </div>
-                                <div className={this.state.drop.github ? 'toggle_effect' : 'toggle_effect_de'} >
-                                    <div className="sContentBox">
-                                        <p>N:urtureは、フロントエンド、バックエンドの全てのソースコードを公開しています。</p>
-                                        <p>N:urture（web版)の主な使用言語はフロントエンド: React、JSX バックエンド: Java、Ruby(API)です。</p>
-                                        <a href="https://github.com/TakumiHiguchi/Nurture-front" className="nurtureGithubB flex-jus-center">N:urture-front-end Repository</a>
-                                        <a href="https://github.com/TakumiHiguchi/Nurture-backendAPI" className="nurtureGithubB flex-jus-center">N:urture-API Repository</a>
-                                    </div>
-                                </div>
-                                <div className="menu flex">
-                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={info} icon={faInfoCircle} /></div>
-                                    N:urtureについて
-                                </div>
-                                <div className="menu flex">
-                                    <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={info} icon={faBook} /></div>
-                                    API
-                                </div>
-                                <GoogleLogout
-                                  clientId="653992313170-okt2tfmukp5eg4s4g8fiaf6u3261a0ov.apps.googleusercontent.com"
-                                  render={renderProps => (
-                                    <div className="menu flex" onClick={renderProps.onClick} disabled={renderProps.disabled}>
-                                        <div className="flex-jus-center sPmenuIcon"><FontAwesomeIcon style={exLogout} icon={faSignOutAlt} /></div>
-                                        ログアウト
-                                    </div>
-                                  )}
-                                  buttonText="Logout"
-                                        onLogoutSuccess={() => this.props.logout()}
-                                />
-                                
-                                
-                            </div>
-                        </div>
-                       <div class="newsBox">
-                           <h2 className="flex-jus-center">{this.props.user.mes}</h2>
-                           <div className="newsContainer">
-                               <div className="newsContainer_head flex">
-                                   <div>日本大学</div>
-                                   <div>N:urture</div>
-                               </div>
-                               <div className="newsContainer_body scroll-y">
-                                   {this.props.news.map((data) =>
-                                    <a href={data.link} className="newsIneer flex">
-                                            <div className="dateCircle flex-jus-center">
-                                                <div className="dateCircleInner">
-                                                    <div>{data.date}</div>
-                                                </div>
-                                            </div>
-                                            <div className="newsTitle">
-                                                <h3>{data.title}</h3>
-                                                <a href={data.base_link}>{data.base_title}</a>
-                                            </div>
-                                    </a>
-                                   )}
-                               </div>
-                           </div>
-                       </div>
-                    </div>
-                </div>
-               
-        )
-    }
-    
-}
 
-const Login = (props) => {
-    if(props.user.session.length > 0){
-        return(
-               <UserDetail isPopup={props.isPopup} action={() => props.action.sec(0)} user={props.user} logout={() => props.action.logout()} news={props.news}/>
-               
-        )
-    }else{
-        return(
-               <div className={props.isPopup ? 'popup popup_effect' : 'popup popup_effect_de'} >
-                    <div className="popup_wrap" ></div>
-                    <div className="logwhir">
-                        <div className="her-right">
-                            <h2 className="flex-jus-center">N:urture</h2>
-                            <p className="clx">今すぐログインして、自分の予定を管理したり、タスクを追加してみたりしましょう。</p>
-                            <GoogleAuthentication action={(user,sns) => props.action.userSignin(user,sns)}/>
-                            <p className="ghi hrm"><span>または</span></p>
-                            <a className="linkBox-twitter hrm" href=""><FontAwesomeIcon style={twitterIcon} icon={faTwitter} /> twitterでログイン</a>
-                            <a className="linkBox-line hrm" href=""><FontAwesomeIcon style={lineIcon} icon={faLine} /> Lineでログイン</a>
-                            <div className="new_user" >
-                                <p className="cls">ログインすることにより、N:urture利用規約、データーに関するポリシーに同意したものとみなされます。</p>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-               
-        )
-    }
-    
-}
+
+
 //持ってない場合の処理のやつ
 //<p class="alg">アカウントをお持ちではありませんか？<p onClick={() => props.action.sec(1) }>保存しないで利用する</p></p>
 

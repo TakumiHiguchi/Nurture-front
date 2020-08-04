@@ -114,16 +114,20 @@ export default class p3 extends Component{
                             <h2 className="menuH2 flex-algin-center">公開設定</h2>
                             <div className="setting_CalCheckBox flex-align-center" style={{cursor:"pointer"}} onClick={() => this.calendarUpdate("shareBool", nowCalendar, "共有設定を変更しました", !nowCalendar.shareBool)}>
                                 <div className="point flex-jus-center" style={{border:"2px solid " + nowCalendar.color}} >
-                                    {nowCalendar.shareBool &&
+                                    {nowCalendar.shareBool ?
                                         <div style={{background:nowCalendar.color}}></div>
+                                        :
+                                        <div></div>
                                     }
                                 </div>
                                 <div className="label scroll-x">カレンダーを公開して他の人と共有する</div>
                             </div>
                             <div className="setting_CalCheckBox flex-align-center" style={nowCalendar.shareBool ? {cursor:"pointer"} : null} onClick={nowCalendar.shareBool ? () => this.calendarUpdate("cloneBool", nowCalendar, "共有設定を変更しました", !nowCalendar.cloneBool) : null}>
                                 <div className="point flex-jus-center" style={nowCalendar.shareBool ? {border:"2px solid " + nowCalendar.color,cursor:"pointer"} : {border:"2px solid #aaa"}}>
-                                    {nowCalendar.shareBool && nowCalendar.cloneBool &&
+                                    {(nowCalendar.shareBool && nowCalendar.cloneBool) ?
                                         <div style={nowCalendar.cloneBool ? {background:nowCalendar.color} : {background:"#aaa"}}></div>
+                                        :
+                                        <div></div>
                                     }
                                 </div>
                                 <div className="label scroll-x" style={nowCalendar.shareBool ? null : {color:"#aaa"}}>カレンダーのコピーを許可する</div>
