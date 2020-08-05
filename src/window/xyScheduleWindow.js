@@ -4,6 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresom
 import { faTimes,faPlus,faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { faLine,faTwitter } from "@fortawesome/free-brands-svg-icons";
 
+import DDMscheduleEdit from '../dropdownMenu/DDMscheduleEdit'
+import CLP from '../popup/closedLecturePopup'
+import FP from '../popup/hurikaePopup'
+
 import './xyWindow.scss'
 class xyScheduleWindow extends Component{
     constructor(props){
@@ -13,6 +17,10 @@ class xyScheduleWindow extends Component{
             size:{
                 width: 0,
                 height: 0
+            },
+            popup:{
+                clp:false,
+                fp:false
             }
         }
     }
@@ -37,6 +45,48 @@ class xyScheduleWindow extends Component{
             height: height
         }
         this.setState({size: wsize});
+    }
+    popup(val){
+        let p = this.state.popup;
+        if(val === 0){
+            p.clp = !p.clp;
+        }
+        if(val === 1){
+            p.fp = !p.fp;
+        }
+        
+        this.setState({popup:p})
+    }
+    submit(type,data){
+        let v = this.props.value;
+        if(type=="clp"){
+            this.popup(0);
+            let value={
+                calendarArray:{id:v.showSchedule.calendarId},
+                selectSchedule:{scheduleId:v.showSchedule.scheduleId},
+                changeScheduleBeforeDate:v.year+"/"+v.month+"/"+v.date,
+                changeScheduleAfterDate:data.date,
+                position:data.position
+            }
+            this.props.apiFunction.setChangeSchedule(value)
+        }
+        if(type=="fp"){
+            this.popup(1);
+            let value={
+                calendarId:v.showSchedule.calendarId,
+                beforeDate:v.year+"/"+v.month+"/"+v.date,
+                afterDate:data,
+            }
+            this.props.apiFunction.transferSchedule("create",value);
+        }     
+    }
+    cancel(type){
+        if(type=="clp"){
+            this.popup(0)
+        }
+        if(type=="fp"){
+            this.popup(1)
+        }            
     }
     
     render(){
@@ -70,6 +120,7 @@ class xyScheduleWindow extends Component{
     
         //授業変更判定
         const changeBl1 = value.type == "change"
+        const transferBl = value.type == "transfer"
         
         //開講時間を生成
         let tss = "";
@@ -84,9 +135,25 @@ class xyScheduleWindow extends Component{
             tss = dayString[parseInt(value.showSchedule.position / 6)];
             tll = value.showSchedule.position % 6 + 1
         }
-        
+        if(transferBl)tll = value.index
         return(
                <div className="no-select">
+                   <CLP 
+                        isPopup={this.state.popup.clp}
+                        value={this.props.value}
+                        action={{
+                            submit:(data) => this.submit("clp",data),
+                            cancel:() => this.cancel("clp"),
+                        }}
+                   />
+                   <FP 
+                        isPopup={this.state.popup.fp}
+                        value={this.props.value}
+                        action={{
+                            submit:(data) => this.submit("fp",data),
+                            cancel:() => this.cancel("fp"),
+                        }}
+                   />
                    <div style={xyWindowMain} className={this.props.value.window ? "xyw-inner xyWindowWrap" : "xyw_de-inner xyWindowWrap"}>
                         <div className="flex-jus-between xywindowTitleBox">
                             <div className="windowDate">{value.year}年{value.month}月{value.date}日{value.position + 1}時限</div>
@@ -104,7 +171,11 @@ class xyScheduleWindow extends Component{
                                         <FontAwesomeIcon icon={faTrashAlt} style={pmcl}/>
                                     </div>
                                 </div>
-                                <div className="plus flex-jus-center"><FontAwesomeIcon icon={faPlus} style={pmcr}/></div>
+                                {!changeBl1 &&
+                                    <div className="plus flex-jus-center">
+                                        <DDMscheduleEdit action={(val) => this.popup(val)} date={value.year +"年"+value.month+"月"+value.date+"日"}/>
+                                    </div>
+                                }
                             </div>
                         </div>
                         {value.showSchedule != void 0 &&
@@ -112,7 +183,14 @@ class xyScheduleWindow extends Component{
                                 {changeBl1 ?
                                     <div className="labelBox" style={labBlue}>変更</div>
                                     :
+                                    <>
+                                    {transferBl ?
+                                    <div className="labelBox" style={labGray}>振替</div>
+                                    :
                                     <div className="labelBox" style={labGray}>授業</div>
+                                    }
+                                    </>
+                                    
                                 }
                                 <div className="title">{value.showSchedule.title}</div>
                             </div>

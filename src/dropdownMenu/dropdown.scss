@@ -59,6 +59,19 @@
     background-position: initial initial;
     background-repeat: initial initial;
 }
+.dropScheduleEdit{
+    position: absolute;
+    top: 30px;
+    right: 0px;
+    width: 200px;
+    padding:10px 0;
+    z-index: 1;
+    cursor: pointer;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 8px;
+    background-position: initial initial;
+    background-repeat: initial initial;
+}
 
 .DDMsemeIndex{
     padding: 7px 10px 7px 10px;

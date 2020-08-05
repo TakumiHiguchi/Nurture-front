@@ -16,7 +16,7 @@ export default class p2 extends Component{
                 <>
                     {this.props.before[index] !== 0 ?
                         <div className="scheduleList">
-                            <div className="sbu-window-c flex"><s>{index+1}講時</s><div className="changeScheduleMark">{this.props.before[index].afterDate} {this.props.before[index].after_position + 1}限目へ授業変更</div></div>
+                            <div className="sbu-window-c flex"><s>{index+1}講時</s><div className="changeScheduleMark">休講</div><div className="changeScheduleMark">{this.props.before[index].afterDate} {this.props.before[index].after_position + 1}限目へ授業変更</div></div>
                             <div className=""><s>{data.title}</s></div>
                         </div>
                     :

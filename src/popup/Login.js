@@ -37,7 +37,7 @@ export default class Login extends Component{
         }, 1000)
         nTimer = setTimeout(() => {
             this.setState({isLoginfails:true});
-        }, 2000)
+        }, 20000)
         
     }
 

@@ -82,7 +82,67 @@ const WeekLine = (props) => {
         }
         return stDate
     }
+    const parDatem = (target) =>{
+        var dateSeme = target.split('-');
+        let stDate = new Date();
+        if(dateSeme.length == 3){
+            stDate = new Date(dateSeme[0],dateSeme[1] - 1,dateSeme[2]);
+        }
+        return stDate
+    }
     
+    //授業が振替されているか確認
+    let tsAf = false;
+    let tsBf = false;
+    let bFSchedules = [0,0,0,0,0,0]
+    if(calendar.length > 0){
+        for(var i = 0; i < selectCalendarNumber.length; i++){
+            let insAf = calendar[selectCalendarNumber[i]].transfer_schedule_after
+            let insBf = calendar[selectCalendarNumber[i]].transfer_schedule_before
+            if(insAf[year] !== null && insAf[year] !== void 0 && insAf[year][mon] !== void 0){
+                if(insAf[year][mon][day] !== void 0 && !tsAf){
+                    tsAf = true;
+                    //スケジュールを作る
+                    //schedule取り出す処理
+                    let schedules = calendar[selectCalendarNumber[i]].schedules;
+                    let semesterPeriod = calendar[selectCalendarNumber[i]].semesterPeriod[props.user.grade - 1];
+                    let insSchedules = [];
+                    let youbi = parDatem(insAf[year][mon][day][0].beforeDate).getDay();
+                    if(youbi===0)youbi = 7;
+                    youbi--
+                    const bl1 = parDate(semesterPeriod.fhSemester1) <= parDatem(insAf[year][mon][day][0].afterDate);
+                    const bl2 = parDate(semesterPeriod.fhSemester2) >= parDatem(insAf[year][mon][day][0].afterDate);
+                    const bl3 = parDate(semesterPeriod.lateSemester1) <= parDatem(insAf[year][mon][day][0].afterDate);
+                    const bl4 = parDate(semesterPeriod.lateSemester2) >= parDatem(insAf[year][mon][day][0].afterDate);
+                    if(schedules[props.user.grade] !== void 0){
+                        insSchedules = schedules[props.user.grade - 1];
+                        
+                        if(bl1 && bl2){
+                            for(var ix = 0; ix < 6; ix++){
+                                if(bFSchedules[ix] === 0){
+                                    bFSchedules[ix] = insSchedules[0][youbi][ix];
+                                }
+                            }
+                        }else if(bl3 && bl4){
+                            for(var ix = 0; ix < 6; ix++){
+                                if(bFSchedules[ix] === 0){
+                                    bFSchedules[ix] = insSchedules[1][youbi][ix];
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+            }
+            if(insBf[year] !== null && insBf[year] !== void 0 && insBf[year][mon] !== void 0){
+                if(insBf[year][mon][day] !== void 0 && !tsBf){
+                    tsBf = true;
+
+                    
+                }
+            }
+        }
+    }
     //カレンダーの選択個数分ループしてタスクを成形する
     if(calendar.length > 0){
         for(var i = 0; i < selectCalendarNumber.length; i++){
@@ -127,25 +187,7 @@ const WeekLine = (props) => {
             }
         }
     }
-    //カレンダーの選択個数分ループして休講を成形する
-    if(calendar.length > 0){
-        for(var i = 0; i < selectCalendarNumber.length; i++){
-            let count = 0;
-            //日付の休講を取り出す処理
-            let cls = calendar[selectCalendarNumber[i]].canceled_lecture;
-            let inscl = [];
-            if(cls[year] !== void 0 && cls[year][mon] !== void 0){
-                if(cls[year][mon][day] !== void 0){
-                    count = cls[year][mon][day].length;
-                    inscl = cls[year][mon][day];
-                }
-            }
-            //exam成形
-            for(let iv=0;iv<count;iv++){
-                clData[parseInt(inscl[iv].position)] = inscl[iv];
-            }
-        }
-    }
+    
     //カレンダーの選択個数分ループして授業変更を成形する
     if(calendar.length > 0){
         for(var i = 0; i < selectCalendarNumber.length; i++){
@@ -231,19 +273,28 @@ const WeekLine = (props) => {
                                             {changeScheduleData_before[index] !== 0 ?
                                                 <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data , "nomal")}>
                                                     <div className="title"><s>{changeScheduleData_before[index].title}</s></div>
-                                                    <div className="classroom flex">107教室<div className="weekCSMark">授業変更</div></div>
+                                                    <div className="classroom flex">107教室<div className="weekCSMark">休講</div></div>
                                                 </div>
                                                 :
                                                 <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,data , "nomal")}>
-                                                    {clData[index].calendarId == data.calendarId ?
+                                                    {clData[index].calendarId == data.calendarId || tsBf ?
                                                         <>
                                                         <div className="title"><s>{data.title}</s></div>
                                                         <div className="classroom flex">107教室<div className="weekCSMark">休講</div></div>
                                                         </>
                                                     :
                                                         <>
-                                                            <div className="title">{data.title}</div>
-                                                            <div className="classroom">107教室</div>
+                                                            {tsAf ?
+                                                                <>
+                                                                <div className="title">{bFSchedules[index].title}</div>
+                                                                <div className="classroom flex">107教室<div className="weekCSMark">振替</div></div>
+                                                                </>
+                                                            :
+                                                                <>
+                                                                <div className="title">{data.title}</div>
+                                                                <div className="classroom">107教室</div>
+                                                                </>
+                                                            }   
                                                         </>
                                                     }
                                                 </div>
@@ -253,11 +304,20 @@ const WeekLine = (props) => {
                                 </>
                             :
                                 <>
-                                    {changeScheduleData_after[index] !== 0 &&
+                                    {changeScheduleData_after[index] !== 0 ?
                                         <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,changeScheduleData_after[index], "change")}>
                                             <div className="title">{changeScheduleData_after[index].title}</div>
                                             <div className="classroom flex">107教室<div className="weekCSMark">補講</div></div>
                                         </div>
+                                        :
+                                        <>
+                                            {tsAf && bFSchedules[index] !== 0 &&
+                                                <div className="weekScheduleBox" onClick={(e) => props.action.xyScheduleWindow(true,e.pageX,e.pageY,props.date.year,props.date.month,props.date.day,index,bFSchedules[index], "transfer")}>
+                                                <div className="title">{bFSchedules[index].title}</div>
+                                                <div className="classroom flex">107教室<div className="weekCSMark">振替</div></div>
+                                                </div>
+                                            }
+                                        </>
                                     }
                                 </>
                             }

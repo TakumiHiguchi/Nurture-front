@@ -45,7 +45,7 @@ class DDMposition extends Component{
        return (
          <div style={styles.dropDown}>
            <div onClick={this.toggleList.bind(this)} style={styles.menuButton} className="flex-jus-center">
-               {this.props.element +"講時"}<FontAwesomeIcon style={pmArrow} icon={faCaretDown}/>
+           {this.props.element}<FontAwesomeIcon style={pmArrow} icon={faCaretDown}/>
            </div>
            {listOpen && (
              <div className="dropMenuGrade">

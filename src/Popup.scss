@@ -817,3 +817,63 @@ div.react-datepicker-popper{
         }
     }
 }
+
+.clpWrap{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    max-width:450px;
+    max-height:238px;
+    background:white;
+    padding:20px;
+    margin:auto;
+    z-index:9999;
+    border-radius:10px;
+    h2{
+        font-size:1.2em;
+        margin-bottom:5px;
+    }
+    .des{
+        font-size:0.8em;
+        color:#aaa;
+    }
+    .canceledLectureBox{
+        padding:5px 0;
+        .left{
+            margin-right:10px;
+            line-height:2.0em;
+        }
+    }
+    .cLPdatepicker{
+        cursor:pointer;
+    }
+    .confirmation-button{
+        justify-content: flex-end;
+        border-top:1px solid #f0f0f0;
+        margin-top:10px;
+        padding:5px 0;
+        .clpSubmit{
+            cursor:pointer;
+            padding:5px 10px;
+            border-radius:5px;
+            font-size:0.9em;
+        }
+        .active{
+            color:#00aced;
+            &:hover{
+                background:#f8f8f8;
+            }
+        }
+        .clpCancel{
+            cursor:pointer;
+            padding:5px 10px;
+            border-radius:5px;
+            font-size:0.9em;
+            &:hover{
+                background:#f8f8f8;
+            }
+        }
+    }
+}

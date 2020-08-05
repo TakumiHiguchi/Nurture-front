@@ -1,3 +1,8 @@
+/*
+未完了:振替授業の削除、振替授業の月表示
+
+*/
+
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
@@ -49,7 +54,7 @@ import calendar_search from './API/calendar/search'
 import calendar_clone from './API/calendar/clone'
 import calendar_follow from './API/calendar/follow'
 
-import canceled_lecture_create from './API/canceled_lecture/create'
+import transfer_schedule_create from './API/transfer_schedule/create'
 
 import news_index from './API/news/index'
 
@@ -605,7 +610,7 @@ class Nurture extends Component {
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
                 });
-                this.PopupToggle("addTask")
+                this.setState({popup: {addTask: false}});
                 break;
             case "destory" :
                 ins = change_schedule_destroy(ENDPOINT, user.key, user.session, id, user.grade, cal_id);//外部関数
@@ -677,7 +682,7 @@ class Nurture extends Component {
                 ins.then(res => {
                     this.rWindow(true,1,res.mes);
                     //スケジュールを再読み込み
-                    
+                    this.calendar("index");
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');
@@ -687,14 +692,14 @@ class Nurture extends Component {
     }
 
     //休講API
-    canceled_lecture(type, cal_id, canceled_lecture, ...args){
+    transferSchedule(type,value, ...args){
         const user = this.state.user;
         let ins;
         if(type == "clone" || type == "create" || type == "update")this.rWindow(true,0,"");
         
         switch(type){
             case "create" :
-                ins = canceled_lecture_create(ENDPOINT, user.key, user.session, cal_id, canceled_lecture);//外部関数
+                ins = transfer_schedule_create(ENDPOINT, user.key, user.session, value);//外部関数
                 ins.then(res => {
                     this.rWindow(true,1,res.mes);
                     //スケジュールを再読み込み
@@ -975,6 +980,8 @@ class Nurture extends Component {
                                     exam_destroy: (id,cal_id) => this.exam("destory",id, cal_id),
                                     exam_update: (id, value, mes) => this.exam("update",id, 0, value, mes),
                                     change_schedule_destroy: (id, cal_id) => this.change_schedule("destory",id, cal_id),
+                                    setChangeSchedule:(value) => this.change_schedule("create",0,0, value),
+                                    transferSchedule:(type,value) => this.transferSchedule(type,value)
                                     }}
                     />
                     <EditPage
@@ -1048,9 +1055,7 @@ class Nurture extends Component {
                                         datas={{schedules:this.state.caDatas[this.state.user.grade - 1],semesterDate: this.state.semesterPeriod[this.state.user.grade - 1]}}
                                         calendar={this.state.calendar}
                                         user = {this.state.user}    
-                                        apiFunction={{ 
-                                            canceled_lectureAPI:(type, cal_id, value) => this.canceled_lecture(type, cal_id, value)    
-                                        }}                                      
+                                                                           
                         />
                         
                         
