@@ -127,7 +127,7 @@ const lineIcon = {
 const Header = (props) => {
     return(
            <header className="fa-header flex-jus-between no-select">
-               <h1 className="fa-top-h1"><a href="../" className="flex-align-center"><img src={icon}/>N:urture</a></h1>
+               <h1 className="fa-top-h1"><a href="../" className="flex-align-center"><img src="https://hiiragi000.xsrv.jp/images/nurture/nurtureIcon.png"/>N:urture</a></h1>
                <div className="header-right flex-jus-between">
                     <DDMbodyChange action={(mode) => props.action(mode)} type={1}/>
                     <FontAwesomeIcon style={pmIconHead} icon={faPlus} onClick={() => props.actionShow("regester")}/>
@@ -239,7 +239,7 @@ class Nurture extends Component {
             editPage:{window:false,showData:{title:''},type:""},
             calendar:[],
             calendar_search:[],
-            selectCalendarNumber:[]
+            selectCalendarNumber:[0]
         }
     }
     //カレンダーの選択を変更
@@ -314,7 +314,7 @@ class Nurture extends Component {
                 ins.then(res => {
                     if(res){
                         this.setState(
-                            {calendar:res.calendars,selectCalendarNumber : [...Array(res.calendars.length).keys()]}
+                            {calendar:res.calendars}
                         );
                     }else{
                         this.rWindow(true,2,'セッション切れです');
@@ -703,7 +703,7 @@ class Nurture extends Component {
                 ins.then(res => {
                     this.rWindow(true,1,res.mes);
                     //スケジュールを再読み込み
-                    
+                    this.calendar("index");
                 })
                 .catch(() => {
                     this.rWindow(true,2,'通信に失敗しました');

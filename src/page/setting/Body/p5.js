@@ -3,13 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //fontaweresom
 import { faClone } from "@fortawesome/free-regular-svg-icons";//カレンダー
 import { faUserTag } from "@fortawesome/free-solid-svg-icons";
 
-let nTimer;
+ var nTimer;
 export default class p5 extends Component{
     constructor(props){
         super(props);
         this.state={
             search:""
         }
+        
     }
     inputSearchStart(val){
         this.setState({search:val});
