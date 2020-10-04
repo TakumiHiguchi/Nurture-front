@@ -1,0 +1,23 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-nurture-dev-101553-authRole",
+            "UnauthRoleArn": "arn:aws:iam::844016879063:role/amplify-nurture-dev-101553-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::844016879063:role/amplify-nurture-dev-101553-authRole",
+            "Region": "us-east-2",
+            "DeploymentBucketName": "amplify-nurture-dev-101553-deployment",
+            "UnauthRoleName": "amplify-nurture-dev-101553-unauthRole",
+            "StackName": "amplify-nurture-dev-101553",
+            "StackId": "arn:aws:cloudformation:us-east-2:844016879063:stack/amplify-nurture-dev-101553/2aa729d0-0128-11eb-9cf6-02cd5289eb90",
+            "AmplifyAppId": "d2300fs4r3axuy"
+        },
+        "categories": {
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "d2300fs4r3axuy",
+                    "type": "manual"
+                }
+            }
+        }
+    }
+}
