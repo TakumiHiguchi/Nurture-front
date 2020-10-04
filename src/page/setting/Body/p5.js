@@ -50,12 +50,6 @@ export default class p5 extends Component{
                                             }
                                             <div onClick={() => this.props.action.ConfirmationPopup("フォローする","キャンセル","「" + data.name + "」カレンダーをフォローしようとしています。本当にフォローしますか？フォローされたカレンダーは自動的に追加されます。",data.id,"follow")}><FontAwesomeIcon icon={faUserTag} style={{paddingRight:"5px"}}/>フォローする</div>
                                         </div>
-                                        <div className="data flex">
-                                            <div>授業: {data.scheduleCount}件</div>
-                                            <div>タスク: {data.taskCount}件</div>
-                                            <div>試験: {data.examCount}件</div>
-                                            <div>授業変更: {data.change_schedulesCount}件</div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -81,8 +81,8 @@ import change_schedule_index from './API/change_schedule/index'
 import change_schedule_create from './API/change_schedule/create'
 import change_schedule_destroy from './API/change_schedule/destroy'
 
-//const ENDPOINT = 'http://localhost:3020'
-const ENDPOINT = 'https://nurture-api.herokuapp.com'
+const ENDPOINT = 'http://localhost:3020'
+//const ENDPOINT = 'https://nurture-api.herokuapp.com'
 
 //css
 const pmIcons = {
@@ -740,7 +740,7 @@ class Nurture extends Component {
                 
                 this.calendar("index");
                 this.news("index");
-                this.calendar_share("search");
+                this.calendar_share("search",0,"","");
                 
             })
             .catch(() => {

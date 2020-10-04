@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { GoogleLogin } from 'react-google-login';
 
+//653992313170-okt2tfmukp5eg4s4g8fiaf6u3261a0ov.apps.googleusercontent.com
+//本番653992313170-7iqt3ahq46pg322edi3l117kife5e6d8.apps.googleusercontent.com
 export default class GoogleAuthentication extends Component {
     initSignInButton = (gapi) => {
         gapi.load('auth2', () => {
-            gapi.auth2.init({client_id:'653992313170-7iqt3ahq46pg322edi3l117kife5e6d8.apps.googleusercontent.com'})
+            gapi.auth2.init({client_id:'653992313170-okt2tfmukp5eg4s4g8fiaf6u3261a0ov.apps.googleusercontent.com'})
             .then(
                 (result) => {
                     gapi.signin2.render('google-signin-button', {
@@ -45,7 +47,7 @@ export default class GoogleAuthentication extends Component {
     render() {
         return (
                 <GoogleLogin className="googleAuth"
-                    clientId="653992313170-7iqt3ahq46pg322edi3l117kife5e6d8.apps.googleusercontent.com"
+                    clientId="653992313170-okt2tfmukp5eg4s4g8fiaf6u3261a0ov.apps.googleusercontent.com"
                     buttonText="ログイン"
                     onSuccess={this.responseGoogle}
                     onFailure={this.responseGoogle}
