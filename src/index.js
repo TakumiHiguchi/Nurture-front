@@ -53,6 +53,7 @@ import calendar_destroy from './API/calendar/destroy'
 import calendar_search from './API/calendar/search'
 import calendar_clone from './API/calendar/clone'
 import calendar_follow from './API/calendar/follow'
+import calendar_destroy_follow from './API/calendar/destroy_follow'
 
 import transfer_schedule_create from './API/transfer_schedule/create'
 
@@ -659,6 +660,18 @@ class Nurture extends Component {
             case "follow" :
                 
                 ins = calendar_follow(ENDPOINT, user.key, user.session, id);//外部関数
+                ins.then(res => {
+                    this.rWindow(true,1,res.mes);
+                    //スケジュールを再読み込み
+                    this.calendar("index");
+                })
+                .catch(() => {
+                    this.rWindow(true,2,'通信に失敗しました');
+                });
+                break;
+            case "destroy_follow" :
+                
+                ins = calendar_destroy_follow(ENDPOINT, user.key, user.session, id);//外部関数
                 ins.then(res => {
                     this.rWindow(true,1,res.mes);
                     //スケジュールを再読み込み

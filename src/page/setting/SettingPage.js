@@ -68,7 +68,12 @@ export default class SettingPage extends Component {
     submit(type){
         switch(type){
             case "calDelete" :
-                this.props.apiFunction.calendar_destroy(this.state.targetCalendar)
+                console.log(this.state.targetCalendar)
+                if(this.state.targetCalendar.user_id != this.state.targetCalendar.author_id){
+                    this.props.apiFunction.calendar_share("destroy_follow",this.state.targetCalendar.id);
+                }else{
+                    this.props.apiFunction.calendar_destroy(this.state.targetCalendar)
+                }
                 this.setState({calPage:1})
                 this.ConfirmationPopup("","","",[]);
                 break;
