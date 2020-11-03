@@ -1,0 +1,10 @@
+version: '3.5'
+services:
+  node:
+    build: .
+    volumes:
+      - ./:/nurture
+    command: sh -c "yarn start"
+    ports:
+      - "3000:3000"
+    stdin_open: true
