@@ -15,7 +15,7 @@ async function api(endpoint, key, session, exam, grade, cal_id){
             calendarId: cal_id,
             title: exam.examTitle,
             content:exam.examCont,
-            examdate:exam.examDate,
+            examDate:exam.examDate,
             position:exam.position - 1
         });
         

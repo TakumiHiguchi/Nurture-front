@@ -9,14 +9,13 @@ export default async function update(endpoint, key, session, id, task, grade){
 
 async function api(endpoint, key, session, id, task, grade){
     try{
-        const response = await axios.put(endpoint + '/api/v1/task/' + task.id, {
+        const response = await axios.put(endpoint + '/api/v1/task/' + id, {
             key: key,
             session: session,
             calendarId: task.calendarId,
-            task_id: id,
             title: task.title,
             content: task.content,
-            taskdate: task.date,
+            taskDate: task.date,
             position: task.position,
             complete: task.complete
         });

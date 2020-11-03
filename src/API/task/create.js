@@ -15,7 +15,7 @@ async function api(endpoint, key, session, task, grade, cal_id){
             calendarId: cal_id,
             title: task.taskTitle,
             content:task.taskCont,
-            taskdate:task.taskDate,
+            taskDate:task.taskDate,
             position:task.position - 1
         });
         
